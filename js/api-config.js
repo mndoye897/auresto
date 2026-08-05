@@ -10,7 +10,7 @@
 
 // URL du backend en production (Render, Railway, Koyeb, etc.)
 // Remplacez par l'URL de votre service Render après déploiement.
-const AURESTO_BACKEND_URL = 'https://auresto-backend.onrender.com';
+const AURESTO_BACKEND_URL = 'https://auresto.onrender.com';
 
 // Détection de l'environnement :
 // - localhost / 127.0.0.1 / fichier local → backend local :4000
