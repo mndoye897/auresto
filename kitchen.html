@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cuisine — Auresto</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/app-shared.css" />
+    <link rel="stylesheet" href="css/kitchen.css" />
+  </head>
+  <body class="kitchen-page">
+    <header class="app-header">
+      <a class="logo" href="dashboard.html"><span class="logo-mark">a<span>•</span></span><strong>Auresto</strong></a>
+      <nav class="app-nav">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="kitchen.html" class="active">Cuisine</a>
+        <a href="settings.html">Paramètres</a>
+      </nav>
+    </header>
+
+    <main class="kitchen-main">
+      <div class="kitchen-header">
+        <h1 style="display:inline-flex;align-items:center;gap:10px">
+          <svg class="lucide lucide-chef-hat" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 9.18 0A4 4 0 0 1 18 13.87V21H6z"/><line x1="6" x2="18" y1="17" y2="17"/></svg> Cuisine
+        </h1>
+        <p>Interface optimisée tablette · Mise à jour automatique</p>
+      </div>
+      <div class="kitchen-columns">
+        <div class="kitchen-col col-new"><h2>Nouvelles</h2><div id="colNew"></div></div>
+        <div class="kitchen-col col-prep"><h2>Préparation</h2><div id="colPrep"></div></div>
+        <div class="kitchen-col col-ready"><h2>Prêt à servir</h2><div id="colReady"></div></div>
+        <div class="kitchen-col col-served"><h2>Servi</h2><div id="colServed"></div></div>
+      </div>
+    </main>
+    <script src="js/icons.js"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="js/api-config.js"></script>
+    <script src="js/store.js"></script>
+    <script src="js/kitchen.js"></script>
+  </body>
+</html>

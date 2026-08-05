@@ -1,0 +1,23 @@
+# Configuration Render pour le backend Auresto
+# Déployer sur Render : https://render.com → New → Web Service → Connecter le repo
+# OU utiliser "Blueprint" avec ce fichier
+
+services:
+  - type: web
+    name: auresto-backend
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: DATABASE_URL
+        sync: false
+      - key: OWNER_SECRET
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false

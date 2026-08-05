@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Compte Suspendu — Auresto</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/app-shared.css" />
+    <style>
+      body {
+        background-color: #071820;
+        color: #f7f8f4;
+        font-family: 'DM Sans', sans-serif;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        margin: 0;
+      }
+      .suspended-card {
+        background: #0d232e;
+        border: 1px solid rgba(232, 107, 107, 0.4);
+        border-radius: 24px;
+        padding: 40px 32px;
+        max-width: 520px;
+        width: 100%;
+        text-align: center;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+      }
+      .suspended-icon {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 16px;
+        color: #e86b6b;
+      }
+      h1 {
+        margin: 0 0 12px 0;
+        font-size: 26px;
+        color: #e86b6b;
+      }
+      .suspended-msg {
+        font-size: 14px;
+        color: #cbd5e1;
+        line-height: 1.6;
+        margin-bottom: 24px;
+      }
+      .info-box {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 20px;
+        text-align: left;
+        margin-bottom: 28px;
+      }
+      .info-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+        padding: 8px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      }
+      .info-row:last-child {
+        border-bottom: none;
+      }
+      .info-label {
+        color: #94a3b8;
+      }
+      .info-value {
+        font-weight: 600;
+        color: #fff;
+      }
+      .safe-data-note {
+        font-size: 12px;
+        color: #3ecf8e;
+        background: rgba(62, 207, 142, 0.1);
+        border: 1px solid rgba(62, 207, 142, 0.2);
+        padding: 10px 14px;
+        border-radius: 10px;
+        margin-bottom: 24px;
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        text-align: left;
+      }
+      .btn-wave {
+        width: 100%;
+        padding: 14px;
+        font-size: 15px;
+        font-weight: 700;
+        border-radius: 12px;
+        background: #1dc4ff;
+        color: #071820;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        transition: transform 0.2s, background 0.2s;
+      }
+      .btn-wave:hover {
+        background: #00b0f0;
+        transform: translateY(-2px);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="suspended-card">
+      <div class="suspended-icon" id="suspendedLockIcon"></div>
+      <h1>COMPTE SUSPENDU</h1>
+      <p class="suspended-msg">
+        Votre abonnement Auresto a expiré. Veuillez renouveler votre abonnement pour continuer à utiliser toutes les fonctionnalités de la plateforme.
+      </p>
+
+      <div class="safe-data-note">
+        <span id="safeDataIcon"></span>
+        <span><strong>Vos données sont 100% sécurisées et intactes.</strong> Vos menus, plats, commandes, catégories et statistiques sont conservés.</span>
+      </div>
+
+      <div class="info-box">
+        <div class="info-row">
+          <span class="info-label">Statut</span>
+          <span class="info-value" style="color:#e86b6b" id="subStatus">SUSPENDU</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Raison</span>
+          <span class="info-value" style="color:#e86b6b">Abonnement expiré</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Abonnement concerné</span>
+          <span class="info-value" id="subPlanName">SILVER (25 000 FCFA / mois)</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Date d'expiration</span>
+          <span class="info-value" id="subExpireDate">—</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Montant à régler</span>
+          <span class="info-value" id="subAmount" style="color:#3ecf8e;font-size:15px">25 000 FCFA</span>
+        </div>
+      </div>
+
+      <button type="button" class="btn-wave" id="renewWaveBtn">
+        <span id="renewWaveIcon"></span> RENOUVELER AVEC WAVE
+      </button>
+
+      <p style="font-size:12px;color:#64748b;margin-top:16px">
+        Besoin d'aide ? Contactez l'assistance Auresto à <a href="mailto:support@auresto.sn" style="color:#94a3b8">support@auresto.sn</a>
+      </p>
+    </div>
+
+    <script src="js/icons.js"></script>
+    <script src="js/api-config.js"></script>
+    <script src="js/store.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', async () => {
+        document.getElementById('suspendedLockIcon').innerHTML = AurestoIcons.get('lock', { size: 48 });
+        document.getElementById('safeDataIcon').innerHTML = AurestoIcons.get('shield-check', { size: 18, color: '#3ecf8e' });
+        document.getElementById('renewWaveIcon').innerHTML = AurestoIcons.get('wave', { size: 18, color: '#071820' });
+
+        const storeData = await AurestoStore.init();
+        const rid = localStorage.getItem('auresto_restaurant_id');
+        const planFromStore = (storeData.plan || 'SILVER').toUpperCase();
+
+        if (rid) {
+          try {
+            const res = await fetch((window.AURESTO_API_BASE || 'http://localhost:4000') + `/api/restaurants/${rid}/subscription`, {
+              headers: getRestaurantAuthHeaders()
+            });
+            if (res.ok) {
+              const data = await res.json();
+              const sub = data.subscription;
+              const plan = (sub.plan || planFromStore || 'SILVER').toUpperCase();
+              const price = plan === 'GOLD' ? '40 000 FCFA' : (plan === 'FREE' ? '0 FCFA' : '25 000 FCFA');
+
+              document.getElementById('subStatus').textContent = sub.status || 'SUSPENDU';
+              document.getElementById('subPlanName').textContent = plan === 'FREE' ? 'FREE (0 FCFA)' : `${plan} (${price} / mois)`;
+              document.getElementById('subAmount').textContent = price;
+              if (sub.expiresAt) {
+                document.getElementById('subExpireDate').textContent = new Date(sub.expiresAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+              }
+            }
+          } catch (e) {}
+        }
+
+        document.getElementById('renewWaveBtn').addEventListener('click', async () => {
+          if (!rid) {
+            alert('Restaurant non identifié.');
+            return;
+          }
+          const plan = (storeData.plan || 'SILVER').toUpperCase();
+          const amount = plan === 'GOLD' ? 40000 : 25000;
+          try {
+            const apiBase = window.AURESTO_API_BASE || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:4000' : window.location.origin);
+            const res = await fetch(apiBase + '/api/payments/wave/create-checkout', {
+              method: 'POST',
+              headers: getRestaurantAuthHeaders(),
+              body: JSON.stringify({
+                restaurantId: rid,
+                type: 'SUBSCRIPTION',
+                plan: plan === 'FREE' ? 'SILVER' : plan,
+                amount: plan === 'FREE' ? 25000 : amount,
+                title: `Renouvellement Abonnement Auresto ${plan === 'FREE' ? 'Silver' : plan}`,
+                successUrl: location.origin + '/dashboard.html?payment=success',
+                cancelUrl: location.origin + '/suspended.html'
+              })
+            });
+            const data = await res.json();
+            if (data.checkoutUrl) {
+              location.href = data.checkoutUrl;
+            } else {
+              alert(data.message || 'L\'intégration Wave sera activée dès réception de vos identifiants Wave Business.');
+            }
+          } catch (err) {
+            alert('Le système de paiement Wave est prêt et sera disponible dès l\'activation de vos identifiants Wave Business.');
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

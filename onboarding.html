@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#071820" />
+    <title>Onboarding — Auresto</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/app-shared.css" />
+    <link rel="stylesheet" href="css/onboarding.css" />
+  </head>
+  <body class="onboarding-page">
+    <header class="app-header">
+      <a class="logo" href="index.html"><span class="logo-mark">a<span>•</span></span><strong>Auresto</strong></a>
+      <span class="timer-badge" style="display:inline-flex;align-items:center;gap:6px">
+        <svg class="lucide lucide-clock" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Opérationnel en &lt; 10 min
+      </span>
+    </header>
+
+    <div class="onboarding-shell">
+      <div class="onboarding-top">
+        <div>
+          <h1>Configuration de votre restaurant</h1>
+          <p id="stepSubtitle">Étape 1 sur 8 — Choisissez votre offre</p>
+        </div>
+      </div>
+
+      <div class="progress-bar" id="progressBar"></div>
+      <div class="step-labels" id="stepLabels"></div>
+
+      <div class="card step-card">
+        <!-- Étape 1 : Offre -->
+        <section class="step-panel active" data-step="1">
+          <h2>Choisissez votre offre</h2>
+          <p>Commencez gratuitement ou activez les commandes et paiements dès maintenant.</p>
+          <div class="plan-grid" id="planGrid">
+            <div class="plan-option" data-plan="Free"><span class="price">0 FCFA</span><h3>Free</h3><p>Menu digital QR</p></div>
+            <div class="plan-option" data-plan="Silver"><span class="price">25 000 FCFA</span><h3>Silver</h3><p>Commandes + paiements</p></div>
+            <div class="plan-option" data-plan="Gold"><span class="price">40 000 FCFA</span><h3>Gold</h3><p>Données + recommandations IA</p></div>
+          </div>
+        </section>
+
+        <!-- Étape 2 : Compte -->
+        <section class="step-panel" data-step="2">
+          <h2>Créez votre compte</h2>
+          <p>Vos identifiants pour accéder au dashboard Auresto.</p>
+          <div class="form-grid">
+            <div class="field"><label for="accName">Nom complet</label><input id="accName" type="text" placeholder="Amadou Diallo" required /></div>
+            <div class="field"><label for="accEmail">Email</label><input id="accEmail" type="email" placeholder="contact@restaurant.sn" required /></div>
+            <div class="field"><label for="accPhone">Téléphone</label><input id="accPhone" type="tel" placeholder="+221 77 000 00 00" required /></div>
+            <div class="field"><label for="accPassword">Mot de passe</label><input id="accPassword" type="password" placeholder="••••••••" minlength="6" required /></div>
+          </div>
+          <div style="margin-top: 20px; text-align: center;">
+            <p style="font-size: 13px; color: #7a9298; margin-bottom: 15px;">Ou connectez-vous avec</p>
+            <button type="button" class="google-signin-btn" id="googleSignInBtn">
+              <svg width="18" height="18" viewBox="0 0 24 24" style="vertical-align: middle; margin-right: 8px;">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+              </svg>
+              Se connecter avec Google
+            </button>
+          </div>
+        </section>
+
+        <!-- Étape 3 : Restaurant -->
+        <section class="step-panel" data-step="3">
+          <h2>Créez votre restaurant</h2>
+          <p>Les informations visibles par vos clients sur le menu digital.</p>
+          <div class="form-grid">
+            <div class="field full"><label for="restName">Nom du restaurant</label><input id="restName" type="text" placeholder="Dakar Saveurs" required /></div>
+            <div class="field full">
+              <label for="restAddress">Adresse du restaurant</label>
+              <div class="address-input-group" id="addressInputGroup">
+                <span class="input-icon" aria-hidden="true">
+                  <svg class="lucide lucide-map-pin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                </span>
+                <input id="restAddress" type="text" placeholder="12 Rue de la Corniche" />
+                <button type="button" class="gps-button" id="geoLocateBtn" aria-label="Utiliser la géolocalisation">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2v4" />
+                    <path d="M12 18v4" />
+                    <path d="M4.93 4.93l2.83 2.83" />
+                    <path d="M16.24 16.24l2.83 2.83" />
+                    <path d="M2 12h4" />
+                    <path d="M18 12h4" />
+                    <path d="M4.93 19.07l2.83-2.83" />
+                    <path d="M16.24 7.76l2.83-2.83" />
+                    <circle cx="12" cy="12" r="5" />
+                  </svg>
+                </button>
+              </div>
+              <div class="geo-status" id="geoStatus" hidden>
+                <span class="geo-status-dot" id="geoStatusDot"></span>
+                <span class="geo-status-text" id="geoStatusText">Recherche de votre position…</span>
+              </div>
+            </div>
+            <div class="field"><label for="restCity">Ville</label><input id="restCity" type="text" value="Dakar" /></div>
+            <div class="field"><label for="restPhone">Téléphone</label><input id="restPhone" type="tel" placeholder="+221 33 000 00 00" /></div>
+            <div class="field full">
+              <label>Horaires d'ouverture</label>
+              <div class="hours-presets">
+                <button type="button" class="hours-preset-btn active" data-hours-preset="everyday">Tous les jours</button>
+                <button type="button" class="hours-preset-btn" data-hours-preset="weekdays">Lun – Sam</button>
+                <button type="button" class="hours-preset-btn" data-hours-preset="lunch">Midi uniquement</button>
+                <button type="button" class="hours-preset-btn" data-hours-preset="dinner">Soir uniquement</button>
+              </div>
+              <div class="hours-grid" id="hoursGrid"></div>
+              <p class="hours-summary" id="hoursSummary">Lun–Dim · 11h00–23h00</p>
+            </div>
+            <div class="field full"><label for="restDesc">Description</label><textarea id="restDesc" placeholder="Cuisine sénégalaise authentique, face à l'océan…"></textarea></div>
+          </div>
+        </section>
+
+        <!-- Étape 4 : Identité IA -->
+        <section class="step-panel" data-step="4">
+          <h2>Identité visuelle assistée par IA</h2>
+          <p>Photographiez votre enseigne ou importez votre logo. L'IA s'occupe du reste.</p>
+          <div class="upload-zone">
+            <label class="upload-btn">
+              <span style="display:inline-flex;align-items:center"><svg class="lucide lucide-camera" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg></span>Photo de l'enseigne
+              <input class="hidden-input" type="file" accept="image/*" capture="environment" data-upload="sign" />
+            </label>
+            <label class="upload-btn">
+              <span style="display:inline-flex;align-items:center"><svg class="lucide lucide-aperture" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="14.31" x2="20.05" y1="8" y2="17.94"/><line x1="9.69" x2="21.17" y1="8" y2="8"/><line x1="7.38" x2="13.12" y1="12" y2="2.06"/><line x1="9.69" x2="3.95" y1="16" y2="6.06"/><line x1="14.31" x2="2.83" y1="16" y2="16"/><line x1="16.62" x2="10.88" y1="12" y2="21.94"/></svg></span>Photographier le logo
+              <input class="hidden-input" type="file" accept="image/*" capture="environment" data-upload="logo" />
+            </label>
+            <label class="upload-btn">
+              <span style="display:inline-flex;align-items:center"><svg class="lucide lucide-image" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></span>Importer une image
+              <input class="hidden-input" type="file" accept="image/*" data-upload="import" />
+            </label>
+          </div>
+          <div class="ai-processing" id="aiProcessing">
+            <div class="ai-spinner"></div>
+            <span id="aiStatus">Détection du logo…</span>
+          </div>
+          <div class="branding-result" id="brandingResult">
+            <div>
+              <p style="font-size:12px;margin:0 0 12px;color:rgba(255,255,255,.7)">Logos générés</p>
+              <div class="logo-previews">
+                <div class="logo-round"><img id="logoRound" alt="" /></div>
+                <div class="logo-square"><img id="logoSquare" alt="" /></div>
+              </div>
+              <p style="font-size:12px;margin:16px 0 8px;color:rgba(255,255,255,.7)">Couleurs extraites — modifiables</p>
+              <div class="color-swatches">
+                <label class="color-swatch" id="swatchPrimary" title="Couleur principale"><input type="color" id="colorPrimary" /></label>
+                <label class="color-swatch" id="swatchSecondary" title="Couleur secondaire"><input type="color" id="colorSecondary" /></label>
+                <label class="color-swatch" id="swatchAccent" title="Couleur accent"><input type="color" id="colorAccent" /></label>
+              </div>
+            </div>
+            <div class="menu-preview" id="menuPreview">
+              <div class="menu-preview-header">
+                <img id="previewLogo" alt="" />
+                <div><strong id="previewName">Mon restaurant</strong><br /><small style="color:rgba(255,255,255,.6)">Menu digital</small></div>
+              </div>
+              <div class="menu-preview-item"><span>Thiéboudienne</span><span>4 500 FCFA</span></div>
+              <div class="menu-preview-item"><span>Jus de bissap</span><span>1 500 FCFA</span></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Étape 5 : Scan menu IA -->
+        <section class="step-panel" data-step="5">
+          <h2>Scannez votre menu papier</h2>
+          <p>Prenez une photo de votre carte. L'IA détecte automatiquement les plats, catégories, prix et génère les photos.</p>
+          <label class="menu-scan-zone" id="menuScanZone">
+            <span class="scan-icon">
+              <svg class="lucide lucide-file-text" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><line x1="10" x2="8" y1="9" y2="9"/></svg>
+            </span>
+            <strong>Photographier le menu</strong>
+            <small>ou importer une image depuis votre galerie</small>
+            <input class="hidden-input" type="file" id="menuScanInput" accept="image/*" capture="environment" />
+          </label>
+          <div class="ai-processing" id="menuAiProcessing">
+            <div class="ai-spinner"></div>
+            <span id="menuAiStatus">Analyse en cours…</span>
+          </div>
+          <div class="menu-scan-preview" id="menuScanPreview" hidden>
+            <img id="menuScanImage" alt="Menu scanné" />
+            <p id="menuScanCount"></p>
+          </div>
+        </section>
+
+        <!-- Étape 6 : Vérification -->
+        <section class="step-panel" data-step="6">
+          <h2>Vérifiez votre menu</h2>
+          <p>L'IA a extrait vos plats. Vous pouvez supprimer ou rescanner si besoin — pas besoin de tout saisir à la main.</p>
+          <div class="category-tags" id="categoryTags"></div>
+          <div class="dish-list" id="dishList"></div>
+          <button type="button" class="btn btn-ghost" id="rescanMenuBtn" style="margin-top:16px;display:inline-flex;align-items:center;gap:6px">
+            <svg class="lucide lucide-refresh" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg> Rescanner le menu
+          </button>
+        </section>
+
+        <!-- Étape 7 : Tables -->
+        <section class="step-panel" data-step="7">
+          <h2>Créez vos tables</h2>
+          <p>Chaque table reçoit un QR code unique. Vos clients scannent et commandent.</p>
+          <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+            <button type="button" class="btn btn-ghost" id="addTableBtn">+ Ajouter une table</button>
+            <button type="button" class="btn btn-ghost" id="addBulkTablesBtn">+ Créer 5 tables</button>
+          </div>
+          <div class="table-list" id="tableList"></div>
+        </section>
+
+        <!-- Étape 8 : Impression QR -->
+        <section class="step-panel" data-step="8">
+          <h2>Imprimez vos QR codes</h2>
+          <p>Téléchargez un PDF ou un fichier Word prêt à imprimer pour vos tables. Personnalisez le texte et le format du QR.</p>
+          <div class="qr-settings-panel">
+            <label class="field"><span>En-tête du QR</span><input id="qrHeaderTemplate" type="text" placeholder="Table {name}" /></label>
+            <label class="field"><span>Texte du bas</span><input id="qrFooterText" type="text" placeholder="Scannez pour commander" /></label>
+          </div>
+          <div class="print-options" id="printOptions">
+            <div class="print-option selected" data-format="chevalet">
+              <span style="display:inline-flex;align-items:center"><svg class="lucide lucide-qr-code" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1a2 2 0 0 1 2 2v1"/></svg></span>
+              <strong>Chevalet de table</strong>
+            </div>
+            <div class="print-option" data-format="autocollant">
+              <span style="display:inline-flex;align-items:center"><svg class="lucide lucide-tag" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/></svg></span>
+              <strong>Autocollants</strong>
+            </div>
+            <div class="print-option" data-format="affiche">
+              <span style="display:inline-flex;align-items:center"><svg class="lucide lucide-file-spreadsheets" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h8"/><path d="M12 9v10"/></svg></span>
+              <strong>Affiches</strong>
+            </div>
+          </div>
+          <div class="qr-print-grid" id="qrPrintGrid"></div>
+          <div class="step-actions" style="border:0;padding-top:12px;flex-wrap:wrap;gap:10px">
+            <button type="button" class="btn btn-accent" id="downloadPdfBtn" style="display:inline-flex;align-items:center;gap:6px">
+              <svg class="lucide lucide-download" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg> Télécharger le PDF
+            </button>
+            <button type="button" class="btn btn-accent" id="downloadWordBtn" style="display:inline-flex;align-items:center;gap:6px">
+              <svg class="lucide lucide-file-text" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><line x1="10" x2="8" y1="9" y2="9"/></svg> Télécharger Word
+            </button>
+            <button type="button" class="btn btn-primary" id="finishBtn" style="display:inline-flex;align-items:center;gap:6px">
+              Accéder au dashboard <svg class="lucide lucide-arrow-right" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </button>
+          </div>
+        </section>
+
+        <div class="step-actions" id="mainActions">
+          <button type="button" class="btn btn-ghost" id="prevBtn" disabled>← Retour</button>
+          <button type="button" class="btn btn-primary" id="nextBtn">Continuer →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Interactif d'Édition Complète de Plat -->
+    <div class="item-modal-backdrop" id="itemEditModal" hidden>
+      <div class="item-modal-dialog">
+        <div class="item-modal-header">
+          <div>
+            <h3 id="itemModalTitle" style="display:flex;align-items:center;gap:8px">
+              <svg class="lucide lucide-pencil" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg> Modifier le plat
+            </h3>
+            <p id="itemModalSub">Personnalisez la photo, le nom, le prix, la devise et la description.</p>
+          </div>
+          <button type="button" class="item-modal-close" id="closeItemModalBtn" aria-label="Fermer">
+            <svg class="lucide lucide-x" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </div>
+
+        <div class="item-modal-body">
+          <!-- Aperçu en direct -->
+          <div class="item-preview-section">
+            <span class="preview-badge" style="display:inline-flex;align-items:center;gap:6px">
+              <svg class="lucide lucide-smartphone" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg> APERÇU EN DIRECT
+            </span>
+            <div class="live-card-mockup">
+              <div class="mockup-img-wrap">
+                <img id="livePreviewImg" src="images/placeholder-plat.png" alt="Aperçu" onerror="this.src='images/placeholder-plat.png'" />
+                <span class="mockup-cat-tag" id="livePreviewCategory">Plat principal</span>
+              </div>
+              <div class="mockup-info">
+                <h4 id="livePreviewName">Nom du plat</h4>
+                <p id="livePreviewDesc">Description du plat...</p>
+                <div class="mockup-footer">
+                  <span class="mockup-price" id="livePreviewPrice">5 000 FCFA</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Formulaire d'édition -->
+          <div class="item-form-section">
+            <input type="hidden" id="editItemId" />
+
+            <div class="form-group">
+              <label for="editItemName">Nom du plat <span class="req">*</span></label>
+              <input type="text" id="editItemName" class="form-control" placeholder="ex: Thiéboudienne Penda Mbaye" required />
+            </div>
+
+            <div class="form-row-2">
+              <div class="form-group">
+                <label for="editItemPrice">Prix <span class="req">*</span></label>
+                <input type="number" id="editItemPrice" class="form-control" placeholder="ex: 5000" min="0" step="10" required />
+              </div>
+              <div class="form-group">
+                <label for="editItemCurrency">Devise</label>
+                <select id="editItemCurrency" class="form-control">
+                  <option value="FCFA" selected>FCFA (Franc CFA)</option>
+                  <option value="€">€ (Euro)</option>
+                  <option value="$">$ (Dollar US)</option>
+                  <option value="£">£ (Livre Sterling)</option>
+                  <option value="MAD">MAD (Dirham)</option>
+                  <option value="DZD">DZD (Dinar)</option>
+                  <option value="TND">TND (Dinar)</option>
+                  <option value="custom">Autre...</option>
+                </select>
+                <input type="text" id="editItemCustomCurrency" class="form-control" placeholder="Ex: CHF, XOF, CAD..." style="margin-top:6px;display:none;" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="editItemCategory">Catégorie</label>
+              <input type="text" id="editItemCategory" class="form-control" placeholder="ex: Plats principaux, Boissons..." list="categoryListOptions" />
+              <datalist id="categoryListOptions"></datalist>
+            </div>
+
+            <div class="form-group">
+              <label for="editItemDesc">Description</label>
+              <textarea id="editItemDesc" class="form-control" rows="2" placeholder="Ingrédients, préparation, accompagnements..."></textarea>
+            </div>
+
+            <!-- Upload & Image Picker Section -->
+            <div class="form-group">
+              <label>Photo du plat</label>
+              
+              <!-- Dropzone -->
+              <div class="image-dropzone" id="imgDropzone">
+                <input type="file" id="editItemFileInput" accept="image/*" />
+                <div class="dropzone-content">
+                  <span class="dropzone-icon">
+                    <svg class="lucide lucide-camera" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+                  </span>
+                  <strong>Importer depuis votre appareil</strong>
+                  <small>Glissez-déposez votre image ici ou <span>parcourir les fichiers</span></small>
+                  <span class="dropzone-hint">Formats : JPG, PNG, WEBP (converti instantanément)</span>
+                </div>
+              </div>
+
+              <!-- Options alternatives -->
+              <div class="image-alt-options">
+                <button type="button" class="btn-ai-search" id="editItemAiImgBtn" style="display:inline-flex;align-items:center;gap:8px">
+                  <svg class="lucide lucide-sparkles" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 0 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/></svg> Générer une photo avec Nano Banana AI
+                </button>
+                <div class="url-input-wrap">
+                  <span style="display:inline-flex;align-items:center;gap:4px">
+                    <svg class="lucide lucide-globe" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg> URL :
+                  </span>
+                  <input type="url" id="editItemUrlInput" class="form-control form-control-sm" placeholder="https://..." />
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="item-modal-footer">
+          <button type="button" class="btn btn-danger" id="deleteItemBtn" style="display:inline-flex;align-items:center;gap:6px">
+            <svg class="lucide lucide-trash" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg> Supprimer
+          </button>
+          <div class="footer-right-actions">
+            <button type="button" class="btn btn-ghost" id="cancelItemModalBtn">Annuler</button>
+            <button type="button" class="btn btn-primary" id="saveItemModalBtn" style="display:inline-flex;align-items:center;gap:6px">
+              <svg class="lucide lucide-save" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Enregistrer
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="js/icons.js"></script>
+    <script src="js/api-config.js"></script>
+    <script src="js/store.js?v=2.0"></script>
+    <script src="js/dish-images.js"></script>
+    <script src="js/google-auth.js?v=2.0"></script>
+    <script src="js/hours-picker.js?v=2.0"></script>
+    <script src="js/menu-ai.js?v=2.0"></script>
+    <script src="js/onboarding.js?v=2.0"></script>
+  </body>
+</html>

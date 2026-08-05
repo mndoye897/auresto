@@ -1,0 +1,694 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard — Auresto</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/app-shared.css" />
+    <link rel="stylesheet" href="css/dashboard.css" />
+  </head>
+  <body class="dashboard-page">
+    <div class="app-layout">
+      <!-- SIDEBAR LEFT -->
+      <aside class="app-sidebar">
+        <div class="sidebar-header">
+          <a class="logo" href="index.html">
+            <span class="logo-mark">a<span>•</span></span>
+            <strong>Auresto</strong>
+          </a>
+        </div>
+
+        <nav class="sidebar-nav">
+          <a href="dashboard.html" class="nav-item active">
+            <svg class="lucide lucide-layout-dashboard" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+            <span>Centre de contrôle</span>
+          </a>
+          <a href="kitchen.html" class="nav-item">
+            <svg class="lucide lucide-shopping-bag" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" x2="21" y1="6" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            <span>Commandes</span>
+          </a>
+          <a href="#menuEditor" class="nav-item">
+            <svg class="lucide lucide-utensils" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2v6a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V2"/><path d="M12 2v20"/><path d="M12 14H8a2 2 0 0 0-2 2v6"/><path d="M12 14h4a2 2 0 0 1 2 2v6"/></svg>
+            <span>Menus & Plats</span>
+          </a>
+          <a href="menu-customization.html" class="nav-item" id="customizeMenuNav" hidden>
+            <svg class="lucide lucide-palette" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 22a10 10 0 1 0 0-20 10 9 0 0 0-10 9c0 1.1.9 2 2 2h2.4a1.6 1.6 0 0 1 1.4 2.4l-.4.8A1.6 1.6 0 0 0 8.8 22Z"/></svg>
+            <span>Design du menu</span>
+            <span class="nav-badge gold">Gold</span>
+          </a>
+          <a href="#categoryManagerSection" class="nav-item">
+            <svg class="lucide lucide-folder" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>
+            <span>Catégories</span>
+          </a>
+          <a href="settings.html" class="nav-item">
+            <svg class="lucide lucide-qr-code" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1a2 2 0 0 1 2 2v1"/></svg>
+            <span>Tables & QR Codes</span>
+          </a>
+          <a href="client.html" class="nav-item">
+            <svg class="lucide lucide-users" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <span>Clients</span>
+          </a>
+          <a href="settings.html" class="nav-item">
+            <svg class="lucide lucide-credit-card" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+            <span>Paiements</span>
+          </a>
+          <a href="#goldPanel" class="nav-item">
+            <svg class="lucide lucide-bar-chart-2" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>
+            <span>Analyses</span>
+            <span class="nav-badge gold">Gold</span>
+          </a>
+          <a href="settings.html" class="nav-item">
+            <svg class="lucide lucide-megaphone" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 13v-2z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
+            <span>Marketing</span>
+            <span class="nav-badge new">Nouveau</span>
+          </a>
+          <a href="settings.html" class="nav-item">
+            <svg class="lucide lucide-settings" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.09a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+            <span>Paramètres</span>
+          </a>
+          <a href="#subscriptionPanel" class="nav-item">
+            <svg class="lucide lucide-award" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
+            <span>Abonnement</span>
+          </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+          <!-- Widget Plan Actuel -->
+          <div class="sidebar-plan-card" id="subscriptionPanel">
+            <span class="plan-card-title">Plan actuel</span>
+            <div class="plan-card-badge-wrap">
+              <span class="gold-badge" id="subPlanTitle">👑 Gold</span>
+              <span class="status-active-tag" id="subStatusBadge">Actif</span>
+            </div>
+            <p class="plan-card-sub">Expire le <strong id="subExpireDisplay">03 sept. 2026</strong></p>
+            <p class="plan-card-days"><span id="subDaysLeftDisplay">Il reste <strong>32 jours</strong></span></p>
+            <button type="button" class="btn-dark-sidebar" id="renewSubBtn">Gérer mon abonnement</button>
+            <div id="subPriceDisplay" style="display:none">25 000 FCFA / mois</div>
+            <div id="paymentHistoryList" style="display:none"></div>
+          </div>
+
+          <!-- Widget Profil Utilisateur -->
+          <div class="sidebar-user-widget">
+            <div class="user-avatar">m</div>
+            <div class="user-info">
+              <strong id="restaurantName">Mon restaurant</strong>
+              <span id="planBadge">Le Gourmet</span>
+            </div>
+            <svg class="lucide lucide-chevron-down" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </div>
+        </div>
+      </aside>
+
+      <!-- MAIN BODY WRAPPER -->
+      <div class="app-main-wrapper">
+        <!-- HEADER TOPBAR -->
+        <header class="app-topbar">
+          <div class="topbar-search">
+            <svg class="lucide lucide-search" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input type="text" placeholder="Rechercher (plats, commandes, clients...)" />
+          </div>
+
+          <div class="topbar-actions">
+            <div class="topbar-date-picker">
+              <svg class="lucide lucide-calendar" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+              <span>Aujourd'hui, 03 août 2026</span>
+              <svg class="lucide lucide-chevron-down" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </div>
+
+            <button class="topbar-icon-btn notif-btn" aria-label="Notifications">
+              <svg class="lucide lucide-bell" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+              <span class="notif-badge">3</span>
+            </button>
+
+            <button class="topbar-icon-btn" aria-label="Plein écran">
+              <svg class="lucide lucide-maximize-2" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/></svg>
+            </button>
+
+            <a href="settings.html" class="topbar-icon-btn" aria-label="Paramètres">
+              <svg class="lucide lucide-settings" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.09a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+            </a>
+          </div>
+        </header>
+
+        <!-- DASHBOARD MAIN CONTENT -->
+        <main class="dashboard-main-content">
+          <!-- Salutation Header -->
+          <div class="greeting-banner">
+            <h1>Bonjour Moustapha 👋</h1>
+            <p>Voici un aperçu de votre restaurant <span class="rest-tag">Le Gourmet</span></p>
+          </div>
+
+          <!-- 4 KPI CARDS -->
+          <div class="stats-kpi-grid">
+            <div class="kpi-card">
+              <div class="kpi-card-header">
+                <div class="kpi-icon icon-green">
+                  <svg class="lucide lucide-shopping-bag" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" x2="21" y1="6" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                </div>
+                <div class="kpi-label-wrap">
+                  <span class="kpi-label">COMMANDES ACTIVES</span>
+                  <span class="info-icon" title="Commandes en cours">ⓘ</span>
+                </div>
+              </div>
+              <div class="kpi-card-body">
+                <div class="kpi-value-row">
+                  <span class="kpi-value" id="statActive">8</span>
+                  <span class="kpi-trend positive">↗ 18% <small>vs hier</small></span>
+                </div>
+                <div class="kpi-subtext">En cours</div>
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-card-header">
+                <div class="kpi-icon icon-blue">
+                  <svg class="lucide lucide-check-circle" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                </div>
+                <div class="kpi-label-wrap">
+                  <span class="kpi-label">TERMINÉES AUJOURD'HUI</span>
+                  <span class="info-icon" title="Commandes terminées aujourd'hui">ⓘ</span>
+                </div>
+              </div>
+              <div class="kpi-card-body">
+                <div class="kpi-value-row">
+                  <span class="kpi-value" id="statCompleted">42</span>
+                  <span class="kpi-trend positive">↗ 12% <small>vs hier</small></span>
+                </div>
+                <div class="kpi-subtext">Commandes</div>
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-card-header">
+                <div class="kpi-icon icon-amber">
+                  <svg class="lucide lucide-wallet" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
+                </div>
+                <div class="kpi-label-wrap">
+                  <span class="kpi-label">CHIFFRE D'AFFAIRES</span>
+                  <span class="info-icon" title="Chiffre d'affaires global">ⓘ</span>
+                </div>
+              </div>
+              <div class="kpi-card-body">
+                <div class="kpi-value-row">
+                  <span class="kpi-value"><span id="statRevenue">156 000</span> <small class="currency">FCFA</small></span>
+                  <span class="kpi-trend positive">↗ 24% <small>vs hier</small></span>
+                </div>
+                <div class="kpi-subtext">FCFA</div>
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-card-header">
+                <div class="kpi-icon icon-purple">
+                  <svg class="lucide lucide-credit-card" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                </div>
+                <div class="kpi-label-wrap">
+                  <span class="kpi-label">PANIER MOYEN</span>
+                  <span class="info-icon" title="Panier moyen">ⓘ</span>
+                </div>
+              </div>
+              <div class="kpi-card-body">
+                <div class="kpi-value-row">
+                  <span class="kpi-value"><span id="statAvg">3 714</span> <small class="currency">FCFA</small></span>
+                  <span class="kpi-trend positive">↗ 8% <small>vs hier</small></span>
+                </div>
+                <div class="kpi-subtext">FCFA</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- MAIN ROW 2 GRID -->
+          <div class="main-sections-grid">
+            <!-- Commandes en cours Panel -->
+            <div class="panel orders-panel">
+              <div class="panel-header">
+                <div class="panel-title-wrap">
+                  <h2>Commandes en cours</h2>
+                  <span class="badge-blue-pill" id="activeOrdersBadge">0 nouvelle</span>
+                </div>
+              </div>
+              <div class="panel-body">
+                <div id="activeOrders"></div>
+              </div>
+              <div class="panel-footer">
+                <a href="kitchen.html" class="panel-link">Voir toutes les commandes →</a>
+              </div>
+            </div>
+
+            <!-- Gérer les plats Panel -->
+            <div class="panel menu-panel">
+              <div class="panel-header">
+                <h2>Gérer les plats</h2>
+                <button type="button" class="btn-dark-teal" id="addNewDishBtn">
+                  + Ajouter un plat
+                </button>
+                <a href="menu-customization.html" class="btn btn-gold-design" id="customizeMenuLink" hidden>
+                  Personnaliser le menu
+                </a>
+              </div>
+
+              <!-- Bar de filtres de catégories -->
+              <div class="category-manager-section" id="categoryManagerSection">
+                <div class="category-chips-header">
+                  <span class="cat-section-title">CATÉGORIES DU MENU :</span>
+                  <div class="category-chips-wrapper" id="categoryChipsWrapper"></div>
+                  <button type="button" class="btn-add-cat-chip" id="addCategoryBtn">
+                    + Nouvelle catégorie
+                  </button>
+                </div>
+              </div>
+
+              <div class="panel-body">
+                <div id="menuEditor"></div>
+              </div>
+
+              <div class="panel-footer">
+                <a href="onboarding.html" class="panel-link">Voir tous les plats →</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- ROW 3 GRID -->
+          <div class="secondary-sections-grid">
+            <!-- Analyses Gold Panel -->
+            <div class="panel gold-panel-card" id="goldPanel">
+              <div class="gold-header">
+                <div>
+                  <h2>✨ Analyses Gold</h2>
+                  <p class="gold-subtitle">Recommandations IA basées sur vos données.</p>
+                </div>
+                <a href="dashboard.html" class="gold-link">Voir toutes les analyses →</a>
+              </div>
+
+              <div class="gold-ai-grid" id="aiTips">
+                <div class="ai-widget-card">
+                  <div class="ai-widget-badge">⭐ Plat le plus commandé</div>
+                  <div class="ai-widget-content">
+                    <div class="ai-widget-info">
+                      <strong>Carpe ou Dorade</strong>
+                      <p>42 commandes cette semaine</p>
+                    </div>
+                    <img src="images/plat-1.jpg" alt="Carpe ou Dorade" class="ai-thumb" onerror="this.src='https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=120&q=80'" />
+                  </div>
+                </div>
+
+                <div class="ai-widget-card">
+                  <div class="ai-widget-badge">📌 Plat le moins commandé</div>
+                  <div class="ai-widget-content">
+                    <div class="ai-widget-info">
+                      <strong>TON (ON</strong>
+                      <p>3 commandes cette semaine</p>
+                    </div>
+                    <img src="images/plat-2.jpg" alt="TON (ON" class="ai-thumb" onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=120&q=80'" />
+                  </div>
+                </div>
+
+                <div class="ai-widget-card">
+                  <div class="ai-widget-badge">⏰ Heure de pointe</div>
+                  <div class="ai-widget-content flex-col">
+                    <div class="ai-widget-info">
+                      <strong>19:00 - 21:00</strong>
+                      <p>Pics de commandes aujourd'hui</p>
+                    </div>
+                    <svg class="sparkline-chart" viewBox="0 0 100 25">
+                      <path d="M0,20 Q15,18 30,12 T60,3 T80,14 T100,20" fill="none" stroke="#0ea5e9" stroke-width="2.5" />
+                    </svg>
+                  </div>
+                </div>
+
+                <div class="ai-widget-card">
+                  <div class="ai-widget-badge">📈 CA prévisionnel</div>
+                  <div class="ai-widget-content flex-col">
+                    <div class="ai-widget-info">
+                      <strong>189 000 FCFA</strong>
+                      <p><span class="trend-up">↑ 16%</span> vs aujourd'hui</p>
+                    </div>
+                    <div class="mini-bar-chart">
+                      <span style="height:40%"></span>
+                      <span style="height:60%"></span>
+                      <span style="height:35%"></span>
+                      <span style="height:80%"></span>
+                      <span style="height:100%"></span>
+                      <span style="height:70%"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Actions Rapides Panel -->
+            <div class="panel quick-actions-panel">
+              <div class="panel-header">
+                <h2>Actions rapides</h2>
+              </div>
+              <div class="quick-actions-grid">
+                <a href="kitchen.html" class="quick-action-card">
+                  <div class="qa-icon icon-green">
+                    <svg class="lucide lucide-chef-hat" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 9.18 0A4 4 0 0 1 18 13.87V21H6z"/><line x1="6" x2="18" y1="17" y2="17"/></svg>
+                  </div>
+                  <div class="qa-text">
+                    <strong>Ouvrir la cuisine</strong>
+                    <small>Voir les commandes</small>
+                  </div>
+                </a>
+
+                <a href="client.html" class="quick-action-card" id="previewMenu">
+                  <div class="qa-icon icon-blue">
+                    <svg class="lucide lucide-eye" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </div>
+                  <div class="qa-text">
+                    <strong>Aperçu menu client</strong>
+                    <small>Voir comme un client</small>
+                  </div>
+                </a>
+
+                <a href="settings.html" class="quick-action-card" id="manageQrBtn">
+                  <div class="qa-icon icon-purple">
+                    <svg class="lucide lucide-qr-code" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1a2 2 0 0 1 2 2v1"/></svg>
+                  </div>
+                  <div class="qa-text">
+                    <strong>Gérer les QR Codes</strong>
+                    <small>Tables & Codes</small>
+                  </div>
+                </a>
+
+                <button type="button" class="quick-action-card action-btn-reset" id="scanMenuBtn">
+                  <div class="qa-icon icon-orange">
+                    <svg class="lucide lucide-scan" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/></svg>
+                  </div>
+                  <div class="qa-text">
+                    <strong>Scanner mon menu</strong>
+                    <small>Tester le QR code</small>
+                  </div>
+                </button>
+                <button type="button" id="scanLogoBtn" style="display:none"></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- ROW 4 GRID -->
+          <div class="bottom-sections-grid">
+            <div class="panel notif-panel">
+              <div class="panel-header">
+                <h2>Notifications</h2>
+              </div>
+              <div id="notifList">
+                <div class="notif-item-quiet">
+                  <svg class="lucide lucide-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>Tout est calme pour le moment</span>
+                </div>
+              </div>
+              <ul id="popularList" style="display:none"></ul>
+            </div>
+
+            <div class="panel tip-panel">
+              <div class="tip-content">
+                <div class="tip-text">
+                  <div class="tip-title">💡 Conseil du jour</div>
+                  <p>Le samedi, vos ventes augmentent de 26% en moyenne. Pensez à préparer plus de <strong>Carpe ou Dorade</strong> !</p>
+                </div>
+                <div class="tip-illustration">
+                  <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+                    <path d="M12 48 L28 32 L40 40 L52 16" stroke="#10b981" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="52" cy="16" r="4" fill="#10b981"/>
+                    <path d="M46 52 C52 50 56 42 52 36" stroke="#f59e0b" stroke-width="3" stroke-linecap="round"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- Modal Interactif d'Édition Complète de Plat -->
+    <div class="item-modal-backdrop" id="itemEditModal" hidden>
+      <div class="item-modal-dialog">
+        <div class="item-modal-header">
+          <div>
+            <h3 id="itemModalTitle" style="display:flex;align-items:center;gap:8px">
+              <svg class="lucide lucide-pencil" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg> Modifier le plat
+            </h3>
+            <p id="itemModalSub">Personnalisez la photo, le nom, le prix, la devise et la description.</p>
+          </div>
+          <button type="button" class="item-modal-close" id="closeItemModalBtn" aria-label="Fermer">
+            <svg class="lucide lucide-x" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </div>
+
+        <div class="item-modal-body">
+          <!-- Aperçu en direct -->
+          <div class="item-preview-section">
+            <span class="preview-badge" style="display:inline-flex;align-items:center;gap:6px">
+              <svg class="lucide lucide-smartphone" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg> APERÇU EN DIRECT
+            </span>
+            <div class="live-card-mockup">
+              <div class="mockup-img-wrap">
+                <img id="livePreviewImg" src="images/placeholder-plat.png" alt="Aperçu" onerror="this.src='images/placeholder-plat.png'" />
+                <span class="mockup-cat-tag" id="livePreviewCategory">Plat principal</span>
+              </div>
+              <div class="mockup-info">
+                <h4 id="livePreviewName">Nom du plat</h4>
+                <p id="livePreviewDesc">Description du plat...</p>
+                <div class="mockup-footer">
+                  <span class="mockup-price" id="livePreviewPrice">5 000 FCFA</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Formulaire d'édition -->
+          <div class="item-form-section">
+            <input type="hidden" id="editItemId" />
+
+            <div class="form-group">
+              <label for="editItemName">Nom du plat <span class="req">*</span></label>
+              <input type="text" id="editItemName" class="form-control" placeholder="ex: Thiéboudienne Penda Mbaye" required />
+            </div>
+
+            <div class="form-row-2">
+              <div class="form-group">
+                <label for="editItemPrice">Prix <span class="req">*</span></label>
+                <input type="number" id="editItemPrice" class="form-control" placeholder="ex: 5000" min="0" step="10" required />
+              </div>
+              <div class="form-group">
+                <label for="editItemCurrency">Devise</label>
+                <select id="editItemCurrency" class="form-control">
+                  <option value="FCFA" selected>FCFA (Franc CFA)</option>
+                  <option value="€">€ (Euro)</option>
+                  <option value="$">$ (Dollar US)</option>
+                  <option value="£">£ (Livre Sterling)</option>
+                  <option value="MAD">MAD (Dirham)</option>
+                  <option value="DZD">DZD (Dinar)</option>
+                  <option value="TND">TND (Dinar)</option>
+                  <option value="custom">Autre...</option>
+                </select>
+                <input type="text" id="editItemCustomCurrency" class="form-control" placeholder="Ex: CHF, XOF, CAD..." style="margin-top:6px;display:none;" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="editItemCategorySelect">Catégorie du plat <span class="req">*</span></label>
+              <div style="display:flex;gap:8px">
+                <select id="editItemCategorySelect" class="form-control" style="flex:1"></select>
+                <button type="button" class="btn btn-ghost btn-sm" id="btnQuickAddCat" style="white-space:nowrap;display:inline-flex;align-items:center;gap:4px" title="Créer une nouvelle catégorie">
+                  <svg class="lucide lucide-plus" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg> + Nouvelle
+                </button>
+              </div>
+              <input type="text" id="editItemCustomCatInput" class="form-control" placeholder="Nom de la nouvelle catégorie (ex: Spécialités Sénégalaise)..." style="margin-top:6px;display:none;" />
+              <input type="hidden" id="editItemCategory" />
+            </div>
+
+            <div class="form-group">
+              <label for="editItemDesc">Description</label>
+              <textarea id="editItemDesc" class="form-control" rows="2" placeholder="Ingrédients, préparation, accompagnements..."></textarea>
+            </div>
+
+            <!-- Particularités & Options du plat (Plans payants Silver/Gold) -->
+            <div class="form-group options-editor-group">
+              <label style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+                <span>Particularités & Options du plat</span>
+                <span class="plan-badge-pill" style="font-size:10px;padding:2px 8px;border-radius:12px;background:rgba(217,119,6,0.15);color:#d97706;font-weight:600">Silver & Gold</span>
+              </label>
+              <p style="font-size:11px;color:#94a3b8;margin:0 0 8px">Ajoutez des préférences au choix du client (ex: Ketchup, Sans mayo, Extra Fromage...)</p>
+              
+              <!-- Presets rapides -->
+              <div class="option-presets" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px">
+                <button type="button" class="preset-chip" data-preset-name="Avec ketchup" data-preset-price="0">+ Ketchup</button>
+                <button type="button" class="preset-chip" data-preset-name="Sans mayonnaise" data-preset-price="0">+ Sans mayo</button>
+                <button type="button" class="preset-chip" data-preset-name="Sauce piment à part" data-preset-price="0">+ Sauce piment</button>
+                <button type="button" class="preset-chip" data-preset-name="Bien cuit" data-preset-price="0">+ Bien cuit</button>
+                <button type="button" class="preset-chip" data-preset-name="Extra Fromage" data-preset-price="500">+ Extra Fromage (+500 F)</button>
+              </div>
+
+              <!-- Liste des options configurées -->
+              <div id="optionsListContainer" class="options-list-container" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px"></div>
+
+              <!-- Ajout d'une option sur mesure -->
+              <div class="add-option-row" style="display:flex;gap:6px">
+                <input type="text" id="newOptName" class="form-control form-control-sm" placeholder="Option (ex: Sans oignons)" style="flex:2" />
+                <input type="number" id="newOptPrice" class="form-control form-control-sm" placeholder="Prix extra (FCFA)" min="0" step="50" style="flex:1" />
+                <button type="button" id="addOptBtn" class="btn btn-ghost btn-sm" style="padding:6px 12px;white-space:nowrap">+ Ajouter</button>
+              </div>
+            </div>
+
+            <!-- Upload & Image Picker Section -->
+            <div class="form-group">
+              <label>Photo du plat</label>
+              
+              <!-- Dropzone -->
+              <div class="image-dropzone" id="imgDropzone">
+                <input type="file" id="editItemFileInput" accept="image/*" />
+                <div class="dropzone-content">
+                  <span class="dropzone-icon">
+                    <svg class="lucide lucide-camera" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 2 2h16a2 2 0 0 2 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+                  </span>
+                  <strong>Importer depuis votre appareil</strong>
+                  <small>Glissez-déposez votre image ici ou <span>parcourir les fichiers</span></small>
+                  <span class="dropzone-hint">Formats : JPG, PNG, WEBP (converti instantanément)</span>
+                </div>
+              </div>
+
+              <!-- Options alternatives -->
+              <div class="image-alt-options">
+                <button type="button" class="btn-ai-search" id="editItemAiImgBtn" style="display:inline-flex;align-items:center;gap:8px">
+                  <svg class="lucide lucide-sparkles" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/></svg> Générer une photo avec Nano Banana AI
+                </button>
+                <div class="url-input-wrap">
+                  <span style="display:inline-flex;align-items:center;gap:4px">
+                    <svg class="lucide lucide-globe" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg> URL :
+                  </span>
+                  <input type="url" id="editItemUrlInput" class="form-control form-control-sm" placeholder="https://..." />
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="item-modal-footer">
+          <button type="button" class="btn btn-danger" id="deleteItemBtn" style="display:inline-flex;align-items:center;gap:6px">
+            <svg class="lucide lucide-trash" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg> Supprimer
+          </button>
+          <div class="footer-right-actions">
+            <button type="button" class="btn btn-ghost" id="cancelItemModalBtn">Annuler</button>
+            <button type="button" class="btn btn-primary" id="saveItemModalBtn" style="display:inline-flex;align-items:center;gap:6px">
+              <svg class="lucide lucide-save" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Enregistrer
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal dédié pour Ajouter / Modifier une Catégorie -->
+    <div class="item-modal-backdrop" id="categoryModal" hidden>
+      <div class="item-modal-dialog" style="max-width: 460px;">
+        <div class="item-modal-header">
+          <div>
+            <h3 id="categoryModalTitle" style="display:flex;align-items:center;gap:8px">
+              <svg class="lucide lucide-folder-plus" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 10v6"/><path d="M9 13h6"/><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg> Gérer la catégorie
+            </h3>
+            <p id="categoryModalSub">Organisez les plats de votre carte.</p>
+          </div>
+          <button type="button" class="item-modal-close" id="closeCategoryModalBtn" aria-label="Fermer">
+            <svg class="lucide lucide-x" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </div>
+        <div class="item-modal-body" style="padding: 20px;">
+          <input type="hidden" id="categoryOldName" />
+          <div class="form-group">
+            <label for="categoryNameInput">Nom de la catégorie <span class="req">*</span></label>
+            <input type="text" id="categoryNameInput" class="form-control" placeholder="ex: Spécialités Sénégalaise, Grillades, Cocktails..." required />
+          </div>
+        </div>
+        <div class="item-modal-footer">
+          <button type="button" class="btn btn-ghost" id="cancelCategoryModalBtn">Annuler</button>
+          <button type="button" class="btn btn-primary" id="saveCategoryModalBtn">Enregistrer</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de Scan de Menu -->
+    <div class="item-modal-backdrop" id="scanMenuModal" hidden>
+      <div class="item-modal-dialog" style="max-width: 500px;">
+        <div class="item-modal-header">
+          <div>
+            <h3 style="display:flex;align-items:center;gap:8px">
+              <svg class="lucide lucide-scan" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/></svg> Scanner mon menu
+            </h3>
+            <p>Uploadez une photo de votre menu papier pour l'importer automatiquement.</p>
+          </div>
+          <button type="button" class="item-modal-close" id="closeScanModalBtn" aria-label="Fermer">
+            <svg class="lucide lucide-x" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </div>
+        <div class="item-modal-body" style="padding: 20px;">
+          <div class="form-group">
+            <input type="file" id="scanMenuFileInput" accept="image/*" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;" />
+          </div>
+          <div id="scanPreview" style="margin-top:15px;text-align:center;display:none;">
+            <img id="scanPreviewImg" style="max-width:100%;max-height:300px;border-radius:8px;" />
+          </div>
+          <div id="scanProgress" style="margin-top:15px;display:none;">
+            <p style="font-size:12px;color:#666;">Analyse en cours... <span id="scanProgressText">0%</span></p>
+            <div style="width:100%;height:8px;background:#eee;border-radius:4px;margin-top:5px;">
+              <div id="scanProgressBar" style="width:0%;height:100%;background:#103b4b;border-radius:4px;transition:width 0.3s;"></div>
+            </div>
+          </div>
+          <div id="scanResults" style="margin-top:15px;display:none;">
+            <p style="font-size:12px;color:#666;margin-bottom:8px;">Plats détectés :</p>
+            <div id="scanResultsList" style="max-height:200px;overflow-y:auto;border:1px solid #ddd;border-radius:8px;padding:10px;"></div>
+          </div>
+        </div>
+        <div class="item-modal-footer">
+          <button type="button" class="btn btn-ghost" id="cancelScanModalBtn">Annuler</button>
+          <button type="button" class="btn btn-primary" id="startScanBtn" disabled>Scanner</button>
+          <button type="button" class="btn btn-primary" id="importScanBtn" style="display:none;">Importer les plats</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de Scan de Logo -->
+    <div class="item-modal-backdrop" id="scanLogoModal" hidden>
+      <div class="item-modal-dialog" style="max-width: 500px;">
+        <div class="item-modal-header">
+          <div>
+            <h3 style="display:flex;align-items:center;gap:8px">
+              <svg class="lucide lucide-image" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg> Scanner mon logo
+            </h3>
+            <p>Uploadez une photo de votre logo pour l'afficher dans le menu client.</p>
+          </div>
+          <button type="button" class="item-modal-close" id="closeLogoModalBtn" aria-label="Fermer">
+            <svg class="lucide lucide-x" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </div>
+        <div class="item-modal-body" style="padding: 20px;">
+          <div class="form-group">
+            <input type="file" id="scanLogoFileInput" accept="image/*" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;" />
+          </div>
+          <div id="logoPreview" style="margin-top:15px;text-align:center;display:none;">
+            <img id="logoPreviewImg" style="max-width:100%;max-height:300px;border-radius:8px;" />
+          </div>
+        </div>
+        <div class="item-modal-footer">
+          <button type="button" class="btn btn-ghost" id="cancelLogoModalBtn">Annuler</button>
+          <button type="button" class="btn btn-primary" id="saveLogoBtn">Enregistrer le logo</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Conteneur des notifications de nouvelles commandes -->
+    <div id="orderNotificationContainer" class="order-notification-container"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <script src="js/icons.js"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="js/api-config.js"></script>
+    <script src="js/store.js"></script>
+    <script src="js/dish-images.js"></script>
+    <script src="js/dashboard.js?v=2.1"></script>
+  </body>
+</html>

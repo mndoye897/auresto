@@ -1,0 +1,9 @@
+{
+  "name": "Auresto — Le restaurant en mouvement",
+  "short_name": "Auresto",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f8f5ee",
+  "theme_color": "#0b5f45",
+  "icons": [{ "src": "favicon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}

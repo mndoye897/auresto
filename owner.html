@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Owner Dashboard — Platform Auresto</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/app-shared.css" />
+    <link rel="stylesheet" href="css/owner.css" />
+  </head>
+  <body class="owner-page">
+    <!-- Header Owner -->
+    <header class="app-header owner-header">
+      <div class="owner-header-left">
+        <a class="logo" href="owner.html">
+          <span class="logo-mark">a<span>•</span></span>
+          <div class="owner-branding">
+            <strong>Auresto</strong>
+            <span class="owner-badge">OWNER / ADMIN</span>
+          </div>
+        </a>
+        <div class="owner-title">
+          <h1>Administration Auresto</h1>
+          <p>Pilotage de la plateforme et des restaurants</p>
+        </div>
+      </div>
+      <div class="owner-header-right">
+        <div class="owner-session-status">
+          <span class="session-icon" id="sessionIcon"></span>
+          <span class="session-text">Session sécurisée</span>
+        </div>
+        <button type="button" class="btn btn-ghost btn-sm" id="ownerLogoutBtn">
+          <span class="logout-icon" id="logoutIcon"></span>
+          Se déconnecter
+        </button>
+      </div>
+    </header>
+
+    <!-- Modal d'authentification Owner -->
+    <div class="owner-auth-overlay" id="ownerAuthOverlay">
+      <div class="owner-auth-modal">
+        <div class="auth-icon" id="ownerAuthIcon"></div>
+        <h2>Espace Privé Owner</h2>
+        <p>Veuillez saisir votre clé secrète ou identifiant d'administration pour accéder au Owner Dashboard Auresto.</p>
+        
+        <form id="ownerLoginForm">
+          <div class="field">
+            <label for="ownerSecretKey">Clé Secrète / Mot de Passe</label>
+            <input type="password" id="ownerSecretKey" placeholder="Entrez la clé d'administration" required autocomplete="current-password" />
+          </div>
+          <button type="submit" class="btn btn-primary btn-full">Se connecter au Dashboard</button>
+        </form>
+        <p class="auth-error" id="authError" hidden></p>
+      </div>
+    </div>
+
+    <!-- Navigation Owner -->
+    <nav class="owner-nav" id="ownerNav">
+      <button type="button" class="owner-nav-item active" data-section="overview">
+        <span class="nav-icon" id="navOverviewIcon"></span>
+        Vue d'ensemble
+      </button>
+      <button type="button" class="owner-nav-item" data-section="restaurants">
+        <span class="nav-icon" id="navRestaurantsIcon"></span>
+        Restaurants
+      </button>
+      <button type="button" class="owner-nav-item" data-section="subscriptions">
+        <span class="nav-icon" id="navSubscriptionsIcon"></span>
+        Abonnements
+      </button>
+      <button type="button" class="owner-nav-item" data-section="payments">
+        <span class="nav-icon" id="navPaymentsIcon"></span>
+        Paiements
+      </button>
+      <button type="button" class="owner-nav-item" data-section="deadlines">
+        <span class="nav-icon" id="navDeadlinesIcon"></span>
+        Échéances
+      </button>
+      <button type="button" class="owner-nav-item" data-section="audit">
+        <span class="nav-icon" id="navAuditIcon"></span>
+        Audit
+      </button>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="owner-main" id="ownerMainContent" hidden>
+      <!-- Overview Section -->
+      <section class="owner-section" id="section-overview">
+        <div class="section-header">
+          <div>
+            <h2>Vue d'ensemble</h2>
+            <p>État actuel de la plateforme Auresto</p>
+          </div>
+          <button type="button" class="btn btn-ghost btn-sm" id="refreshOverviewBtn">
+            <span class="refresh-icon" id="refreshOverviewIcon"></span>
+            Actualiser
+          </button>
+        </div>
+
+        <!-- Alertes -->
+        <div class="owner-alerts" id="ownerAlerts" hidden>
+          <div class="alert-item warning" id="alertExpiring">
+            <span class="alert-icon" id="alertExpiringIcon"></span>
+            <span class="alert-text" id="alertExpiringText"></span>
+          </div>
+          <div class="alert-item danger" id="alertGrace">
+            <span class="alert-icon" id="alertGraceIcon"></span>
+            <span class="alert-text" id="alertGraceText"></span>
+          </div>
+          <div class="alert-item dark" id="alertSuspended">
+            <span class="alert-icon" id="alertSuspendedIcon"></span>
+            <span class="alert-text" id="alertSuspendedText"></span>
+          </div>
+        </div>
+
+        <!-- KPI Grid -->
+        <div class="owner-kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-icon active">
+              <span id="kpiActiveIcon"></span>
+            </div>
+            <div class="kpi-content">
+              <div class="kpi-label">Restaurants actifs</div>
+              <div class="kpi-value" id="kpiActiveRestaurants">0</div>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon suspended">
+              <span id="kpiSuspendedIcon"></span>
+            </div>
+            <div class="kpi-content">
+              <div class="kpi-label">Restaurants suspendus</div>
+              <div class="kpi-value" id="kpiSuspendedRestaurants">0</div>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon revenue">
+              <span id="kpiRevenueIcon"></span>
+            </div>
+            <div class="kpi-content">
+              <div class="kpi-label">Revenus abonnements</div>
+              <div class="kpi-value" id="kpiRevenue">0 FCFA</div>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon expiring">
+              <span id="kpiExpiringIcon"></span>
+            </div>
+            <div class="kpi-content">
+              <div class="kpi-label">Échéances proches</div>
+              <div class="kpi-value" id="kpiExpiringSoon">0</div>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon silver">
+              <span id="kpiSilverIcon"></span>
+            </div>
+            <div class="kpi-content">
+              <div class="kpi-label">Silver</div>
+              <div class="kpi-value" id="kpiSilverCount">0</div>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon gold">
+              <span id="kpiGoldIcon"></span>
+            </div>
+            <div class="kpi-content">
+              <div class="kpi-label">Gold</div>
+              <div class="kpi-value" id="kpiGoldCount">0</div>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon free">
+              <span id="kpiFreeIcon"></span>
+            </div>
+            <div class="kpi-content">
+              <div class="kpi-label">Free</div>
+              <div class="kpi-value" id="kpiFreeCount">0</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Répartition des plans -->
+        <div class="owner-subsection">
+          <h3>Répartition des plans</h3>
+          <div class="plans-distribution" id="plansDistribution">
+            <div class="plan-dist-item free">
+              <div class="plan-dist-label">FREE</div>
+              <div class="plan-dist-bar">
+                <div class="plan-dist-fill" id="freeFill" style="width: 0%"></div>
+              </div>
+              <div class="plan-dist-stats">
+                <span id="freeCount">0</span>
+                <span id="freePercent">0%</span>
+              </div>
+            </div>
+            <div class="plan-dist-item silver">
+              <div class="plan-dist-label">SILVER</div>
+              <div class="plan-dist-bar">
+                <div class="plan-dist-fill" id="silverFill" style="width: 0%"></div>
+              </div>
+              <div class="plan-dist-stats">
+                <span id="silverCount">0</span>
+                <span id="silverPercent">0%</span>
+              </div>
+            </div>
+            <div class="plan-dist-item gold">
+              <div class="plan-dist-label">GOLD</div>
+              <div class="plan-dist-bar">
+                <div class="plan-dist-fill" id="goldFill" style="width: 0%"></div>
+              </div>
+              <div class="plan-dist-stats">
+                <span id="goldCount">0</span>
+                <span id="goldPercent">0%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Restaurants à risque -->
+        <div class="owner-subsection">
+          <h3>À surveiller</h3>
+          <div class="risk-list" id="riskList">
+            <div class="loading-state">Chargement...</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Restaurants Section -->
+      <section class="owner-section" id="section-restaurants" hidden>
+        <div class="section-header">
+          <div>
+            <h2>Tous les restaurants</h2>
+            <p>Gestion complète des restaurants de la plateforme</p>
+          </div>
+          <button type="button" class="btn btn-ghost btn-sm" id="refreshRestaurantsBtn">
+            <span class="refresh-icon" id="refreshRestaurantsIcon"></span>
+            Actualiser
+          </button>
+        </div>
+
+        <div class="owner-controls">
+          <div class="search-box">
+            <span class="search-icon" id="searchIcon"></span>
+            <input type="text" id="ownerSearchInput" placeholder="Rechercher un restaurant..." />
+            <button type="button" id="clearSearchBtn" class="clear-btn" hidden></button>
+          </div>
+
+          <div class="filter-tabs" id="filterTabs">
+            <button type="button" class="filter-btn active" data-filter="ALL">Tous</button>
+            <button type="button" class="filter-btn" data-filter="FREE">FREE</button>
+            <button type="button" class="filter-btn" data-filter="SILVER">SILVER</button>
+            <button type="button" class="filter-btn" data-filter="GOLD">GOLD</button>
+            <button type="button" class="filter-btn" data-filter="ACTIVE">ACTIF</button>
+            <button type="button" class="filter-btn warning" data-filter="EXPIRING_SOON">EXPIRANT</button>
+            <button type="button" class="filter-btn danger" data-filter="SUSPENDED">SUSPENDU</button>
+          </div>
+
+          <div class="sort-select-wrapper">
+            <label for="sortSelect">Trier par :</label>
+            <select id="sortSelect">
+              <option value="created_desc">Plus récents</option>
+              <option value="created_asc">Plus anciens</option>
+              <option value="name_asc">Nom (A-Z)</option>
+              <option value="expires_asc">Expiration proche</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="owner-table">
+            <thead>
+              <tr>
+                <th>Restaurant</th>
+                <th>Code</th>
+                <th>Plan</th>
+                <th>Statut</th>
+                <th>Expiration</th>
+                <th>Créé le</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="restaurantsTbody">
+            </tbody>
+          </table>
+          <div class="table-empty" id="tableEmpty" hidden>
+            <p>Aucun restaurant ne correspond à votre recherche ou filtre actuel.</p>
+          </div>
+          <div class="loading-state" id="restaurantsLoading">Chargement des restaurants...</div>
+        </div>
+      </section>
+
+      <!-- Subscriptions Section -->
+      <section class="owner-section" id="section-subscriptions" hidden>
+        <div class="section-header">
+          <div>
+            <h2>Abonnements</h2>
+            <p>Gestion des abonnements Auresto</p>
+          </div>
+          <button type="button" class="btn btn-ghost btn-sm" id="refreshSubscriptionsBtn">
+            <span class="refresh-icon" id="refreshSubscriptionsIcon"></span>
+            Actualiser
+          </button>
+        </div>
+
+        <div class="subscriptions-list" id="subscriptionsList">
+          <div class="loading-state">Chargement des abonnements...</div>
+        </div>
+      </section>
+
+      <!-- Payments Section -->
+      <section class="owner-section" id="section-payments" hidden>
+        <div class="section-header">
+          <div>
+            <h2>Paiements</h2>
+            <p>Historique des paiements d'abonnements</p>
+          </div>
+          <button type="button" class="btn btn-ghost btn-sm" id="refreshPaymentsBtn">
+            <span class="refresh-icon" id="refreshPaymentsIcon"></span>
+            Actualiser
+          </button>
+        </div>
+
+        <div class="revenue-summary">
+          <div class="revenue-card">
+            <div class="revenue-label">Aujourd'hui</div>
+            <div class="revenue-value" id="revenueToday">0 FCFA</div>
+          </div>
+          <div class="revenue-card">
+            <div class="revenue-label">Cette semaine</div>
+            <div class="revenue-value" id="revenueWeek">0 FCFA</div>
+          </div>
+          <div class="revenue-card">
+            <div class="revenue-label">Ce mois</div>
+            <div class="revenue-value" id="revenueMonth">0 FCFA</div>
+          </div>
+          <div class="revenue-card">
+            <div class="revenue-label">Total</div>
+            <div class="revenue-value" id="revenueTotal">0 FCFA</div>
+          </div>
+        </div>
+
+        <div class="payments-list" id="paymentsList">
+          <div class="empty-state">Les paiements nécessitent une table payments dans la base de données</div>
+        </div>
+      </section>
+
+      <!-- Deadlines Section -->
+      <section class="owner-section" id="section-deadlines" hidden>
+        <div class="section-header">
+          <div>
+            <h2>Échéances</h2>
+            <p>Surveillance des expirations d'abonnements</p>
+          </div>
+          <button type="button" class="btn btn-ghost btn-sm" id="refreshDeadlinesBtn">
+            <span class="refresh-icon" id="refreshDeadlinesIcon"></span>
+            Actualiser
+          </button>
+        </div>
+
+        <div class="deadlines-container" id="deadlinesContainer">
+          <div class="loading-state">Chargement des échéances...</div>
+        </div>
+      </section>
+
+      <!-- Audit Section -->
+      <section class="owner-section" id="section-audit" hidden>
+        <div class="section-header">
+          <div>
+            <h2>Journal d'administration</h2>
+            <p>Historique des actions Owner</p>
+          </div>
+          <button type="button" class="btn btn-ghost btn-sm" id="refreshAuditBtn">
+            <span class="refresh-icon" id="refreshAuditIcon"></span>
+            Actualiser
+          </button>
+        </div>
+
+        <div class="audit-logs" id="auditLogs">
+          <div class="empty-state">Les logs d'audit nécessitent une table audit_logs dans la base de données</div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Restaurant Detail Drawer -->
+    <div class="drawer-overlay" id="drawerOverlay" hidden>
+      <div class="drawer" id="restaurantDrawer">
+        <div class="drawer-header">
+          <h2 id="drawerRestaurantName">Détails Restaurant</h2>
+          <button type="button" class="drawer-close" id="closeDrawerBtn">
+            <span id="drawerCloseIcon"></span>
+          </button>
+        </div>
+        <div class="drawer-content" id="drawerContent">
+          <div class="loading-state">Chargement...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="ownerToast"></div>
+
+    <script src="js/icons.js"></script>
+    <script src="js/api-config.js"></script>
+    <script src="js/owner.js"></script>
+  </body>
+</html>

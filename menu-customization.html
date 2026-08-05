@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Personnaliser le menu client — Auresto</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/menu-customization.css" />
+  </head>
+  <body class="menu-customization-page">
+    <aside class="customizer-sidebar">
+      <a class="customizer-logo" href="dashboard.html" aria-label="Retour au centre de contrôle">
+        <span class="brand-wordmark">AURESTO</span>
+        <span>edit</span>
+      </a>
+
+      <nav class="customizer-nav" aria-label="Navigation principale">
+        <a href="dashboard.html"><span class="nav-mark">⊞</span>Centre de contrôle</a>
+        <a href="kitchen.html"><span class="nav-mark">□</span>Commandes</a>
+        <a href="dashboard.html#menuEditor" class="active"><span class="nav-mark">♨</span>Menus &amp; Plats</a>
+        <a href="dashboard.html#categories"><span class="nav-mark">▱</span>Catégories</a>
+        <a href="settings.html#tables"><span class="nav-mark">⌘</span>Tables &amp; QR Codes</a>
+        <a href="client.html" target="_blank" rel="noopener"><span class="nav-mark">♙</span>Menu client</a>
+        <a href="settings.html"><span class="nav-mark">⚙</span>Paramètres</a>
+      </nav>
+
+      <div class="gold-plan-card">
+        <span>Plan actuel <b>Actif</b></span>
+        <strong>♛ Gold</strong>
+        <small>Design du menu client inclus</small>
+        <a href="onboarding.html?plan=Gold">Gérer mon abonnement</a>
+      </div>
+
+      <a class="sidebar-user" href="settings.html" aria-label="Ouvrir les paramètres du compte">
+        <span class="sidebar-avatar">a</span>
+        <span><strong>Mon restaurant</strong><small>Compte Gold</small></span>
+        <i>⌄</i>
+      </a>
+    </aside>
+
+    <main class="customizer-main">
+      <section id="goldGate" class="gold-gate" hidden>
+        <span class="gate-icon">✦</span>
+        <p class="eyebrow">Fonctionnalité Gold</p>
+        <h1>Personnalisez l’expérience de vos clients.</h1>
+        <p>Le design du menu client est disponible exclusivement avec le plan Gold.</p>
+        <a href="onboarding.html?plan=Gold" class="primary-action">Passer au plan Gold</a>
+        <a href="dashboard.html" class="secondary-action">Retour au dashboard</a>
+      </section>
+
+      <section id="customizer" hidden>
+        <header class="customizer-header">
+          <div>
+            <p class="eyebrow">Auresto Studio</p>
+            <h1>Personnaliser le design du menu client</h1>
+            <p>Modifiez l’apparence, les couleurs, les dispositions et les animations sans coder.</p>
+          </div>
+          <div class="header-actions">
+            <button type="button" class="secondary-action" id="openPreviewBtn">⌗&nbsp; Aperçu plein écran</button>
+            <button type="button" class="primary-action" id="saveCustomizationBtn">✓&nbsp; Enregistrer le design</button>
+            <small class="save-hint" id="liveSaveStatus">Enregistrement automatique activé</small>
+          </div>
+        </header>
+
+        <nav class="designer-tabs" aria-label="Sections de personnalisation">
+          <a href="#templatesPanel" class="active"><span>♨</span> Design</a>
+          <a href="#colorsPanel"><span>◉</span> Couleurs</a>
+          <a href="#layoutPanel"><span>⊞</span> Disposition</a>
+          <a href="#contentPanel"><span>✧</span> Contenu</a>
+          <a href="#interactionPanel"><span>⌁</span> Animations</a>
+          <a href="#logoPanel"><span>⚙</span> Options avancées</a>
+        </nav>
+
+        <div class="designer-layout">
+          <div class="designer-controls">
+            <section class="design-panel templates-panel" id="templatesPanel">
+              <div class="panel-heading panel-heading-inline">
+                <div><h2><em>1.</em> Choisissez un modèle</h2><p>Un point de départ prêt à personnaliser.</p></div>
+                <span class="panel-caption">Vos réglages restent modifiables</span>
+              </div>
+              <div class="template-carousel" role="list" aria-label="Modèles de menu">
+                <button type="button" class="template-choice template-midnight" data-template="midnight"><span class="template-screen"><i></i><b></b><b></b><b></b></span><strong>Signature</strong><small>Modèle actuel</small></button>
+                <button type="button" class="template-choice template-classic" data-template="classic"><span class="template-screen"><i></i><b></b><b></b><b></b></span><strong>Classique</strong></button>
+                <button type="button" class="template-choice template-elegant" data-template="elegant"><span class="template-screen"><i></i><b></b><b></b><b></b></span><strong>Élégant</strong></button>
+                <button type="button" class="template-choice template-minimal" data-template="minimal"><span class="template-screen"><i></i><b></b><b></b><b></b></span><strong>Minimaliste</strong></button>
+                <button type="button" class="template-choice template-vibrant" data-template="vibrant"><span class="template-screen"><i></i><b></b><b></b><b></b></span><strong>Vibrant</strong></button>
+                <button type="button" class="template-choice template-premium" data-template="premium"><span class="template-screen"><i></i><b></b><b></b><b></b></span><strong>Premium</strong></button>
+              </div>
+            </section>
+
+            <section class="design-panel" id="colorsPanel">
+              <div class="panel-heading"><h2><em>2.</em> Personnalisez les couleurs</h2><p>Les couleurs de votre identité visuelle.</p></div>
+              <div class="color-fields">
+                <label><span>Couleur principale<small>Boutons, prix et éléments actifs</small></span><input type="color" data-color="primary" /><output data-color-value="primary"></output></label>
+                <label><span>Couleur secondaire<small>Éléments secondaires et icônes</small></span><input type="color" data-color="secondary" /><output data-color-value="secondary"></output></label>
+                <label><span>Couleur d’accent<small>Badges et détails importants</small></span><input type="color" data-color="accent" /><output data-color-value="accent"></output></label>
+                <label><span>Surface / cartes<small>Cartes de plats et catégories</small></span><input type="color" data-color="surface" /><output data-color-value="surface"></output></label>
+                <label><span>Texte principal<small>Titres et informations clés</small></span><input type="color" data-color="text" /><output data-color-value="text"></output></label>
+                <label><span>Texte secondaire<small>Descriptions et détails</small></span><input type="color" data-color="muted" /><output data-color-value="muted"></output></label>
+              </div>
+            </section>
+
+            <section class="design-panel" id="layoutPanel">
+              <div class="panel-heading"><h2><em>3.</em> Personnalisez la mise en page</h2><p>Optimisez la lecture sur mobile.</p></div>
+              <span class="control-label">Disposition des plats</span>
+              <div class="layout-choices" id="layoutChoices">
+                <button type="button" class="layout-choice" data-layout="cards"><span class="layout-sketch cards"></span><strong>Carte</strong></button>
+                <button type="button" class="layout-choice" data-layout="vertical"><span class="layout-sketch vertical"></span><strong>Images</strong></button>
+                <button type="button" class="layout-choice" data-layout="separated"><span class="layout-sketch separated"></span><strong>Liste</strong></button>
+              </div>
+              <label class="range-field">Rayon des coins <output id="radiusValue">18px</output><input type="range" id="radiusInput" min="4" max="28" step="2" /></label>
+              <label class="range-field">Espacement des éléments <output id="overlayValueMirror">16px</output><input type="range" id="menuSpacingInput" min="8" max="28" step="2" value="16" /></label>
+            </section>
+
+            <section class="design-panel" id="contentPanel">
+              <div class="panel-heading"><h2><em>4.</em> Personnalisez les éléments</h2><p>Choisissez ce qui est visible sur le menu.</p></div>
+              <div class="toggle-list">
+                <label><span>Afficher les images des plats</span><input type="checkbox" data-display="images" /></label>
+                <label><span>Afficher les descriptions</span><input type="checkbox" data-display="descriptions" /></label>
+                <label><span>Afficher les prix</span><input type="checkbox" data-display="prices" /></label>
+                <label><span>Afficher les badges</span><input type="checkbox" data-display="badges" /></label>
+                <label><span>Afficher les cœurs (favoris)</span><input type="checkbox" data-display="favorites" /></label>
+              </div>
+            </section>
+
+            <section class="design-panel background-panel" id="themePanel">
+              <div class="panel-heading"><h2><em>5.</em> Options d’arrière-plan</h2><p>Créez l’ambiance générale de votre menu.</p></div>
+              <div class="theme-grid" id="backgroundChoices">
+                <button type="button" class="theme-choice theme-gradient" data-background="gradient"><span></span>Dégradé</button>
+                <button type="button" class="theme-choice theme-solid" data-background="solid"><span></span>Couleur unie</button>
+                <button type="button" class="theme-choice theme-wood" data-background="wood"><span></span>Texture</button>
+                <button type="button" class="theme-choice theme-marble" data-background="marble"><span></span>Marbre</button>
+                <button type="button" class="theme-choice theme-dark" data-background="dark"><span></span>Sombre</button>
+                <button type="button" class="theme-choice theme-light" data-background="light"><span></span>Clair</button>
+                <button type="button" class="theme-choice theme-tropical" data-background="tropical"><span></span>Tropical</button>
+                <button type="button" class="theme-choice theme-ocean" data-background="ocean"><span></span>Océan</button>
+                <button type="button" class="theme-choice theme-sunset" data-background="sunset"><span></span>Coucher de soleil</button>
+                <button type="button" class="theme-choice theme-forest" data-background="forest"><span></span>Forêt</button>
+                <button type="button" class="theme-choice theme-royal" data-background="royal"><span></span>Royal</button>
+                <button type="button" class="theme-choice theme-rose" data-background="rose"><span></span>Rose</button>
+              </div>
+              <div class="gradient-controls" id="gradientControls">
+                <div class="gradient-colors-header">
+                  <span class="control-label">Couleurs du dégradé</span>
+                  <button type="button" class="add-color-btn" id="addGradientColorBtn">+ Ajouter une couleur</button>
+                </div>
+                <div class="gradient-colors-list" id="gradientColorsList"></div>
+                <label class="gradient-angle">Angle <output id="gradientAngleValue">135°</output><input type="range" id="gradientAngleInput" min="0" max="360" step="5" /></label>
+              </div>
+              <label class="image-upload" for="backgroundImageInput"><input id="backgroundImageInput" type="file" accept="image/png,image/jpeg,image/webp" /><span class="upload-icon">↑</span><strong>Image d’arrière-plan personnalisée</strong><small>PNG, JPG ou WebP, jusqu’à 1 Mo</small></label>
+              <button type="button" class="text-button" id="removeBackgroundImageBtn" hidden>Retirer l’image de fond</button>
+              <label class="range-field">Intensité de la superposition <output id="overlayValue">60%</output><input type="range" id="overlayInput" min="0" max="90" step="5" /></label>
+            </section>
+
+            <section class="design-panel" id="logoPanel">
+              <div class="panel-heading"><h2><em>6.</em> Options d’en-tête</h2><p>Positionnez l’identité de votre restaurant.</p></div>
+              <div class="logo-settings">
+                <div><span>Forme du logo</span><div class="mini-choice-grid" id="logoShapeChoices"><button type="button" data-logo-shape="circle">Rond</button><button type="button" data-logo-shape="rounded">Arrondi</button><button type="button" data-logo-shape="square">Carré</button></div></div>
+                <div><span>Position dans l’en-tête</span><div class="mini-choice-grid" id="logoPositionChoices"><button type="button" data-logo-position="left">Gauche</button><button type="button" data-logo-position="center">Centre</button><button type="button" data-logo-position="right">Droite</button></div></div>
+              </div>
+              <label class="range-field">Taille du logo <output id="logoSizeValue">44px</output><input type="range" id="logoSizeInput" min="32" max="72" step="2" /></label>
+            </section>
+
+            <section class="design-panel interaction-panel" id="interactionPanel">
+              <div class="panel-heading"><h2><em>7.</em> Animations &amp; navigation</h2><p>Un menu réactif, sans distraire le client.</p></div>
+              <span class="control-label">Effet au toucher</span>
+              <div class="segmented-control" id="tapEffectChoices"><button type="button" data-effect="none">Aucun</button><button type="button" data-effect="elevate">Élévation</button><button type="button" data-effect="zoom">Zoom</button><button type="button" data-effect="glow">Lueur</button></div>
+              <div class="category-order-wrap">
+                <span class="control-label">Ordre des catégories</span>
+                <div class="category-order-list" id="categoryOrderList"></div>
+              </div>
+            </section>
+          </div>
+
+          <aside class="preview-panel" data-preview-device="mobile">
+            <div class="preview-heading"><div><h2>Aperçu en temps réel</h2><p>Vos réglages se reflètent immédiatement</p></div><div class="device-switch" aria-label="Format de l’aperçu"><button type="button" class="active" data-preview-device="mobile" aria-label="Format mobile" aria-pressed="true">▯</button><button type="button" data-preview-device="tablet" aria-label="Format tablette" aria-pressed="false">▭</button><button type="button" data-preview-device="desktop" aria-label="Format ordinateur" aria-pressed="false">▱</button></div></div>
+            <div class="phone-frame"><div class="phone-speaker"></div><iframe id="clientPreview" title="Aperçu du menu client"></iframe></div>
+            <p class="preview-note">L’aperçu affiche la carte telle que vos clients la verront.</p>
+          </aside>
+        </div>
+      </section>
+    </main>
+    <div class="customizer-toast" id="customizerToast" role="status"></div>
+    <script src="js/api-config.js"></script>
+    <script src="js/store.js"></script>
+    <script src="js/menu-customization.js"></script>
+  </body>
+</html>
