@@ -12,28 +12,16 @@
   <body class="owner-page">
     <!-- Header Owner -->
     <header class="app-header owner-header">
-      <div class="owner-header-left">
-        <a class="logo" href="owner.html">
-          <span class="logo-mark">a<span>•</span></span>
-          <div class="owner-branding">
-            <strong>Auresto</strong>
-            <span class="owner-badge">OWNER / ADMIN</span>
-          </div>
-        </a>
-        <div class="owner-title">
-          <h1>Administration Auresto</h1>
-          <p>Pilotage de la plateforme et des restaurants</p>
-        </div>
-      </div>
-      <div class="owner-header-right">
-        <div class="owner-session-status">
-          <span class="session-icon" id="sessionIcon"></span>
-          <span class="session-text">Session sécurisée</span>
-        </div>
-        <button type="button" class="btn btn-ghost btn-sm" id="ownerLogoutBtn">
-          <span class="logout-icon" id="logoutIcon"></span>
-          Se déconnecter
-        </button>
+      <a class="logo" href="owner.html">
+        <span class="logo-mark">a<span>•</span></span>
+        <strong>Auresto <span class="owner-badge">Platform Owner</span></strong>
+      </a>
+      <nav class="app-nav">
+        <a href="owner.html" class="active">Vue d'ensemble</a>
+        <a href="dashboard.html">Dashboard Restaurant</a>
+      </nav>
+      <div style="display:flex;align-items:center;gap:12px">
+        <button type="button" class="btn btn-ghost btn-sm" id="ownerLogoutBtn" style="color:#e86b6b;border-color:rgba(232,107,107,0.3)">Déconnexion</button>
       </div>
     </header>
 
@@ -55,345 +43,197 @@
       </div>
     </div>
 
-    <!-- Navigation Owner -->
-    <nav class="owner-nav" id="ownerNav">
-      <button type="button" class="owner-nav-item active" data-section="overview">
-        <span class="nav-icon" id="navOverviewIcon"></span>
-        Vue d'ensemble
-      </button>
-      <button type="button" class="owner-nav-item" data-section="restaurants">
-        <span class="nav-icon" id="navRestaurantsIcon"></span>
-        Restaurants
-      </button>
-      <button type="button" class="owner-nav-item" data-section="subscriptions">
-        <span class="nav-icon" id="navSubscriptionsIcon"></span>
-        Abonnements
-      </button>
-      <button type="button" class="owner-nav-item" data-section="payments">
-        <span class="nav-icon" id="navPaymentsIcon"></span>
-        Paiements
-      </button>
-      <button type="button" class="owner-nav-item" data-section="deadlines">
-        <span class="nav-icon" id="navDeadlinesIcon"></span>
-        Échéances
-      </button>
-      <button type="button" class="owner-nav-item" data-section="audit">
-        <span class="nav-icon" id="navAuditIcon"></span>
-        Audit
-      </button>
-    </nav>
-
     <!-- Main Content -->
     <main class="owner-main" id="ownerMainContent" hidden>
-      <!-- Overview Section -->
-      <section class="owner-section" id="section-overview">
-        <div class="section-header">
-          <div>
-            <h2>Vue d'ensemble</h2>
-            <p>État actuel de la plateforme Auresto</p>
-          </div>
-          <button type="button" class="btn btn-ghost btn-sm" id="refreshOverviewBtn">
-            <span class="refresh-icon" id="refreshOverviewIcon"></span>
-            Actualiser
-          </button>
+      <!-- Title Bar -->
+      <div class="owner-title-bar">
+        <div>
+          <h1>Owner Dashboard</h1>
+          <p>Gestion centralisée des abonnements, de la facturation et des restaurants de la plateforme Auresto.</p>
         </div>
+        <button type="button" class="btn btn-primary btn-sm" id="refreshBtn">
+          🔄 Rafraîchir les données
+        </button>
+      </div>
 
-        <!-- Alertes -->
-        <div class="owner-alerts" id="ownerAlerts" hidden>
-          <div class="alert-item warning" id="alertExpiring">
-            <span class="alert-icon" id="alertExpiringIcon"></span>
-            <span class="alert-text" id="alertExpiringText"></span>
-          </div>
-          <div class="alert-item danger" id="alertGrace">
-            <span class="alert-icon" id="alertGraceIcon"></span>
-            <span class="alert-text" id="alertGraceText"></span>
-          </div>
-          <div class="alert-item dark" id="alertSuspended">
-            <span class="alert-icon" id="alertSuspendedIcon"></span>
-            <span class="alert-text" id="alertSuspendedText"></span>
+      <!-- KPI Statistics Grid -->
+      <div class="owner-stats-grid">
+        <div class="owner-stat-card">
+          <div class="stat-icon" style="background:rgba(10,86,108,0.15);color:#0a566c"><svg class="lucide lucide-shopping-bag" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" x2="21" y1="6" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></div>
+          <div class="stat-data">
+            <div class="label">Total Restaurants</div>
+            <div class="value" id="kpiTotal">0</div>
+            <div class="sub" id="kpiNewMonth">+0 ce mois-ci</div>
           </div>
         </div>
 
-        <!-- KPI Grid -->
-        <div class="owner-kpi-grid">
-          <div class="kpi-card">
-            <div class="kpi-icon active">
-              <span id="kpiActiveIcon"></span>
-            </div>
-            <div class="kpi-content">
-              <div class="kpi-label">Restaurants actifs</div>
-              <div class="kpi-value" id="kpiActiveRestaurants">0</div>
-            </div>
-          </div>
-          <div class="kpi-card">
-            <div class="kpi-icon suspended">
-              <span id="kpiSuspendedIcon"></span>
-            </div>
-            <div class="kpi-content">
-              <div class="kpi-label">Restaurants suspendus</div>
-              <div class="kpi-value" id="kpiSuspendedRestaurants">0</div>
-            </div>
-          </div>
-          <div class="kpi-card">
-            <div class="kpi-icon revenue">
-              <span id="kpiRevenueIcon"></span>
-            </div>
-            <div class="kpi-content">
-              <div class="kpi-label">Revenus abonnements</div>
-              <div class="kpi-value" id="kpiRevenue">0 FCFA</div>
-            </div>
-          </div>
-          <div class="kpi-card">
-            <div class="kpi-icon expiring">
-              <span id="kpiExpiringIcon"></span>
-            </div>
-            <div class="kpi-content">
-              <div class="kpi-label">Échéances proches</div>
-              <div class="kpi-value" id="kpiExpiringSoon">0</div>
-            </div>
-          </div>
-          <div class="kpi-card">
-            <div class="kpi-icon silver">
-              <span id="kpiSilverIcon"></span>
-            </div>
-            <div class="kpi-content">
-              <div class="kpi-label">Silver</div>
-              <div class="kpi-value" id="kpiSilverCount">0</div>
-            </div>
-          </div>
-          <div class="kpi-card">
-            <div class="kpi-icon gold">
-              <span id="kpiGoldIcon"></span>
-            </div>
-            <div class="kpi-content">
-              <div class="kpi-label">Gold</div>
-              <div class="kpi-value" id="kpiGoldCount">0</div>
-            </div>
-          </div>
-          <div class="kpi-card">
-            <div class="kpi-icon free">
-              <span id="kpiFreeIcon"></span>
-            </div>
-            <div class="kpi-content">
-              <div class="kpi-label">Free</div>
-              <div class="kpi-value" id="kpiFreeCount">0</div>
-            </div>
+        <div class="owner-stat-card">
+          <div class="stat-icon" style="background:rgba(62,207,142,0.15);color:#3ecf8e"><svg class="lucide lucide-check-circle" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+          <div class="stat-data">
+            <div class="label">Restaurants Actifs</div>
+            <div class="value" id="kpiActive">0</div>
+            <div class="sub" id="kpiTrial">0 en période d'essai</div>
           </div>
         </div>
 
-        <!-- Répartition des plans -->
-        <div class="owner-subsection">
-          <h3>Répartition des plans</h3>
-          <div class="plans-distribution" id="plansDistribution">
-            <div class="plan-dist-item free">
-              <div class="plan-dist-label">FREE</div>
-              <div class="plan-dist-bar">
-                <div class="plan-dist-fill" id="freeFill" style="width: 0%"></div>
-              </div>
-              <div class="plan-dist-stats">
-                <span id="freeCount">0</span>
-                <span id="freePercent">0%</span>
-              </div>
-            </div>
-            <div class="plan-dist-item silver">
-              <div class="plan-dist-label">SILVER</div>
-              <div class="plan-dist-bar">
-                <div class="plan-dist-fill" id="silverFill" style="width: 0%"></div>
-              </div>
-              <div class="plan-dist-stats">
-                <span id="silverCount">0</span>
-                <span id="silverPercent">0%</span>
-              </div>
-            </div>
-            <div class="plan-dist-item gold">
-              <div class="plan-dist-label">GOLD</div>
-              <div class="plan-dist-bar">
-                <div class="plan-dist-fill" id="goldFill" style="width: 0%"></div>
-              </div>
-              <div class="plan-dist-stats">
-                <span id="goldCount">0</span>
-                <span id="goldPercent">0%</span>
-              </div>
-            </div>
+        <div class="owner-stat-card">
+          <div class="stat-icon" style="background:rgba(244,167,120,0.15);color:#f4a778"><svg class="lucide lucide-alert-triangle" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg></div>
+          <div class="stat-data">
+            <div class="label">Expire Bientôt (J-7)</div>
+            <div class="value" id="kpiExpiringSoon">0</div>
+            <div class="sub" id="kpiExpired">0 expirés / grâce</div>
           </div>
         </div>
 
-        <!-- Restaurants à risque -->
-        <div class="owner-subsection">
-          <h3>À surveiller</h3>
-          <div class="risk-list" id="riskList">
-            <div class="loading-state">Chargement...</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Restaurants Section -->
-      <section class="owner-section" id="section-restaurants" hidden>
-        <div class="section-header">
-          <div>
-            <h2>Tous les restaurants</h2>
-            <p>Gestion complète des restaurants de la plateforme</p>
-          </div>
-          <button type="button" class="btn btn-ghost btn-sm" id="refreshRestaurantsBtn">
-            <span class="refresh-icon" id="refreshRestaurantsIcon"></span>
-            Actualiser
-          </button>
-        </div>
-
-        <div class="owner-controls">
-          <div class="search-box">
-            <span class="search-icon" id="searchIcon"></span>
-            <input type="text" id="ownerSearchInput" placeholder="Rechercher un restaurant..." />
-            <button type="button" id="clearSearchBtn" class="clear-btn" hidden></button>
-          </div>
-
-          <div class="filter-tabs" id="filterTabs">
-            <button type="button" class="filter-btn active" data-filter="ALL">Tous</button>
-            <button type="button" class="filter-btn" data-filter="FREE">FREE</button>
-            <button type="button" class="filter-btn" data-filter="SILVER">SILVER</button>
-            <button type="button" class="filter-btn" data-filter="GOLD">GOLD</button>
-            <button type="button" class="filter-btn" data-filter="ACTIVE">ACTIF</button>
-            <button type="button" class="filter-btn warning" data-filter="EXPIRING_SOON">EXPIRANT</button>
-            <button type="button" class="filter-btn danger" data-filter="SUSPENDED">SUSPENDU</button>
-          </div>
-
-          <div class="sort-select-wrapper">
-            <label for="sortSelect">Trier par :</label>
-            <select id="sortSelect">
-              <option value="created_desc">Plus récents</option>
-              <option value="created_asc">Plus anciens</option>
-              <option value="name_asc">Nom (A-Z)</option>
-              <option value="expires_asc">Expiration proche</option>
-            </select>
+        <div class="owner-stat-card">
+          <div class="stat-icon" style="background:rgba(232,107,107,0.15);color:#e86b6b"><svg class="lucide lucide-lock" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+          <div class="stat-data">
+            <div class="label">Suspendus</div>
+            <div class="value" id="kpiSuspended">0</div>
+            <div class="sub">Accès restreint</div>
           </div>
         </div>
 
-        <div class="table-container">
-          <table class="owner-table">
-            <thead>
-              <tr>
-                <th>Restaurant</th>
-                <th>Code</th>
-                <th>Plan</th>
-                <th>Statut</th>
-                <th>Expiration</th>
-                <th>Créé le</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="restaurantsTbody">
-            </tbody>
-          </table>
-          <div class="table-empty" id="tableEmpty" hidden>
-            <p>Aucun restaurant ne correspond à votre recherche ou filtre actuel.</p>
-          </div>
-          <div class="loading-state" id="restaurantsLoading">Chargement des restaurants...</div>
-        </div>
-      </section>
-
-      <!-- Subscriptions Section -->
-      <section class="owner-section" id="section-subscriptions" hidden>
-        <div class="section-header">
-          <div>
-            <h2>Abonnements</h2>
-            <p>Gestion des abonnements Auresto</p>
-          </div>
-          <button type="button" class="btn btn-ghost btn-sm" id="refreshSubscriptionsBtn">
-            <span class="refresh-icon" id="refreshSubscriptionsIcon"></span>
-            Actualiser
-          </button>
-        </div>
-
-        <div class="subscriptions-list" id="subscriptionsList">
-          <div class="loading-state">Chargement des abonnements...</div>
-        </div>
-      </section>
-
-      <!-- Payments Section -->
-      <section class="owner-section" id="section-payments" hidden>
-        <div class="section-header">
-          <div>
-            <h2>Paiements</h2>
-            <p>Historique des paiements d'abonnements</p>
-          </div>
-          <button type="button" class="btn btn-ghost btn-sm" id="refreshPaymentsBtn">
-            <span class="refresh-icon" id="refreshPaymentsIcon"></span>
-            Actualiser
-          </button>
-        </div>
-
-        <div class="revenue-summary">
-          <div class="revenue-card">
-            <div class="revenue-label">Aujourd'hui</div>
-            <div class="revenue-value" id="revenueToday">0 FCFA</div>
-          </div>
-          <div class="revenue-card">
-            <div class="revenue-label">Cette semaine</div>
-            <div class="revenue-value" id="revenueWeek">0 FCFA</div>
-          </div>
-          <div class="revenue-card">
-            <div class="revenue-label">Ce mois</div>
-            <div class="revenue-value" id="revenueMonth">0 FCFA</div>
-          </div>
-          <div class="revenue-card">
-            <div class="revenue-label">Total</div>
-            <div class="revenue-value" id="revenueTotal">0 FCFA</div>
+        <div class="owner-stat-card">
+          <div class="stat-icon" style="background:rgba(245,191,134,0.15);color:#f5bf86"><svg class="lucide lucide-sparkles" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/></svg></div>
+          <div class="stat-data">
+            <div class="label">Silver & Gold</div>
+            <div class="value" id="kpiPaidPlans">0</div>
+            <div class="sub" id="kpiPlanBreakdown">0 Silver • 0 Gold</div>
           </div>
         </div>
 
-        <div class="payments-list" id="paymentsList">
-          <div class="empty-state">Les paiements nécessitent une table payments dans la base de données</div>
-        </div>
-      </section>
-
-      <!-- Deadlines Section -->
-      <section class="owner-section" id="section-deadlines" hidden>
-        <div class="section-header">
-          <div>
-            <h2>Échéances</h2>
-            <p>Surveillance des expirations d'abonnements</p>
+        <div class="owner-stat-card">
+          <div class="stat-icon" style="background:rgba(59,130,246,0.15);color:#3b82f6"><svg class="lucide lucide-wallet" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3v4a1 1 0 0 1-1 1H5a2 2 0 0 1-2-2V7"/><path d="M18 12h.01"/></svg></div>
+          <div class="stat-data">
+            <div class="label">Revenus du mois</div>
+            <div class="value" id="kpiRevenue">0 FCFA</div>
+            <div class="sub" id="kpiPendingPay">0 paiement(s) en attente</div>
           </div>
-          <button type="button" class="btn btn-ghost btn-sm" id="refreshDeadlinesBtn">
-            <span class="refresh-icon" id="refreshDeadlinesIcon"></span>
-            Actualiser
-          </button>
+        </div>
+      </div>
+
+      <!-- Controls Header: Search, Filters & Sort -->
+      <div class="owner-controls">
+        <div class="search-box">
+          <span class="search-icon"><svg class="lucide lucide-search" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+          <input type="text" id="ownerSearchInput" placeholder="Rechercher par nom, email, téléphone, ville…" />
+          <button type="button" id="clearSearchBtn" class="clear-btn" hidden>×</button>
         </div>
 
-        <div class="deadlines-container" id="deadlinesContainer">
-          <div class="loading-state">Chargement des échéances...</div>
-        </div>
-      </section>
-
-      <!-- Audit Section -->
-      <section class="owner-section" id="section-audit" hidden>
-        <div class="section-header">
-          <div>
-            <h2>Journal d'administration</h2>
-            <p>Historique des actions Owner</p>
-          </div>
-          <button type="button" class="btn btn-ghost btn-sm" id="refreshAuditBtn">
-            <span class="refresh-icon" id="refreshAuditIcon"></span>
-            Actualiser
-          </button>
+        <div class="filter-tabs" id="filterTabs">
+          <button type="button" class="filter-btn active" data-filter="ALL">Tous (<span id="countAll">0</span>)</button>
+          <button type="button" class="filter-btn" data-filter="ACTIFS">Actifs (<span id="countActive">0</span>)</button>
+          <button type="button" class="filter-btn" data-filter="FREE">Free (<span id="countFree">0</span>)</button>
+          <button type="button" class="filter-btn" data-filter="SILVER">Silver (<span id="countSilver">0</span>)</button>
+          <button type="button" class="filter-btn" data-filter="GOLD">Gold (<span id="countGold">0</span>)</button>
+          <button type="button" class="filter-btn warning" data-filter="EXPIRING_SOON">Expire bientôt (<span id="countExpiring">0</span>)</button>
+          <button type="button" class="filter-btn danger" data-filter="EXPIRED">Expirés (<span id="countExpired">0</span>)</button>
+          <button type="button" class="filter-btn dark" data-filter="SUSPENDUS">Suspendus (<span id="countSuspended">0</span>)</button>
         </div>
 
-        <div class="audit-logs" id="auditLogs">
-          <div class="empty-state">Les logs d'audit nécessitent une table audit_logs dans la base de données</div>
+        <div class="sort-select-wrapper">
+          <label for="sortSelect">Trier par :</label>
+          <select id="sortSelect">
+            <option value="created_desc">Plus récents</option>
+            <option value="expires_asc">Expiration la plus proche</option>
+            <option value="name">Nom (A-Z)</option>
+          </select>
         </div>
-      </section>
+      </div>
+
+      <!-- Table des Restaurants -->
+      <div class="table-container">
+        <table class="owner-table">
+          <thead>
+            <tr>
+              <th>Restaurant</th>
+              <th>Propriétaire</th>
+              <th>Plan</th>
+              <th>Statut</th>
+              <th>Dates</th>
+              <th>Dernier Paiement</th>
+              <th>Création</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="restaurantsTbody">
+            <!-- Dynamic Rows -->
+          </tbody>
+        </table>
+        <div class="table-empty" id="tableEmpty" hidden>
+          <p style="display:flex;align-items:center;justify-content:center;gap:8px;color:#94a3b8">Aucun restaurant ne correspond à votre recherche ou filtre actuel.</p>
+        </div>
+      </div>
     </main>
 
-    <!-- Restaurant Detail Drawer -->
-    <div class="drawer-overlay" id="drawerOverlay" hidden>
-      <div class="drawer" id="restaurantDrawer">
-        <div class="drawer-header">
-          <h2 id="drawerRestaurantName">Détails Restaurant</h2>
-          <button type="button" class="drawer-close" id="closeDrawerBtn">
-            <span id="drawerCloseIcon"></span>
-          </button>
+    <!-- Modal d'Édition / Action Restaurant -->
+    <div class="owner-modal-overlay" id="editModalOverlay" hidden>
+      <div class="owner-action-modal">
+        <div class="modal-header">
+          <h2 id="modalRestName">Gérer le Restaurant</h2>
+          <button type="button" class="close-btn" id="closeEditModalBtn">×</button>
         </div>
-        <div class="drawer-content" id="drawerContent">
-          <div class="loading-state">Chargement...</div>
+
+        <div class="modal-body">
+          <input type="hidden" id="editRestId" />
+
+          <div class="form-row">
+            <div class="field">
+              <label for="editPlan">Plan d'abonnement</label>
+              <select id="editPlan">
+                <option value="FREE">FREE (0 FCFA/mois)</option>
+                <option value="SILVER">SILVER (25 000 FCFA/mois)</option>
+                <option value="GOLD">GOLD (40 000 FCFA/mois)</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="editStatus">Statut système</label>
+              <select id="editStatus">
+                <option value="ACTIVE">ACTIVE (Actif)</option>
+                <option value="EXPIRING_SOON">EXPIRING_SOON (Expire bientôt)</option>
+                <option value="EXPIRED">EXPIRED (Expiré)</option>
+                <option value="GRACE_PERIOD">GRACE_PERIOD (Période de grâce)</option>
+                <option value="SUSPENDED">SUSPENDED (Suspendu)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="field">
+              <label for="editExpiresAt">Date d'expiration</label>
+              <input type="date" id="editExpiresAt" />
+            </div>
+            <div class="field">
+              <label for="editGraceDays">Période de grâce (jours)</label>
+              <input type="number" id="editGraceDays" min="0" max="30" value="3" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="field">
+              <label for="editOwnerEmail">Email du Propriétaire</label>
+              <input type="email" id="editOwnerEmail" placeholder="email@restaurant.sn" />
+            </div>
+            <div class="field">
+              <label for="editOwnerPhone">Téléphone</label>
+              <input type="tel" id="editOwnerPhone" placeholder="+221 77 000 00 00" />
+            </div>
+          </div>
+
+          <div class="action-box">
+            <h4>Actions Rapides</h4>
+            <div class="action-buttons">
+              <button type="button" class="btn btn-ghost" id="quickExtend30Btn">+ Accorder 30 jours gratuits</button>
+              <button type="button" class="btn btn-ghost" id="quickExtend7Btn">+ Accorder 7 jours gratuits</button>
+              <button type="button" class="btn btn-danger" id="toggleSuspendBtn" style="display:inline-flex;align-items:center;gap:8px"><svg class="lucide lucide-lock" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Suspendre le restaurant</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-ghost" id="cancelEditBtn">Annuler</button>
+          <button type="button" class="btn btn-primary" id="saveEditBtn">Enregistrer les modifications</button>
         </div>
       </div>
     </div>
@@ -402,7 +242,6 @@
     <div class="toast" id="ownerToast"></div>
 
     <script src="js/icons.js"></script>
-    <script src="js/api-config.js"></script>
     <script src="js/owner.js"></script>
   </body>
 </html>

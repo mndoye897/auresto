@@ -5,180 +5,92 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Paramètres — Auresto</title>
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="css/app-shared.css" />
     <link rel="stylesheet" href="css/settings.css" />
   </head>
   <body class="settings-page">
-    <aside class="settings-sidebar">
-      <a class="settings-brand" href="dashboard.html" aria-label="Retour au tableau de bord Auresto">
-        <span class="settings-brand-mark">a<span>•</span></span>
-        <span><strong>AURESTO</strong><small>RESTAURANT</small></span>
-      </a>
-
-      <nav class="settings-nav" aria-label="Navigation principale">
-        <a href="dashboard.html"><span>⌂</span>Centre de contrôle</a>
-        <a href="kitchen.html"><span>▣</span>Commandes</a>
-        <a href="dashboard.html#menuEditor"><span>♧</span>Menus & plats</a>
-        <a href="dashboard.html#categories"><span>▤</span>Catégories</a>
-        <a href="settings.html#tables"><span>⌘</span>Tables & QR Codes</a>
-        <a href="client.html" target="_blank" rel="noopener"><span>◉</span>Menu client</a>
-        <a href="settings.html" class="active"><span>⚙</span>Paramètres</a>
-        <a href="onboarding.html?plan=Gold"><span>♔</span>Abonnement</a>
+    <header class="app-header" style="background:#fff;border-color:rgba(10,59,75,.1)">
+      <a class="logo" href="dashboard.html" style="color:#103b4b"><span class="logo-mark" style="border-color:#103b4b;color:#103b4b">a<span>•</span></span><strong>Auresto</strong></a>
+      <nav class="app-nav">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="kitchen.html">Cuisine</a>
+        <a href="settings.html" class="active">Paramètres</a>
       </nav>
+    </header>
 
-      <section class="settings-plan-card">
-        <span>Plan actuel <b>Actif</b></span>
-        <strong id="sidebarPlan">Gold</strong>
-        <small id="sidebarPlanDetail">Design du menu inclus</small>
-        <a href="onboarding.html?plan=Gold">Gérer mon abonnement</a>
+    <main class="settings-main">
+      <h1>Paramètres</h1>
+
+      <section class="settings-section">
+        <h2>Restaurant</h2>
+        <div class="field"><label for="sName">Nom</label><input id="sName" type="text" /></div>
+        <div class="field"><label for="sAddress">Adresse</label><input id="sAddress" type="text" /></div>
+        <div class="field full">
+          <label>Horaires d'ouverture</label>
+          <div class="hours-presets">
+            <button type="button" class="hours-preset-btn active" data-hours-preset="everyday">Tous les jours</button>
+            <button type="button" class="hours-preset-btn" data-hours-preset="weekdays">Lun – Sam</button>
+            <button type="button" class="hours-preset-btn" data-hours-preset="lunch">Midi uniquement</button>
+            <button type="button" class="hours-preset-btn" data-hours-preset="dinner">Soir uniquement</button>
+          </div>
+          <div class="hours-grid" id="settingsHoursGrid"></div>
+          <p class="hours-summary" id="settingsHoursSummary"></p>
+        </div>
+        <div class="field"><label for="sDesc">Description</label><textarea id="sDesc"></textarea></div>
       </section>
 
-      <a class="settings-account" href="#accountSection">
-        <span class="settings-avatar" id="accountInitial">A</span>
-        <span><strong id="accountName">Mon restaurant</strong><small id="accountPlan">Compte Auresto</small></span>
-        <i>⌄</i>
-      </a>
-    </aside>
+      <section class="settings-section">
+        <h2>Identité visuelle</h2>
+        <div class="field"><label for="sColorPrimary">Couleur principale</label><input id="sColorPrimary" type="color" /></div>
+        <div class="field"><label for="sColorAccent">Couleur accent</label><input id="sColorAccent" type="color" /></div>
+      </section>
 
-    <div class="settings-workspace">
-      <header class="settings-topbar">
-        <label class="settings-search"><span>⌕</span><input type="search" placeholder="Rechercher un réglage…" aria-label="Rechercher un réglage" /></label>
-        <div class="settings-topbar-actions">
-          <span class="settings-date">▣ Aujourd’hui</span>
-          <a href="kitchen.html" class="settings-notification" aria-label="Voir les commandes">♧<b>•</b></a>
-          <a href="settings.html#accountSection" class="settings-profile" id="topbarInitial">A</a>
+      <section class="settings-section">
+        <h2>Tables</h2>
+        <p style="font-size:12px;color:#536a70;margin:0 0 12px" id="tableCount">0 tables configurées</p>
+        <a href="onboarding.html" class="btn btn-ghost" style="color:#103b4b;border-color:rgba(10,59,75,.2)">Gérer les tables</a>
+      </section>
+
+      <section class="settings-section">
+        <h2>QR codes</h2>
+        <div class="field"><label for="sQrHeader">En-tête du QR</label><input id="sQrHeader" type="text" placeholder="Table {name}" /></div>
+        <div class="field"><label for="sQrFooter">Texte du bas</label><input id="sQrFooter" type="text" placeholder="Scannez pour commander" /></div>
+        <div class="field"><label for="sQrLayout">Format d'impression</label><select id="sQrLayout"><option value="chevalet">Chevalet de table</option><option value="autocollant">Autocollants</option><option value="affiche">Affiche</option></select></div>
+        <div class="field" style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-start">
+          <button type="button" class="btn btn-ghost" id="downloadQrPdfBtn" style="display:inline-flex;align-items:center;gap:6px">
+            <svg class="lucide lucide-download" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg> Télécharger PDF
+          </button>
+          <button type="button" class="btn btn-ghost" id="downloadQrWordBtn" style="display:inline-flex;align-items:center;gap:6px">
+            <svg class="lucide lucide-file-text" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><line x1="10" x2="8" y1="9" y2="9"/></svg> Télécharger Word
+          </button>
         </div>
-      </header>
+      </section>
 
-      <main class="settings-content">
-        <header class="settings-title-row">
-          <div>
-            <p class="settings-kicker">Configuration</p>
-            <h1><span>⚙</span> Paramètres</h1>
-            <p>Gérez et personnalisez tous les aspects de votre restaurant.</p>
-          </div>
-          <button type="button" class="settings-save" id="saveBtn"><span>▣</span> Enregistrer les modifications</button>
-        </header>
-
-        <nav class="settings-tabs" aria-label="Sections des paramètres">
-          <a class="active" href="#restaurantSection">⌂ Restaurant</a>
-          <a href="#identitySection">◉ Apparence</a>
-          <a href="menu-customization.html">♧ Menu client</a>
-          <a href="#qrSection">⌘ QR Codes</a>
-          <a href="#tablesSection">▤ Tables</a>
-          <a href="#accountSection">♙ Compte & sécurité</a>
-        </nav>
-
-        <div class="settings-grid">
-          <div class="settings-column">
-            <section class="setting-card" id="restaurantSection">
-              <div class="card-heading"><span class="card-icon">⌂</span><div><h2>Informations du restaurant</h2><p>Modifiez les informations principales de votre établissement.</p></div></div>
-              <div class="settings-form-grid">
-                <label>Nom du restaurant<input id="sName" type="text" placeholder="Mon restaurant" /></label>
-                <label>Type de cuisine<input id="sCuisine" type="text" placeholder="Cuisine africaine" /></label>
-                <label class="span-2">Adresse<input id="sAddress" type="text" placeholder="Adresse complète" /></label>
-                <label>Téléphone<input id="sPhone" type="tel" placeholder="+221…" /></label>
-                <label>Email<input id="sEmail" type="email" placeholder="contact@restaurant.com" /></label>
-                <label class="span-2">Description<textarea id="sDesc" rows="3" placeholder="Présentez votre restaurant à vos clients."></textarea></label>
-              </div>
-              <button class="card-action" type="button" data-scroll-target="saveBtn">✎ Modifier les informations</button>
-            </section>
-
-            <section class="setting-card" id="brandAssetsSection">
-              <div class="card-heading"><span class="card-icon">▧</span><div><h2>Logo</h2><p>Personnalisez le logo de votre restaurant.</p></div></div>
-              <div class="asset-grid">
-                <div class="asset-field">
-                  <span>Logo</span>
-                  <div class="logo-preview"><img id="settingsLogoPreview" src="favicon.svg" alt="Logo du restaurant" /></div>
-                  <label class="asset-button" for="settingsLogoInput">⌁ Modifier<input id="settingsLogoInput" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" /></label>
-                  <button id="removeLogoBtn" class="asset-remove" type="button">Supprimer</button>
-                </div>
-              </div>
-            </section>
-
-            <section class="setting-card" id="tablesSection">
-              <div class="card-heading"><span class="card-icon">▤</span><div><h2>Tables & QR Codes</h2><p id="tableCount">0 table configurée</p></div></div>
-              <div class="compact-actions">
-                <a href="onboarding.html" class="card-action">⌘ Gérer les tables</a>
-                <a href="client.html" target="_blank" rel="noopener" class="card-action">◉ Voir le menu client</a>
-              </div>
-            </section>
-          </div>
-
-          <div class="settings-column">
-            <section class="setting-card hours-card" id="hoursSection">
-              <div class="card-heading"><span class="card-icon">◷</span><div><h2>Horaires d’ouverture</h2><p>Définissez les horaires d’ouverture de votre restaurant.</p></div></div>
-              <div class="hours-presets">
-                <button type="button" class="hours-preset-btn active" data-hours-preset="everyday">Tous les jours</button>
-                <button type="button" class="hours-preset-btn" data-hours-preset="weekdays">Lun – Sam</button>
-                <button type="button" class="hours-preset-btn" data-hours-preset="lunch">Midi uniquement</button>
-                <button type="button" class="hours-preset-btn" data-hours-preset="dinner">Soir uniquement</button>
-              </div>
-              <div class="hours-grid" id="settingsHoursGrid"></div>
-              <p class="hours-summary" id="settingsHoursSummary"></p>
-              <button class="card-action" type="button" data-scroll-target="saveBtn">▣ Gérer les horaires</button>
-            </section>
-
-            <section class="setting-card" id="contactSection">
-              <div class="card-heading"><span class="card-icon">⌖</span><div><h2>Coordonnées & localisation</h2><p>Informations de contact et localisation.</p></div></div>
-              <div class="settings-form-grid">
-                <label class="span-2">Ville<input id="sCity" type="text" placeholder="Dakar" /></label>
-                <label>Téléphone<input id="sContactPhone" type="tel" placeholder="+221…" /></label>
-                <label>Email de contact<input id="sContactEmail" type="email" placeholder="contact@restaurant.com" /></label>
-              </div>
-              <button class="card-action" type="button" data-scroll-target="saveBtn">✎ Modifier les coordonnées</button>
-            </section>
-
-            <section class="setting-card" id="qrSection">
-              <div class="card-heading"><span class="card-icon">⌘</span><div><h2>Paramètres QR</h2><p>Préparez vos codes pour l’impression.</p></div></div>
-              <div class="settings-form-grid qr-fields">
-                <label class="span-2">En-tête du QR<input id="sQrHeader" type="text" placeholder="Table {name}" /></label>
-                <label class="span-2">Texte du bas<input id="sQrFooter" type="text" placeholder="Scannez pour commander" /></label>
-                <label class="span-2">Format d’impression<select id="sQrLayout"><option value="chevalet">Chevalet de table</option><option value="autocollant">Autocollants</option><option value="affiche">Affiche</option></select></label>
-              </div>
-              <div class="compact-actions"><button type="button" class="card-action" id="downloadQrPdfBtn">⇩ PDF</button><button type="button" class="card-action" id="downloadQrWordBtn">⇩ Word</button></div>
-            </section>
-          </div>
-
-          <div class="settings-column settings-preview-column">
-            <section class="setting-card" id="identitySection">
-              <div class="card-heading"><span class="card-icon">✥</span><div><h2>Identité visuelle</h2><p>Personnalisez les couleurs de votre marque.</p></div></div>
-              <div class="color-fields">
-                <label><span>Couleur principale</span><div><input id="sColorPrimary" type="color" /><output id="colorValuePrimary"></output></div></label>
-                <label><span>Couleur secondaire</span><div><input id="sColorSecondary" type="color" /><output id="colorValueSecondary"></output></div></label>
-                <label><span>Couleur d’accent</span><div><input id="sColorAccent" type="color" /><output id="colorValueAccent"></output></div></label>
-              </div>
-              <div class="settings-form-grid visual-options">
-                <label>Police principale<select id="sFont"><option value="DM Sans">DM Sans</option><option value="Poppins">Poppins</option><option value="Playfair Display">Playfair Display</option></select></label>
-                <label>Style général<select id="sStyle"><option value="Moderne">Moderne</option><option value="Élégant">Élégant</option><option value="Minimaliste">Minimaliste</option></select></label>
-              </div>
-              <span class="palette-label">Palette prédéfinie</span>
-              <div class="color-palette" aria-label="Palettes prédéfinies"><button type="button" data-palette="#e63946,#111827,#ffb703" style="--palette:#e63946"></button><button type="button" data-palette="#f4a938,#2c2c2c,#f7e7b4" style="--palette:#f4a938"></button><button type="button" data-palette="#0e7490,#155e75,#67e8f9" style="--palette:#0e7490"></button><button type="button" data-palette="#238636,#14532d,#86efac" style="--palette:#238636"></button><button type="button" data-palette="#475bd8,#1e3a8a,#a5b4fc" style="--palette:#475bd8"></button><button type="button" data-palette="#9333ae,#581c87,#f0abfc" style="--palette:#9333ae"></button></div>
-              <a href="menu-customization.html" class="design-link">✧ Personnaliser le menu client →</a>
-            </section>
-
-            <section class="setting-card mobile-preview-card">
-              <div class="preview-card-heading"><div><h2>Menu client (mobile)</h2><p>Voyez les changements en temps réel.</p></div><div class="preview-devices"><button type="button" class="active" data-settings-device="mobile" aria-label="Aperçu mobile">▯</button><button type="button" data-settings-device="tablet" aria-label="Aperçu tablette">▭</button><button type="button" data-settings-device="desktop" aria-label="Aperçu ordinateur">▱</button></div></div>
-              <div class="settings-phone"><div class="settings-phone-speaker"></div><iframe id="settingsClientPreview" title="Aperçu du menu client"></iframe></div>
-              <a id="openSettingsPreview" class="open-preview" href="client.html?preview=1" target="_blank" rel="noopener">⌗ Ouvrir l’aperçu en plein écran</a>
-            </section>
-
-            <section class="setting-card subscription-card" id="accountSection">
-              <div class="card-heading"><span class="card-icon">♔</span><div><h2>Compte & abonnement</h2><p id="settingsSubDetails">Votre formule Auresto actuelle.</p></div></div>
-              <div class="subscription-row"><span>Offre actuelle</span><strong id="currentPlan">Free</strong></div>
-              <div class="compact-actions"><a href="onboarding.html?plan=Silver" class="card-action">Changer d’offre</a><button type="button" class="card-action accent-action" id="settingsRenewBtn">Renouveler</button></div>
-              <button type="button" class="reset-action" id="resetBtn">Réinitialiser le compte</button>
-            </section>
-          </div>
+      <section class="settings-section">
+        <h2>Abonnement Auresto</h2>
+        <p>Offre actuelle : <span class="plan-badge" id="currentPlan">Free</span></p>
+        <p style="font-size:12px;color:#536a70" id="settingsSubDetails">Passez à Silver pour activer les commandes et paiements, ou Gold pour les analyses IA.</p>
+        <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
+          <a href="onboarding.html?plan=Silver" class="btn btn-ghost" style="color:#103b4b;border-color:rgba(10,59,75,.2)">Changer d'offre</a>
+          <button type="button" class="btn btn-primary" id="settingsRenewBtn" style="display:inline-flex;align-items:center;gap:8px">
+            <svg class="lucide lucide-credit-card" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg> Renouveler mon abonnement
+          </button>
         </div>
-      </main>
-    </div>
+      </section>
+
+      <section class="settings-section">
+        <h2>Compte</h2>
+        <div class="field"><label for="sEmail">Email</label><input id="sEmail" type="email" readonly /></div>
+        <button type="button" class="btn btn-ghost" style="color:#e86b6b;border-color:#e86b6b;margin-top:8px" id="resetBtn">Réinitialiser le compte</button>
+      </section>
+
+      <button type="button" class="btn btn-primary" id="saveBtn">Enregistrer</button>
+    </main>
     <div class="toast" id="toast"></div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="js/icons.js"></script>
-    <script src="js/api-config.js"></script>
     <script src="js/store.js"></script>
     <script src="js/hours-picker.js"></script>
     <script src="js/settings.js"></script>

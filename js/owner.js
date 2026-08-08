@@ -1,10 +1,6 @@
 // Owner Dashboard Logic for Auresto Platform
 
-const API_BASE = window.AURESTO_API_BASE || (
-  window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || !window.location.hostname
-    ? 'http://localhost:4000'
-    : window.location.origin
-);
+const API_BASE = window.AURESTO_API_BASE || 'http://localhost:4000';
 const OWNER_TOKEN_KEY = 'auresto_owner_token';
 
 let currentOwnerToken = null;
@@ -12,30 +8,30 @@ let currentFilter = 'ALL';
 let currentQuery = '';
 let currentSort = 'created_desc';
 let allRestaurants = [];
-let currentSection = 'overview';
 
 // DOM Elements
 const authOverlay = document.getElementById('ownerAuthOverlay');
 const authForm = document.getElementById('ownerLoginForm');
 const authError = document.getElementById('authError');
 const mainContent = document.getElementById('ownerMainContent');
-const ownerNav = document.getElementById('ownerNav');
-
-// Drawer Elements
-const drawerOverlay = document.getElementById('drawerOverlay');
-const drawer = document.getElementById('restaurantDrawer');
-const drawerRestaurantName = document.getElementById('drawerRestaurantName');
-const drawerContent = document.getElementById('drawerContent');
-const closeDrawerBtn = document.getElementById('closeDrawerBtn');
-
-// Restaurant Table Elements
 const searchInput = document.getElementById('ownerSearchInput');
 const clearSearchBtn = document.getElementById('clearSearchBtn');
 const sortSelect = document.getElementById('sortSelect');
 const filterTabs = document.getElementById('filterTabs');
 const restaurantsTbody = document.getElementById('restaurantsTbody');
 const tableEmpty = document.getElementById('tableEmpty');
-const restaurantsLoading = document.getElementById('restaurantsLoading');
+
+// Edit Modal Elements
+const editModalOverlay = document.getElementById('editModalOverlay');
+const modalRestName = document.getElementById('modalRestName');
+const editRestId = document.getElementById('editRestId');
+const editPlan = document.getElementById('editPlan');
+const editStatus = document.getElementById('editStatus');
+const editExpiresAt = document.getElementById('editExpiresAt');
+const editGraceDays = document.getElementById('editGraceDays');
+const editOwnerEmail = document.getElementById('editOwnerEmail');
+const editOwnerPhone = document.getElementById('editOwnerPhone');
+const toggleSuspendBtn = document.getElementById('toggleSuspendBtn');
 
 function showToast(msg, duration = 3000) {
   const toast = document.getElementById('ownerToast');
@@ -109,804 +105,231 @@ function formatDate(dateStr) {
   return d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
 }
 
-// Navigation
-function switchSection(sectionId) {
-  currentSection = sectionId;
-  
-  // Update nav items
-  document.querySelectorAll('.owner-nav-item').forEach(item => {
-    item.classList.remove('active');
-    if (item.getAttribute('data-section') === sectionId) {
-      item.classList.add('active');
-    }
-  });
-  
-  // Show/hide sections
-  document.querySelectorAll('.owner-section').forEach(section => {
-    section.hidden = true;
-  });
-  
-  const targetSection = document.getElementById(`section-${sectionId}`);
-  if (targetSection) {
-    targetSection.hidden = false;
-  }
-  
-  // Load section data
-  loadSectionData(sectionId);
-}
-
-async function loadSectionData(sectionId) {
-  switch (sectionId) {
-    case 'overview':
-      await loadOverviewData();
-      break;
-    case 'restaurants':
-      await loadRestaurants();
-      break;
-    case 'subscriptions':
-      await loadSubscriptions();
-      break;
-    case 'payments':
-      await loadPayments();
-      break;
-    case 'deadlines':
-      await loadDeadlines();
-      break;
-    case 'audit':
-      await loadAuditLogs();
-      break;
-  }
-}
-
-// Overview Data
-async function loadOverviewData() {
+// Load Stats & Data
+async function loadDashboardData() {
   try {
-    const [statsRes, deadlinesRes, revenueRes] = await Promise.all([
-      ownerFetch('/api/owner/stats'),
-      ownerFetch('/api/owner/deadlines'),
-      ownerFetch('/api/owner/revenue')
-    ]);
-    
-    if (statsRes.ok) {
-      const stats = (await statsRes.json()).stats;
-      updateOverviewStats(stats);
-    } else {
-      console.error('Stats API error:', statsRes.status);
-    }
-    
-    if (deadlinesRes.ok) {
-      const { deadlines } = await deadlinesRes.json();
-      updateAlerts(deadlines);
-      updateRiskList(deadlines);
-    } else {
-      console.error('Deadlines API error:', deadlinesRes.status);
-      const riskList = document.getElementById('riskList');
-      if (riskList) {
-        riskList.innerHTML = '<div class="error-state">Impossible de charger les échéances</div>';
-      }
-    }
-    
-    if (revenueRes.ok) {
-      const revenue = await revenueRes.json();
-      updateRevenueCards(revenue);
-    } else {
-      console.error('Revenue API error:', revenueRes.status);
-    }
+    await Promise.all([loadStats(), loadRestaurants()]);
   } catch (err) {
-    console.error('Failed to load overview data:', err);
-    const riskList = document.getElementById('riskList');
-    if (riskList) {
-      riskList.innerHTML = '<div class="error-state">Impossible de charger les échéances</div>';
-    }
+    console.error('Failed to load dashboard data:', err);
   }
 }
 
-function updateOverviewStats(stats) {
-  document.getElementById('kpiActiveRestaurants').textContent = stats.activeRestaurants || 0;
-  document.getElementById('kpiSuspendedRestaurants').textContent = stats.suspendedRestaurants || 0;
-  document.getElementById('kpiRevenue').textContent = formatFcfa(stats.monthlyRevenue || 0);
-  document.getElementById('kpiExpiringSoon').textContent = stats.expiringSoonRestaurants || 0;
-  
-  // Plan counts (would need to be calculated from restaurants list)
-  document.getElementById('kpiSilverCount').textContent = stats.silverCount || 0;
-  document.getElementById('kpiGoldCount').textContent = stats.goldCount || 0;
-  document.getElementById('kpiFreeCount').textContent = stats.freeCount || 0;
-  
-  // Update plans distribution
-  const total = stats.totalRestaurants || 1;
-  const freePercent = Math.round((stats.freeCount || 0) / total * 100);
-  const silverPercent = Math.round((stats.silverCount || 0) / total * 100);
-  const goldPercent = Math.round((stats.goldCount || 0) / total * 100);
-  
-  document.getElementById('freeCount').textContent = stats.freeCount || 0;
-  document.getElementById('freePercent').textContent = `${freePercent}%`;
-  document.getElementById('freeFill').style.width = `${freePercent}%`;
-  
-  document.getElementById('silverCount').textContent = stats.silverCount || 0;
-  document.getElementById('silverPercent').textContent = `${silverPercent}%`;
-  document.getElementById('silverFill').style.width = `${silverPercent}%`;
-  
-  document.getElementById('goldCount').textContent = stats.goldCount || 0;
-  document.getElementById('goldPercent').textContent = `${goldPercent}%`;
-  document.getElementById('goldFill').style.width = `${goldPercent}%`;
-}
-
-function updateRevenueCards(revenue) {
-  document.getElementById('revenueToday').textContent = formatFcfa(revenue.today || 0);
-  document.getElementById('revenueWeek').textContent = formatFcfa(revenue.week || 0);
-  document.getElementById('revenueMonth').textContent = formatFcfa(revenue.month || 0);
-  document.getElementById('revenueTotal').textContent = formatFcfa(revenue.total || 0);
-}
-
-function updateAlerts(deadlines) {
-  const alerts = document.getElementById('ownerAlerts');
-  const expiringCount = deadlines.today?.length + deadlines.tomorrow?.length + deadlines.threeDays?.length + deadlines.sevenDays?.length || 0;
-  const graceCount = deadlines.gracePeriod?.length || 0;
-  const suspendedCount = deadlines.suspended?.length || 0;
-  
-  if (expiringCount > 0 || graceCount > 0 || suspendedCount > 0) {
-    alerts.hidden = false;
-    
-    if (expiringCount > 0) {
-      document.getElementById('alertExpiring').hidden = false;
-      document.getElementById('alertExpiringText').textContent = `${expiringCount} restaurants expirent dans les 7 prochains jours`;
-    } else {
-      document.getElementById('alertExpiring').hidden = true;
-    }
-    
-    if (graceCount > 0) {
-      document.getElementById('alertGrace').hidden = false;
-      document.getElementById('alertGraceText').textContent = `${graceCount} restaurants en période de grâce`;
-    } else {
-      document.getElementById('alertGrace').hidden = true;
-    }
-    
-    if (suspendedCount > 0) {
-      document.getElementById('alertSuspended').hidden = false;
-      document.getElementById('alertSuspendedText').textContent = `${suspendedCount} restaurants suspendus`;
-    } else {
-      document.getElementById('alertSuspended').hidden = true;
-    }
-  } else {
-    alerts.hidden = true;
-  }
-}
-
-function updateRiskList(deadlines) {
-  const riskList = document.getElementById('riskList');
-  console.log('updateRiskList called, riskList:', riskList, 'deadlines:', deadlines);
-  
-  if (!riskList) {
-    console.error('riskList element not found');
-    return;
-  }
-  
-  const riskItems = [];
-  
-  // Collect all at-risk restaurants
-  [...(deadlines.today || []), ...(deadlines.tomorrow || []), ...(deadlines.threeDays || []), ...(deadlines.gracePeriod || [])].forEach(item => {
-    const daysText = item.days_remaining < 0 
-      ? `Expire depuis ${Math.abs(item.days_remaining)} jours`
-      : `Expire dans ${item.days_remaining} jours`;
-    
-    riskItems.push({
-      name: item.name,
-      details: `${item.plan} • ${daysText}`,
-      id: item.id,
-      urgency: item.days_remaining < 0 ? 'danger' : 'warning'
-    });
-  });
-  
-  console.log('riskItems:', riskItems);
-  
-  if (riskItems.length === 0) {
-    riskList.innerHTML = '<div class="empty-state">Aucun restaurant à risque</div>';
-    return;
-  }
-  
-  riskList.innerHTML = riskItems.map(item => `
-    <div class="risk-item ${item.urgency}">
-      <div class="risk-info">
-        <div class="risk-name">${item.name}</div>
-        <div class="risk-details">${item.details}</div>
-      </div>
-      <button type="button" class="risk-action" onclick="openRestaurantDrawer(${item.id})">Voir</button>
-    </div>
-  `).join('');
-}
-
-// Restaurants
-async function loadRestaurants() {
-  restaurantsLoading.hidden = false;
-  tableEmpty.hidden = true;
-  restaurantsTbody.innerHTML = '';
-  
+async function loadStats() {
   try {
-    const url = `/api/owner/restaurants?filter=${encodeURIComponent(currentFilter)}&search=${encodeURIComponent(currentQuery)}`;
+    const res = await ownerFetch('/api/owner/stats');
+    if (!res.ok) return;
+    const data = await res.json();
+    const stats = data.stats;
+
+    document.getElementById('kpiTotal').textContent = stats.totalRestaurants;
+    document.getElementById('kpiNewMonth').textContent = `+${stats.newRestaurantsThisMonth} ce mois-ci`;
+    document.getElementById('kpiActive').textContent = stats.activeRestaurants;
+    document.getElementById('kpiTrial').textContent = `${stats.trialRestaurants} en période d'essai`;
+    document.getElementById('kpiExpiringSoon').textContent = stats.expiringSoonRestaurants;
+    document.getElementById('kpiExpired').textContent = `${stats.expiredRestaurants} expirés / grâce`;
+    document.getElementById('kpiSuspended').textContent = stats.suspendedRestaurants;
+    document.getElementById('kpiPaidPlans').textContent = stats.silverCount + stats.goldCount;
+    document.getElementById('kpiPlanBreakdown').textContent = `${stats.silverCount} Silver • ${stats.goldCount} Gold • ${stats.freeCount} Free`;
+    document.getElementById('kpiRevenue').textContent = formatFcfa(stats.monthlyRevenue);
+    document.getElementById('kpiPendingPay').textContent = `${stats.pendingPayments} paiement(s) en attente`;
+  } catch (e) {}
+}
+
+async function loadRestaurants() {
+  try {
+    const url = `/api/owner/restaurants?filter=${encodeURIComponent(currentFilter)}&query=${encodeURIComponent(currentQuery)}&sortBy=${encodeURIComponent(currentSort)}`;
     const res = await ownerFetch(url);
-    
-    if (!res.ok) throw new Error('Failed to load restaurants');
-    
+    if (!res.ok) return;
     const data = await res.json();
     allRestaurants = data.restaurants || [];
-    
+    updateTabCounts(allRestaurants);
     renderRestaurantsTable(allRestaurants);
-  } catch (err) {
-    console.error('Failed to load restaurants:', err);
-    restaurantsLoading.innerHTML = '<div class="loading-state">Erreur lors du chargement</div>';
-  } finally {
-    restaurantsLoading.hidden = true;
-  }
+  } catch (e) {}
+}
+
+function updateTabCounts(list) {
+  // Compute counts from overall list
+  document.getElementById('countAll').textContent = list.length;
+  document.getElementById('countActive').textContent = list.filter(r => ['ACTIVE', 'EXPIRING_SOON', 'TRIAL'].includes(r.status)).length;
+  document.getElementById('countFree').textContent = list.filter(r => r.plan === 'FREE').length;
+  document.getElementById('countSilver').textContent = list.filter(r => r.plan === 'SILVER').length;
+  document.getElementById('countGold').textContent = list.filter(r => r.plan === 'GOLD').length;
+  document.getElementById('countExpiring').textContent = list.filter(r => r.status === 'EXPIRING_SOON').length;
+  document.getElementById('countExpired').textContent = list.filter(r => ['EXPIRED', 'GRACE_PERIOD'].includes(r.status)).length;
+  document.getElementById('countSuspended').textContent = list.filter(r => r.status === 'SUSPENDED').length;
 }
 
 function renderRestaurantsTable(list) {
   restaurantsTbody.innerHTML = '';
-  
+
   if (!list.length) {
     tableEmpty.hidden = false;
     return;
   }
-  
   tableEmpty.hidden = true;
-  
-  const statusLabels = {
-    ACTIVE: 'ACTIF',
-    EXPIRING_SOON: 'EXPIRANT',
-    EXPIRED: 'EXPIRÉ',
-    GRACE_PERIOD: 'GRÂCE',
-    SUSPENDED: 'SUSPENDU'
-  };
-  
+
   list.forEach(r => {
     const tr = document.createElement('tr');
+
+    // Status label mapping
+    const statusLabels = {
+      ACTIVE: 'ACTIF',
+      TRIAL: 'ESSAI',
+      EXPIRING_SOON: 'EXPIRE BIENTÔT',
+      EXPIRED: 'EXPIRÉ',
+      GRACE_PERIOD: 'GRÂCE',
+      SUSPENDED: 'SUSPENDU'
+    };
+
+    const statusClass = r.status || 'ACTIVE';
+    const planClass = r.plan || 'FREE';
+
+    // Date calculations display
+    let dateDisplay = `Début : ${formatDate(r.started_at)}<br>`;
+    if (r.plan === 'FREE') {
+      dateDisplay += `<span style="color:#94a3b8">Pas d'expiration</span>`;
+    } else {
+      dateDisplay += `Expiration : <strong>${formatDate(r.expires_at)}</strong>`;
+      if (r.days_remaining !== null) {
+        if (r.days_remaining > 0) {
+          dateDisplay += ` <small style="color:#3ecf8e">(${r.days_remaining}j restants)</small>`;
+        } else {
+          dateDisplay += ` <small style="color:#e86b6b">(${Math.abs(r.days_remaining)}j de retard)</small>`;
+        }
+      }
+    }
+
+    // Payment display
+    let payDisplay = 'Aucun paiement';
+    if (r.last_payment_amount > 0) {
+      payDisplay = `<strong>${formatFcfa(r.last_payment_amount)}</strong><br><small style="color:#94a3b8">${r.last_payment_provider || 'WAVE'} • ${formatDate(r.last_payment_date)}</small>`;
+    }
+
     tr.innerHTML = `
-      <td>
+      <td class="rest-name-cell">
         <strong>${r.name || 'Restaurant sans nom'}</strong>
+        <span>ID #${r.id} • ${r.city || 'Dakar'}</span>
       </td>
       <td>
-        <span style="color:#94a3b8;font-size:12px">AUR-${String(r.id).padStart(5, '0')}</span>
+        <strong style="color:#e2e8f0;font-size:12px">${r.owner_email}</strong><br>
+        <span style="color:#94a3b8;font-size:11px">${r.owner_phone || r.phone || ''}</span>
       </td>
       <td>
-        <span class="plan-tag ${r.plan || 'FREE'}">${r.plan || 'FREE'}</span>
+        <span class="plan-tag ${planClass}">${r.plan}</span>
       </td>
       <td>
-        <span class="status-badge ${r.status || 'ACTIVE'}">${statusLabels[r.status] || r.status}</span>
+        <span class="status-badge ${statusClass}">${statusLabels[r.status] || r.status}</span>
       </td>
-      <td style="font-size:12px;color:#94a3b8">
-        ${formatDate(r.expires_at)}
+      <td style="font-size:12px">
+        ${dateDisplay}
+      </td>
+      <td style="font-size:12px">
+        ${payDisplay}
       </td>
       <td style="font-size:12px;color:#94a3b8">
         ${formatDate(r.created_at)}
       </td>
       <td>
-        <button type="button" class="btn btn-ghost btn-sm" onclick="openRestaurantDrawer(${r.id})">
-          Voir
+        <button type="button" class="btn btn-ghost btn-sm edit-rest-btn" data-id="${r.id}" style="display:inline-flex;align-items:center;gap:6px">
+          ${typeof AurestoIcons !== 'undefined' ? AurestoIcons.get('settings', { size: 14 }) : ''} Gérer
         </button>
       </td>
     `;
+
     restaurantsTbody.appendChild(tr);
   });
-}
 
-// Subscriptions
-async function loadSubscriptions() {
-  const subscriptionsList = document.getElementById('subscriptionsList');
-  subscriptionsList.innerHTML = '<div class="loading-state">Chargement des abonnements...</div>';
-  
-  try {
-    const res = await ownerFetch('/api/owner/subscriptions');
-    if (!res.ok) throw new Error('Failed to load subscriptions');
-    
-    const { subscriptions } = await res.json();
-    
-    if (!subscriptions.length) {
-      subscriptionsList.innerHTML = '<div class="empty-state">Aucun abonnement</div>';
-      return;
-    }
-    
-    subscriptionsList.innerHTML = subscriptions.map(sub => `
-      <div class="subscription-item">
-        <div>
-          <div class="subscription-name">${sub.restaurant_name}</div>
-          <div class="subscription-details">${sub.plan} • ${formatDate(sub.expires_at)}</div>
-        </div>
-        <span class="status-badge ${sub.status}">${sub.status}</span>
-      </div>
-    `).join('');
-  } catch (err) {
-    console.error('Failed to load subscriptions:', err);
-    subscriptionsList.innerHTML = '<div class="loading-state">Erreur lors du chargement</div>';
-  }
-}
-
-// Payments
-async function loadPayments() {
-  const paymentsList = document.getElementById('paymentsList');
-  
-  try {
-    const res = await ownerFetch('/api/owner/payments');
-    if (!res.ok) throw new Error('Failed to load payments');
-    
-    const data = await res.json();
-    
-    if (data.message) {
-      paymentsList.innerHTML = `<div class="empty-state">${data.message}</div>`;
-      return;
-    }
-    
-    const { payments } = data;
-    
-    if (!payments.length) {
-      paymentsList.innerHTML = '<div class="empty-state">Aucun paiement</div>';
-      return;
-    }
-    
-    paymentsList.innerHTML = payments.map(pay => `
-      <div class="payment-item">
-        <div>
-          <div class="payment-restaurant">${pay.restaurant}</div>
-          <div class="payment-details">${pay.type} • ${formatDate(pay.date)}</div>
-        </div>
-        <div class="payment-amount">${formatFcfa(pay.amount)}</div>
-      </div>
-    `).join('');
-  } catch (err) {
-    console.error('Failed to load payments:', err);
-    paymentsList.innerHTML = '<div class="loading-state">Erreur lors du chargement</div>';
-  }
-}
-
-// Deadlines
-async function loadDeadlines() {
-  const deadlinesContainer = document.getElementById('deadlinesContainer');
-  deadlinesContainer.innerHTML = '<div class="loading-state">Chargement des échéances...</div>';
-  
-  try {
-    const res = await ownerFetch('/api/owner/deadlines');
-    if (!res.ok) throw new Error('Failed to load deadlines');
-    
-    const { deadlines } = await res.json();
-    
-    let html = '';
-    
-    const groups = [
-      { key: 'today', title: "AUJOURD'HUI" },
-      { key: 'tomorrow', title: 'DEMAIN' },
-      { key: 'threeDays', title: 'DANS 3 JOURS' },
-      { key: 'sevenDays', title: 'DANS 7 JOURS' },
-      { key: 'gracePeriod', title: 'PÉRIODE DE GRÂCE' },
-      { key: 'suspended', title: 'SUSPENDUS' }
-    ];
-    
-    groups.forEach(group => {
-      const items = deadlines[group.key] || [];
-      if (items.length === 0) return;
-      
-      html += `
-        <div class="deadline-group">
-          <div class="deadline-group-title">${group.title} (${items.length})</div>
-          ${items.map(item => `
-            <div class="deadline-item ${group.key === 'gracePeriod' || group.key === 'suspended' ? 'urgent' : ''}">
-              <div>
-                <div style="font-weight:600;color:#fff">${item.name}</div>
-                <div style="font-size:12px;color:#94a3b8">${item.plan} • ${formatDate(item.expires_at)}</div>
-              </div>
-              <button type="button" class="btn btn-ghost btn-sm" onclick="openRestaurantDrawer(${item.id})">Voir</button>
-            </div>
-          `).join('')}
-        </div>
-      `;
+  // Attach action listeners
+  document.querySelectorAll('.edit-rest-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const restId = btn.getAttribute('data-id');
+      const restaurant = allRestaurants.find(item => String(item.id) === String(restId));
+      if (restaurant) openEditModal(restaurant);
     });
-    
-    if (!html) {
-      html = '<div class="empty-state">Aucune échéance à venir</div>';
-    }
-    
-    deadlinesContainer.innerHTML = html;
-  } catch (err) {
-    console.error('Failed to load deadlines:', err);
-    deadlinesContainer.innerHTML = '<div class="loading-state">Erreur lors du chargement</div>';
-  }
-}
-
-// Audit Logs
-async function loadAuditLogs() {
-  const auditLogs = document.getElementById('auditLogs');
-  
-  try {
-    const res = await ownerFetch('/api/owner/audit-logs');
-    if (!res.ok) throw new Error('Failed to load audit logs');
-    
-    const data = await res.json();
-    
-    if (data.message) {
-      auditLogs.innerHTML = `<div class="empty-state">${data.message}</div>`;
-      return;
-    }
-    
-    const { logs } = data;
-    
-    if (!logs.length) {
-      auditLogs.innerHTML = '<div class="empty-state">Aucun log d\'audit</div>';
-      return;
-    }
-    
-    auditLogs.innerHTML = logs.map(log => `
-      <div class="audit-log-item">
-        <div class="audit-log-date">${formatDate(log.date)}</div>
-        <div class="audit-log-action">${log.action}</div>
-        <div class="audit-log-details">${log.details}</div>
-      </div>
-    `).join('');
-  } catch (err) {
-    console.error('Failed to load audit logs:', err);
-    auditLogs.innerHTML = '<div class="loading-state">Erreur lors du chargement</div>';
-  }
-}
-
-// Restaurant Drawer
-async function openRestaurantDrawer(restaurantId) {
-  drawerRestaurantName.textContent = 'Chargement...';
-  drawerContent.innerHTML = '<div class="loading-state">Chargement des détails...</div>';
-  drawerOverlay.hidden = false;
-  
-  try {
-    // First try to find in loaded restaurants
-    let restaurant = allRestaurants.find(r => String(r.id) === String(restaurantId));
-    
-    // If not found, load from API
-    if (!restaurant) {
-      const res = await ownerFetch('/api/owner/restaurants');
-      if (res.ok) {
-        const data = await res.json();
-        allRestaurants = data.restaurants || [];
-        restaurant = allRestaurants.find(r => String(r.id) === String(restaurantId));
-      }
-    }
-    
-    if (!restaurant) {
-      drawerContent.innerHTML = '<div class="empty-state">Restaurant non trouvé</div>';
-      return;
-    }
-    
-    drawerRestaurantName.textContent = restaurant.name;
-    
-    // Calculate days remaining
-    let daysRemaining = null;
-    if (restaurant.expires_at) {
-      const expiresAt = new Date(restaurant.expires_at);
-      const today = new Date();
-      daysRemaining = Math.ceil((expiresAt - today) / (1000 * 60 * 60 * 24));
-    }
-    
-    const isSuspended = restaurant.status === 'SUSPENDED';
-    
-    drawerContent.innerHTML = `
-      <div class="drawer-section">
-        <div class="drawer-section-title">Informations générales</div>
-        <div class="drawer-field">
-          <span class="drawer-field-label">Code</span>
-          <span class="drawer-field-value">AUR-${String(restaurant.id).padStart(5, '0')}</span>
-        </div>
-        <div class="drawer-field">
-          <span class="drawer-field-label">Email propriétaire</span>
-          <span class="drawer-field-value">${restaurant.owner_email || 'Non renseigné'}</span>
-        </div>
-        <div class="drawer-field">
-          <span class="drawer-field-label">Téléphone</span>
-          <span class="drawer-field-value">${restaurant.owner_phone || 'Non renseigné'}</span>
-        </div>
-        <div class="drawer-field">
-          <span class="drawer-field-label">Ville</span>
-          <span class="drawer-field-value">${restaurant.city || 'Non renseigné'}</span>
-        </div>
-      </div>
-      
-      <div class="drawer-section">
-        <div class="drawer-section-title">Abonnement</div>
-        <div class="drawer-field">
-          <span class="drawer-field-label">Plan</span>
-          <span class="drawer-field-value">${restaurant.subscription_plan || restaurant.plan || 'FREE'}</span>
-        </div>
-        <div class="drawer-field">
-          <span class="drawer-field-label">Statut</span>
-          <span class="drawer-field-value">${restaurant.status || 'ACTIVE'}</span>
-        </div>
-        <div class="drawer-field">
-          <span class="drawer-field-label">Date d'expiration</span>
-          <span class="drawer-field-value">${formatDate(restaurant.expires_at)}</span>
-        </div>
-        <div class="drawer-field">
-          <span class="drawer-field-label">Jours restants</span>
-          <span class="drawer-field-value">${daysRemaining !== null ? (daysRemaining >= 0 ? `${daysRemaining} jours` : `Expiré depuis ${Math.abs(daysRemaining)} jours`) : '—'}</span>
-        </div>
-        <div class="drawer-field">
-          <span class="drawer-field-label">Date de création</span>
-          <span class="drawer-field-value">${formatDate(restaurant.created_at)}</span>
-        </div>
-      </div>
-      
-      <div class="drawer-section">
-        <div class="drawer-section-title">Actions</div>
-        <div class="drawer-actions">
-          <button type="button" class="btn btn-primary" onclick="openSubscriptionModal(${restaurant.id})">
-            Modifier l'abonnement
-          </button>
-          <button type="button" class="btn ${isSuspended ? 'btn-primary' : 'btn-danger'}" onclick="${isSuspended ? `confirmReactivate(${restaurant.id})` : `confirmSuspend(${restaurant.id})`}">
-            ${isSuspended ? 'Réactiver le restaurant' : 'Suspendre le restaurant'}
-          </button>
-          <button type="button" class="btn btn-ghost" onclick="closeDrawer()">Fermer</button>
-        </div>
-      </div>
-    `;
-  } catch (err) {
-    console.error('Failed to load restaurant details:', err);
-    drawerContent.innerHTML = '<div class="loading-state">Erreur lors du chargement</div>';
-  }
-}
-
-function closeDrawer() {
-  drawerOverlay.hidden = true;
-}
-
-// Suspend/Reactivate Restaurant
-async function confirmSuspend(restaurantId) {
-  const restaurant = allRestaurants.find(r => String(r.id) === String(restaurantId));
-  if (!restaurant) return;
-  
-  const confirmed = confirm(`Suspendre le restaurant "${restaurant.name}" ?\n\nLe restaurant ne pourra plus utiliser les fonctionnalités réservées aux comptes actifs.`);
-  if (!confirmed) return;
-  
-  try {
-    const res = await ownerFetch(`/api/owner/restaurants/${restaurantId}/suspend`, {
-      method: 'POST',
-      body: JSON.stringify({ suspend: true })
-    });
-    
-    if (!res.ok) {
-      const errorData = await res.json().catch(() => ({ error: 'Unknown error' }));
-      console.error('Suspend error:', errorData);
-      throw new Error(errorData.error || 'Failed to suspend restaurant');
-    }
-    
-    showToast(`Restaurant ${restaurant.name} suspendu.`);
-    closeDrawer();
-    await refreshAllData();
-  } catch (err) {
-    console.error('Failed to suspend restaurant:', err);
-    showToast(`Erreur: ${err.message}`);
-  }
-}
-
-async function confirmReactivate(restaurantId) {
-  const restaurant = allRestaurants.find(r => String(r.id) === String(restaurantId));
-  if (!restaurant) return;
-  
-  const confirmed = confirm(`Réactiver le restaurant "${restaurant.name}" ?`);
-  if (!confirmed) return;
-  
-  try {
-    const res = await ownerFetch(`/api/owner/restaurants/${restaurantId}/suspend`, {
-      method: 'POST',
-      body: JSON.stringify({ suspend: false })
-    });
-    
-    if (!res.ok) {
-      const errorData = await res.json().catch(() => ({ error: 'Unknown error' }));
-      console.error('Reactivate error:', errorData);
-      throw new Error(errorData.error || 'Failed to reactivate restaurant');
-    }
-    
-    showToast(`Restaurant ${restaurant.name} réactivé.`);
-    closeDrawer();
-    await refreshAllData();
-  } catch (err) {
-    console.error('Failed to reactivate restaurant:', err);
-    showToast(`Erreur: ${err.message}`);
-  }
-}
-
-// Subscription Modal
-let currentSubscriptionRestaurant = null;
-
-function openSubscriptionModal(restaurantId) {
-  const restaurant = allRestaurants.find(r => String(r.id) === String(restaurantId));
-  if (!restaurant) return;
-  
-  currentSubscriptionRestaurant = restaurant;
-  
-  const modal = document.getElementById('subscriptionModal');
-  if (!modal) {
-    // Create modal if it doesn't exist
-    const modalHTML = `
-      <div class="modal-overlay" id="subscriptionModal" hidden>
-        <div class="modal">
-          <div class="modal-header">
-            <h3>Modifier l'abonnement</h3>
-            <button type="button" class="modal-close" onclick="closeSubscriptionModal()">✕</button>
-          </div>
-          <div class="modal-body">
-            <div class="subscription-preview">
-              <div class="preview-restaurant">${restaurant.name}</div>
-              <div class="preview-change">
-                <span class="current-plan">${restaurant.subscription_plan || restaurant.plan || 'FREE'}</span>
-                <span class="arrow">→</span>
-                <span class="new-plan" id="newPlanPreview">FREE</span>
-              </div>
-              <div class="preview-expiration">
-                Nouvelle expiration : <span id="newExpirationPreview">${formatDate(restaurant.expires_at)}</span>
-              </div>
-            </div>
-            
-            <div class="form-group">
-              <label for="subscriptionPlan">Plan</label>
-              <select id="subscriptionPlan">
-                <option value="FREE">FREE - 0 FCFA / mois</option>
-                <option value="SILVER">SILVER - 25 000 FCFA / mois</option>
-                <option value="GOLD">GOLD - 40 000 FCFA / mois</option>
-              </select>
-            </div>
-            
-            <div class="form-group">
-              <label for="subscriptionStatus">Statut</label>
-              <select id="subscriptionStatus">
-                <option value="ACTIVE">ACTIF</option>
-                <option value="EXPIRING_SOON">EXPIRANT</option>
-                <option value="EXPIRED">EXPIRÉ</option>
-                <option value="GRACE_PERIOD">GRÂCE</option>
-              </select>
-            </div>
-            
-            <div class="form-group">
-              <label for="subscriptionExpiration">Date d'expiration</label>
-              <input type="date" id="subscriptionExpiration" value="${restaurant.expires_at ? new Date(restaurant.expires_at).toISOString().split('T')[0] : ''}">
-            </div>
-            
-            <div class="form-group">
-              <label for="subscriptionGraceDays">Période de grâce (jours)</label>
-              <input type="number" id="subscriptionGraceDays" value="${restaurant.grace_period_days || 3}" min="0" max="30">
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-ghost" onclick="closeSubscriptionModal()">Annuler</button>
-            <button type="button" class="btn btn-primary" onclick="confirmSubscriptionChange()">Confirmer</button>
-          </div>
-        </div>
-      </div>
-    `;
-    document.body.insertAdjacentHTML('beforeend', modalHTML);
-  } else {
-    // Update existing modal
-    document.getElementById('subscriptionPlan').value = restaurant.subscription_plan || restaurant.plan || 'FREE';
-    document.getElementById('subscriptionStatus').value = restaurant.status || 'ACTIVE';
-    document.getElementById('subscriptionExpiration').value = restaurant.expires_at ? new Date(restaurant.expires_at).toISOString().split('T')[0] : '';
-    document.getElementById('subscriptionGraceDays').value = restaurant.grace_period_days || 3;
-    updateSubscriptionPreview();
-  }
-  
-  // Add event listener for plan change
-  document.getElementById('subscriptionPlan').addEventListener('change', updateSubscriptionPreview);
-  document.getElementById('subscriptionExpiration').addEventListener('change', updateSubscriptionPreview);
-  
-  document.getElementById('subscriptionModal').hidden = false;
-}
-
-function updateSubscriptionPreview() {
-  const newPlan = document.getElementById('subscriptionPlan').value;
-  const newExpiration = document.getElementById('subscriptionExpiration').value;
-  
-  document.getElementById('newPlanPreview').textContent = newPlan;
-  document.getElementById('newExpirationPreview').textContent = formatDate(newExpiration);
-}
-
-function closeSubscriptionModal() {
-  const modal = document.getElementById('subscriptionModal');
-  if (modal) modal.hidden = true;
-  currentSubscriptionRestaurant = null;
-}
-
-async function confirmSubscriptionChange() {
-  if (!currentSubscriptionRestaurant) return;
-  
-  const restaurantId = currentSubscriptionRestaurant.id;
-  const plan = document.getElementById('subscriptionPlan').value;
-  const status = document.getElementById('subscriptionStatus').value;
-  const expiresAt = document.getElementById('subscriptionExpiration').value;
-  const gracePeriodDays = parseInt(document.getElementById('subscriptionGraceDays').value, 10) || 3;
-  
-  const confirmed = confirm(
-    `Restaurant ${currentSubscriptionRestaurant.name}\n\n` +
-    `${currentSubscriptionRestaurant.subscription_plan || currentSubscriptionRestaurant.plan || 'FREE'} → ${plan}\n\n` +
-    `Nouvelle expiration : ${formatDate(expiresAt)}\n\n` +
-    `Confirmer la modification ?`
-  );
-  
-  if (!confirmed) return;
-  
-  try {
-    const res = await ownerFetch(`/api/owner/restaurants/${restaurantId}/subscription`, {
-      method: 'PUT',
-      body: JSON.stringify({
-        plan,
-        status,
-        expiresAt: expiresAt ? new Date(expiresAt).toISOString() : null,
-        gracePeriodDays,
-        ownerEmail: currentSubscriptionRestaurant.owner_email,
-        ownerPhone: currentSubscriptionRestaurant.owner_phone
-      })
-    });
-    
-    if (!res.ok) throw new Error('Failed to update subscription');
-    
-    showToast(`Abonnement du restaurant ${currentSubscriptionRestaurant.name} modifié.`);
-    closeSubscriptionModal();
-    closeDrawer();
-    await refreshAllData();
-  } catch (err) {
-    console.error('Failed to update subscription:', err);
-    showToast('Erreur lors de la modification de l\'abonnement');
-  }
-}
-
-// Refresh all data after actions
-async function refreshAllData() {
-  await loadOverviewData();
-  await loadRestaurants();
-  await loadSubscriptions();
-  await loadDeadlines();
-}
-
-// Make functions globally accessible for onclick handlers
-window.openRestaurantDrawer = openRestaurantDrawer;
-window.closeDrawer = closeDrawer;
-window.confirmSuspend = confirmSuspend;
-window.confirmReactivate = confirmReactivate;
-window.openSubscriptionModal = openSubscriptionModal;
-window.closeSubscriptionModal = closeSubscriptionModal;
-window.confirmSubscriptionChange = confirmSubscriptionChange;
-
-// Initialize Icons
-function initializeIcons() {
-  const iconMap = {
-    'sessionIcon': 'shield-check',
-    'logoutIcon': 'log-out',
-    'navOverviewIcon': 'layout-dashboard',
-    'navRestaurantsIcon': 'store',
-    'navSubscriptionsIcon': 'credit-card',
-    'navPaymentsIcon': 'wallet',
-    'navDeadlinesIcon': 'calendar-clock',
-    'navAuditIcon': 'scroll-text',
-    'refreshOverviewIcon': 'refresh',
-    'refreshRestaurantsIcon': 'refresh',
-    'refreshSubscriptionsIcon': 'refresh',
-    'refreshPaymentsIcon': 'refresh',
-    'refreshDeadlinesIcon': 'refresh',
-    'refreshAuditIcon': 'refresh',
-    'searchIcon': 'search',
-    'kpiActiveIcon': 'check-circle',
-    'kpiSuspendedIcon': 'lock',
-    'kpiRevenueIcon': 'wallet',
-    'kpiExpiringIcon': 'alert-triangle',
-    'kpiSilverIcon': 'sparkles',
-    'kpiGoldIcon': 'sparkles',
-    'kpiFreeIcon': 'sparkles',
-    'alertExpiringIcon': 'alert-triangle',
-    'alertGraceIcon': 'alert-triangle',
-    'alertSuspendedIcon': 'lock',
-    'drawerCloseIcon': 'x'
-  };
-  
-  Object.entries(iconMap).forEach(([elementId, iconName]) => {
-    const element = document.getElementById(elementId);
-    if (element && typeof AurestoIcons !== 'undefined') {
-      element.innerHTML = AurestoIcons.get(iconName, { size: 16 });
-    }
   });
+}
+
+// Open Edit Modal
+function openEditModal(r) {
+  editRestId.value = r.id;
+  modalRestName.textContent = `Gérer — ${r.name}`;
+  editPlan.value = r.plan;
+  editStatus.value = r.status;
   
-  // Auth icon
-  const authIconEl = document.getElementById('ownerAuthIcon');
-  if (authIconEl && typeof AurestoIcons !== 'undefined') {
-    authIconEl.innerHTML = AurestoIcons.get('lock', { size: 36 });
+  if (r.expires_at) {
+    const d = new Date(r.expires_at);
+    editExpiresAt.value = d.toISOString().split('T')[0];
+  } else {
+    editExpiresAt.value = '';
+  }
+
+  editGraceDays.value = r.grace_period_days || 3;
+  editOwnerEmail.value = r.owner_email === 'Non renseigné' ? '' : r.owner_email;
+  editOwnerPhone.value = r.owner_phone === 'Non renseigné' ? '' : r.owner_phone;
+
+  if (r.status === 'SUSPENDED') {
+    toggleSuspendBtn.innerHTML = `${typeof AurestoIcons !== 'undefined' ? AurestoIcons.get('unlock', { size: 14 }) : ''} Réactiver le restaurant`;
+    toggleSuspendBtn.className = 'btn btn-primary';
+  } else {
+    toggleSuspendBtn.innerHTML = `${typeof AurestoIcons !== 'undefined' ? AurestoIcons.get('lock', { size: 14 }) : ''} Suspendre le restaurant`;
+    toggleSuspendBtn.className = 'btn btn-danger';
+  }
+
+  editModalOverlay.hidden = false;
+}
+
+function closeEditModal() {
+  editModalOverlay.hidden = true;
+}
+
+// Save Edit Modal
+async function saveRestaurantSubscription() {
+  const restId = editRestId.value;
+  const payload = {
+    plan: editPlan.value,
+    status: editStatus.value,
+    expiresAt: editExpiresAt.value ? new Date(editExpiresAt.value).toISOString() : null,
+    gracePeriodDays: parseInt(editGraceDays.value, 10) || 3,
+    ownerEmail: editOwnerEmail.value.trim(),
+    ownerPhone: editOwnerPhone.value.trim()
+  };
+
+  try {
+    const res = await ownerFetch(`/api/owner/restaurants/${restId}/subscription`, {
+      method: 'PUT',
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error('Erreur lors de la mise à jour');
+    showToast('Modifications enregistrées avec succès !');
+    closeEditModal();
+    loadDashboardData();
+  } catch (err) {
+    showToast('Erreur lors de la sauvegarde : ' + err.message);
+  }
+}
+
+// Toggle Suspend
+async function toggleSuspendRestaurant() {
+  const restId = editRestId.value;
+  const restaurant = allRestaurants.find(r => String(r.id) === String(restId));
+  if (!restaurant) return;
+
+  const isSuspended = restaurant.status === 'SUSPENDED';
+  const actionText = isSuspended ? 'réactiver' : 'suspendre';
+
+  if (!confirm(`Êtes-vous sûr de vouloir ${actionText} le restaurant "${restaurant.name}" ?`)) return;
+
+  try {
+    const res = await ownerFetch(`/api/owner/restaurants/${restId}/suspend`, {
+      method: 'POST',
+      body: JSON.stringify({ suspend: !isSuspended })
+    });
+    if (!res.ok) throw new Error('Erreur');
+    showToast(`Restaurant ${isSuspended ? 'réactivé' : 'suspendu'} avec succès !`);
+    closeEditModal();
+    loadDashboardData();
+  } catch (err) {
+    showToast('Erreur lors du changement de statut');
   }
 }
 
@@ -926,8 +349,7 @@ authForm.addEventListener('submit', async (e) => {
     if (res.ok && data.token) {
       setOwnerToken(data.token);
       hideAuthModal();
-      initializeIcons();
-      switchSection('overview');
+      loadDashboardData();
       showToast('Bienvenue sur le Owner Dashboard Auresto !');
     } else {
       authError.textContent = data.message || 'Clé d\'accès invalide.';
@@ -945,13 +367,9 @@ document.getElementById('ownerLogoutBtn').addEventListener('click', () => {
   showToast('Déconnecté du Owner Dashboard.');
 });
 
-// Navigation
-ownerNav.addEventListener('click', (e) => {
-  const navItem = e.target.closest('.owner-nav-item');
-  if (navItem) {
-    const sectionId = navItem.getAttribute('data-section');
-    switchSection(sectionId);
-  }
+document.getElementById('refreshBtn').addEventListener('click', () => {
+  loadDashboardData();
+  showToast('Données rafraîchies !');
 });
 
 // Search & Filters
@@ -968,14 +386,13 @@ clearSearchBtn.addEventListener('click', () => {
   loadRestaurants();
 });
 
-filterTabs.addEventListener('click', (e) => {
-  const btn = e.target.closest('.filter-btn');
-  if (btn) {
+filterTabs.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
     filterTabs.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     currentFilter = btn.getAttribute('data-filter');
     loadRestaurants();
-  }
+  });
 });
 
 sortSelect.addEventListener('change', (e) => {
@@ -983,53 +400,40 @@ sortSelect.addEventListener('change', (e) => {
   loadRestaurants();
 });
 
-// Refresh buttons
-document.getElementById('refreshOverviewBtn')?.addEventListener('click', () => {
-  loadOverviewData();
-  showToast('Données rafraîchies !');
+// Edit Modal buttons
+document.getElementById('closeEditModalBtn').addEventListener('click', closeEditModal);
+document.getElementById('cancelEditBtn').addEventListener('click', closeEditModal);
+document.getElementById('saveEditBtn').addEventListener('click', saveRestaurantSubscription);
+toggleSuspendBtn.addEventListener('click', toggleSuspendRestaurant);
+
+// Quick extend buttons
+document.getElementById('quickExtend30Btn').addEventListener('click', () => {
+  const curr = editExpiresAt.value ? new Date(editExpiresAt.value) : new Date();
+  curr.setDate(curr.getDate() + 30);
+  editExpiresAt.value = curr.toISOString().split('T')[0];
+  editStatus.value = 'ACTIVE';
+  showToast('+ 30 jours ajoutés à la date d\'expiration');
 });
 
-document.getElementById('refreshRestaurantsBtn')?.addEventListener('click', () => {
-  loadRestaurants();
-  showToast('Données rafraîchies !');
-});
-
-document.getElementById('refreshSubscriptionsBtn')?.addEventListener('click', () => {
-  loadSubscriptions();
-  showToast('Données rafraîchies !');
-});
-
-document.getElementById('refreshPaymentsBtn')?.addEventListener('click', () => {
-  loadPayments();
-  showToast('Données rafraîchies !');
-});
-
-document.getElementById('refreshDeadlinesBtn')?.addEventListener('click', () => {
-  loadDeadlines();
-  showToast('Données rafraîchies !');
-});
-
-document.getElementById('refreshAuditBtn')?.addEventListener('click', () => {
-  loadAuditLogs();
-  showToast('Données rafraîchies !');
-});
-
-document.getElementById('closeDrawerBtn').addEventListener('click', closeDrawer);
-
-drawerOverlay.addEventListener('click', (e) => {
-  if (e.target === drawerOverlay) {
-    closeDrawer();
-  }
+document.getElementById('quickExtend7Btn').addEventListener('click', () => {
+  const curr = editExpiresAt.value ? new Date(editExpiresAt.value) : new Date();
+  curr.setDate(curr.getDate() + 7);
+  editExpiresAt.value = curr.toISOString().split('T')[0];
+  editStatus.value = 'ACTIVE';
+  showToast('+ 7 jours ajoutés à la date d\'expiration');
 });
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
-  initializeIcons();
-  
+  const authIconEl = document.getElementById('ownerAuthIcon');
+  if (authIconEl && typeof AurestoIcons !== 'undefined') {
+    authIconEl.innerHTML = AurestoIcons.get('lock', { size: 36 });
+  }
+
   const token = getOwnerToken();
   if (token) {
     hideAuthModal();
-    switchSection('overview');
+    loadDashboardData();
   } else {
     showAuthModal();
   }

@@ -1,341 +1,195 @@
-const SETTINGS_PREVIEW_MESSAGE = 'auresto-preview:update';
-const SETTINGS_CONTENT_MESSAGE = 'auresto-preview:content';
-const settingsDesignChannel = 'BroadcastChannel' in window ? new BroadcastChannel('auresto-menu-design') : null;
-
-let logoSelection;
-
-const $ = selector => document.querySelector(selector);
-
-function clone(value) {
-  return JSON.parse(JSON.stringify(value));
-}
-
-function showToast(message) {
-  const toast = $('#toast');
-  toast.textContent = message;
-  toast.classList.add('show');
-  window.clearTimeout(showToast.timer);
-  showToast.timer = window.setTimeout(() => toast.classList.remove('show'), 2600);
-}
-
-function initials(value) {
-  return (value || 'A').trim().slice(0, 1).toUpperCase();
-}
-
-function getColors(data) {
-  return {
-    primary: data.menuCustomization?.colors?.primary || data.branding?.colors?.primary || '#e33c3f',
-    secondary: data.menuCustomization?.colors?.secondary || data.branding?.colors?.secondary || '#0a566c',
-    accent: data.menuCustomization?.colors?.accent || data.branding?.colors?.accent || '#e8a878'
-  };
-}
-
-function setColorValue(input, output) {
-  const value = input.value.toUpperCase();
-  output.textContent = value;
-}
-
-function updateColorOutputs() {
-  setColorValue($('#sColorPrimary'), $('#colorValuePrimary'));
-  setColorValue($('#sColorSecondary'), $('#colorValueSecondary'));
-  setColorValue($('#sColorAccent'), $('#colorValueAccent'));
-}
-
-function getSelectedLogo(data) {
-  return logoSelection !== undefined ? logoSelection : data.branding?.logo || '';
-}
-
-function renderAssetPreviews(data) {
-  $('#settingsLogoPreview').src = getSelectedLogo(data) || 'favicon.svg';
-}
-
-function getPreviewCustomization(data) {
-  const saved = clone(data.menuCustomization || {});
-  return {
-    ...saved,
-    colors: {
-      ...(saved.colors || {}),
-      primary: $('#sColorPrimary').value,
-      secondary: $('#sColorSecondary').value,
-      accent: $('#sColorAccent').value
-    }
-  };
-}
-
-function getPreviewContent(data) {
-  return {
-    restaurant: {
-      ...data.restaurant,
-      name: $('#sName').value.trim() || data.restaurant.name,
-      description: $('#sDesc').value.trim() || data.restaurant.description,
-      phone: $('#sPhone').value.trim(),
-      city: $('#sCity').value.trim()
-    },
-    branding: {
-      ...data.branding,
-      logo: getSelectedLogo(data)
-    }
-  };
-}
-
-function syncMobilePreview() {
-  const data = AurestoStore.load();
-  const preview = $('#settingsClientPreview');
-  const targetOrigin = window.location.origin === 'null' ? '*' : window.location.origin;
-  const customization = getPreviewCustomization(data);
-
-  preview?.contentWindow?.postMessage({ type: SETTINGS_PREVIEW_MESSAGE, customization }, targetOrigin);
-  preview?.contentWindow?.postMessage({ type: SETTINGS_CONTENT_MESSAGE, content: getPreviewContent(data) }, targetOrigin);
-  settingsDesignChannel?.postMessage({ type: 'menu-design-update', customization });
-}
-
-function populateHeader(data) {
-  const restaurantName = data.restaurant.name || 'Mon restaurant';
-  const plan = data.plan || 'Free';
-  $('#sidebarPlan').textContent = plan;
-  $('#sidebarPlanDetail').textContent = plan.toLowerCase() === 'gold' ? 'Design du menu inclus' : 'Découvrez les fonctions avancées';
-  $('#accountName').textContent = restaurantName;
-  $('#accountPlan').textContent = `Compte ${plan}`;
-  $('#accountInitial').textContent = initials(restaurantName);
-  $('#topbarInitial').textContent = initials(data.account?.name || restaurantName);
-}
-
 function load() {
   const data = AurestoStore.load();
-  const restaurant = data.restaurant || {};
-  const colors = getColors(data);
+  if (!data.onboardingComplete) { location.href = 'onboarding.html'; return; }
 
-  $('#sName').value = restaurant.name || '';
-  $('#sCuisine').value = restaurant.cuisine || '';
-  $('#sAddress').value = restaurant.address || '';
-  $('#sPhone').value = restaurant.phone || '';
-  $('#sEmail').value = data.account?.email || restaurant.email || '';
-  $('#sDesc').value = restaurant.description || '';
-  $('#sCity').value = restaurant.city || '';
-  $('#sContactPhone').value = restaurant.phone || '';
-  $('#sContactEmail').value = restaurant.email || data.account?.email || '';
-  $('#sColorPrimary').value = colors.primary;
-  $('#sColorSecondary').value = colors.secondary;
-  $('#sColorAccent').value = colors.accent;
-  $('#sFont').value = data.branding?.font || 'DM Sans';
-  $('#sStyle').value = data.branding?.style || 'Moderne';
-  $('#sQrHeader').value = data.qrConfig?.headerTemplate || 'Table {name}';
-  $('#sQrFooter').value = data.qrConfig?.footerText || 'Scannez pour commander';
-  $('#sQrLayout').value = data.qrConfig?.printLayout || 'chevalet';
-  $('#currentPlan').textContent = data.plan || 'Free';
-  $('#tableCount').textContent = `${data.tables?.length || 0} table${(data.tables?.length || 0) > 1 ? 's' : ''} configurée${(data.tables?.length || 0) > 1 ? 's' : ''}`;
+  document.getElementById('sName').value = data.restaurant.name || '';
+  document.getElementById('sAddress').value = data.restaurant.address || '';
+  document.getElementById('sDesc').value = data.restaurant.description || '';
+  document.getElementById('sColorPrimary').value = data.branding?.colors?.primary || '#124d58';
+  document.getElementById('sColorAccent').value = data.branding?.colors?.accent || '#e8a878';
+  document.getElementById('sEmail').value = data.account.email || '';
+  document.getElementById('currentPlan').textContent = data.plan;
+  document.getElementById('tableCount').textContent = `${data.tables.length} table${data.tables.length > 1 ? 's' : ''} configurée${data.tables.length > 1 ? 's' : ''}`;
+  document.getElementById('sQrHeader').value = data.qrConfig?.headerTemplate || 'Table {name}';
+  document.getElementById('sQrFooter').value = data.qrConfig?.footerText || 'Scannez pour commander';
+  document.getElementById('sQrLayout').value = data.qrConfig?.printLayout || 'chevalet';
 
-  const sub = data.subInfo;
-  $('#settingsSubDetails').textContent = sub?.expiresAt
-    ? `Statut ${sub.status || 'actif'} · expire le ${new Date(sub.expiresAt).toLocaleDateString('fr-FR')}`
-    : 'Gérez votre formule et les fonctionnalités de votre restaurant.';
-
-  populateHeader(data);
-  renderAssetPreviews(data);
-  updateColorOutputs();
-
-  HoursPicker.init('settingsHoursGrid', 'settingsHoursSummary', syncMobilePreview);
-  if (restaurant.hoursSchedule && Object.keys(restaurant.hoursSchedule).length) {
-    HoursPicker.load(restaurant.hoursSchedule);
+  // Populate sub details
+  const subDetails = document.getElementById('settingsSubDetails');
+  if (subDetails && data.subInfo) {
+    const sub = data.subInfo;
+    if (sub.expiresAt) {
+      const expDate = new Date(sub.expiresAt).toLocaleDateString('fr-FR');
+      subDetails.innerHTML = `Statut : <strong>${sub.status}</strong> • Expiration le <strong>${expDate}</strong> (${sub.daysRemaining !== null ? sub.daysRemaining + ' jours restants' : ''}).`;
+    } else {
+      subDetails.innerHTML = `Offre permanente Free sans date d'expiration. Passez à Silver (25 000 FCFA/mois) ou Gold (40 000 FCFA/mois) pour les fonctionnalités avancées.`;
+    }
   }
 
-  $('#settingsClientPreview').src = `client.html?preview=1&v=${Date.now()}`;
-}
+  const renewBtn = document.getElementById('settingsRenewBtn');
+  if (renewBtn) {
+    renewBtn.addEventListener('click', async () => {
+      const rid = localStorage.getItem('auresto_restaurant_id');
+      if (!rid) return alert('Restaurant non synchronisé avec le serveur.');
+      try {
+        const res = await fetch((window.AURESTO_API_BASE || 'http://localhost:4000') + '/api/payments/wave/create-checkout', {
+          method: 'POST',
+          headers: getRestaurantAuthHeaders(),
+          body: JSON.stringify({
+            restaurantId: rid,
+            type: 'SUBSCRIPTION',
+            plan: (data.plan || 'Silver').toUpperCase(),
+            amount: (data.plan || '').toUpperCase() === 'GOLD' ? 40000 : 25000,
+            title: `Renouvellement Abonnement Auresto ${data.plan || 'Silver'}`,
+            account: data.account || null,
+            successUrl: location.origin + '/dashboard.html?payment=success',
+            cancelUrl: location.origin + '/settings.html'
+          })
+        });
+        const waveRes = await res.json();
+        if (waveRes.checkoutUrl) {
+          location.href = waveRes.checkoutUrl;
+        } else {
+          alert(waveRes.message || 'L\'architecture Wave est prête ! Le paiement en ligne s\'activera dès réception de votre clé API Wave Business.');
+        }
+      } catch (e) {
+        alert('Paiement Wave prêt pour intégration API.');
+      }
+    });
+  }
 
-function getQrConfig() {
-  return {
-    headerTemplate: $('#sQrHeader').value.trim() || 'Table {name}',
-    footerText: $('#sQrFooter').value.trim() || 'Scannez pour commander',
-    printLayout: $('#sQrLayout').value || 'chevalet'
-  };
+  HoursPicker.init('settingsHoursGrid', 'settingsHoursSummary');
+  if (data.restaurant?.hoursSchedule && Object.keys(data.restaurant.hoursSchedule).length) {
+    HoursPicker.load(data.restaurant.hoursSchedule);
+  }
 }
 
 function saveQrSettings() {
   const data = AurestoStore.load();
-  data.qrConfig = { ...data.qrConfig, ...getQrConfig() };
+  data.qrConfig = {
+    ...data.qrConfig,
+    headerTemplate: document.getElementById('sQrHeader').value.trim() || 'Table {name}',
+    footerText: document.getElementById('sQrFooter').value.trim() || 'Scannez pour commander',
+    printLayout: document.getElementById('sQrLayout').value || 'chevalet'
+  };
   AurestoStore.save(data);
-  return data;
 }
 
-function saveSettings({ toast = true } = {}) {
-  const data = AurestoStore.load();
-  const hoursData = HoursPicker.getData();
-  const colors = {
-    ...(data.branding?.colors || {}),
-    primary: $('#sColorPrimary').value,
-    secondary: $('#sColorSecondary').value,
-    accent: $('#sColorAccent').value
-  };
-
-  data.restaurant = {
-    ...data.restaurant,
-    name: $('#sName').value.trim(),
-    cuisine: $('#sCuisine').value.trim(),
-    address: $('#sAddress').value.trim(),
-    phone: $('#sPhone').value.trim() || $('#sContactPhone').value.trim(),
-    email: $('#sContactEmail').value.trim() || $('#sEmail').value.trim(),
-    city: $('#sCity').value.trim(),
-    description: $('#sDesc').value.trim(),
-    hours: hoursData.summary,
-    hoursSchedule: hoursData.schedule
-  };
-  data.account = { ...data.account, email: $('#sEmail').value.trim() || data.account?.email || '' };
-  data.branding = {
-    ...data.branding,
-    colors,
-    font: $('#sFont').value,
-    style: $('#sStyle').value
-  };
-  if (logoSelection !== undefined) data.branding.logo = logoSelection;
-
-  const customization = clone(data.menuCustomization || {});
-  data.menuCustomization = {
-    ...customization,
-    colors: { ...(customization.colors || {}), ...colors }
-  };
-  data.qrConfig = { ...data.qrConfig, ...getQrConfig() };
-  AurestoStore.save(data);
-  populateHeader(data);
-  renderAssetPreviews(data);
-  syncMobilePreview();
-  if (toast) showToast('Paramètres enregistrés !');
-  return data;
-}
-
-function readImage(input, onLoad) {
-  const [file] = input.files;
-  if (!file) return;
-  if (file.size > 2 * 1024 * 1024) {
-    input.value = '';
-    showToast('Choisis une image de 2 Mo maximum.');
-    return;
-  }
-  const reader = new FileReader();
-  reader.addEventListener('load', () => onLoad(reader.result));
-  reader.readAsDataURL(file);
-}
-
-function bindPreviewControls() {
-  $('#settingsClientPreview').addEventListener('load', syncMobilePreview);
-  document.querySelectorAll('[data-settings-device]').forEach(button => {
-    button.addEventListener('click', () => {
-      const card = $('.mobile-preview-card');
-      card.dataset.previewDevice = button.dataset.settingsDevice;
-      document.querySelectorAll('[data-settings-device]').forEach(item => item.classList.toggle('active', item === button));
-    });
-  });
-
-  ['sName', 'sDesc', 'sPhone', 'sCity', 'sColorPrimary', 'sColorSecondary', 'sColorAccent'].forEach(id => {
-    $(`#${id}`).addEventListener('input', () => {
-      if (id.startsWith('sColor')) updateColorOutputs();
-      syncMobilePreview();
-    });
-  });
-
-  document.querySelectorAll('[data-palette]').forEach(button => {
-    button.addEventListener('click', () => {
-      const [primary, secondary, accent] = button.dataset.palette.split(',');
-      $('#sColorPrimary').value = primary;
-      $('#sColorSecondary').value = secondary;
-      $('#sColorAccent').value = accent;
-      updateColorOutputs();
-      syncMobilePreview();
-    });
-  });
-}
-
-async function generateQrCanvas(url, size = 160) {
+async function generateQrCanvas(url, size = 120) {
   const canvas = document.createElement('canvas');
-  if (typeof QRCode !== 'undefined') {
-    const tempDiv = document.createElement('div');
-    tempDiv.style.cssText = 'position:absolute;left:-9999px;top:-9999px';
-    document.body.appendChild(tempDiv);
+  if (typeof QRCode !== 'undefined' && QRCode.toCanvas) {
     try {
-      new QRCode(tempDiv, { text: url, width: size, height: size, colorDark: '#111111', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.H });
-      await new Promise(resolve => window.setTimeout(resolve, 100));
-      const source = tempDiv.querySelector('canvas');
-      if (source) {
-        canvas.width = size;
-        canvas.height = size;
-        canvas.getContext('2d').drawImage(source, 0, 0, size, size);
-        return canvas;
-      }
-    } finally {
-      tempDiv.remove();
+      await new Promise((resolve, reject) => {
+        QRCode.toCanvas(canvas, url, { width: size, margin: 1 }, err => {
+          if (err) reject(err); else resolve();
+        });
+      });
+      return canvas;
+    } catch (e) {
+      console.warn('QRCode JS failed, using fallback:', e);
     }
   }
-  canvas.width = size;
-  canvas.height = size;
-  const context = canvas.getContext('2d');
-  context.fillStyle = '#ffffff';
-  context.fillRect(0, 0, size, size);
-  context.fillStyle = '#111111';
-  context.font = '700 14px sans-serif';
-  context.textAlign = 'center';
-  context.fillText('QR Code', size / 2, size / 2);
-  return canvas;
+  return new Promise(resolve => {
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
+    img.crossOrigin = 'Anonymous';
+    img.onload = () => {
+      ctx.drawImage(img, 0, 0, size, size);
+      resolve(canvas);
+    };
+    img.onerror = () => {
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, size, size);
+      ctx.fillStyle = '#124d58';
+      ctx.font = 'bold 12px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('QR Code', size / 2, size / 2);
+      resolve(canvas);
+    };
+    img.src = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(url)}`;
+  });
 }
 
 async function downloadSettingsPdf() {
-  const data = saveSettings({ toast: false });
-  if (!window.jspdf) return showToast('Le générateur PDF est indisponible.');
+  saveQrSettings();
   const { jsPDF } = window.jspdf;
+  const data = AurestoStore.load();
   const doc = new jsPDF({ unit: 'mm', format: 'a4' });
-  doc.setFontSize(17);
-  doc.text(data.restaurant.name || 'Auresto', 105, 18, { align: 'center' });
-  let y = 32;
-  for (const table of data.tables || []) {
+  const formatLabels = { chevalet: 'Chevalet de table', autocollant: 'Autocollant', affiche: 'Affiche' };
+  doc.setFontSize(16);
+  doc.text(data.restaurant.name || 'Auresto', 105, 20, { align: 'center' });
+  doc.setFontSize(10);
+  doc.text(`${formatLabels[data.qrConfig.printLayout] || 'QR Codes'}`, 105, 28, { align: 'center' });
+  let y = 38;
+  for (const table of data.tables) {
+    const canvas = await generateQrCanvas(AurestoStore.getTableUrl(table.id), 120);
+    const imgData = canvas.toDataURL('image/png');
     if (y > 250) { doc.addPage(); y = 20; }
-    const canvas = await generateQrCanvas(AurestoStore.getTableUrl(table.id));
-    doc.addImage(canvas.toDataURL('image/png'), 'PNG', 20, y, 45, 45);
+    doc.addImage(imgData, 'PNG', 20, y, 45, 45);
     doc.setFontSize(12);
-    doc.text(data.qrConfig.headerTemplate.replace('{name}', table.name), 74, y + 16);
+    doc.text((data.qrConfig.headerTemplate || 'Table {name}').replace('{name}', table.name), 70, y + 12);
     doc.setFontSize(9);
-    doc.text(data.qrConfig.footerText, 74, y + 25);
-    y += 58;
+    doc.text(data.qrConfig.footerText || 'Scannez pour commander', 70, y + 22);
+    y += 60;
   }
   doc.save(`auresto-qr-${data.restaurant.name || 'restaurant'}.pdf`);
 }
 
 async function downloadSettingsWord() {
-  const data = saveSettings({ toast: false });
-  const cards = await Promise.all((data.tables || []).map(async table => {
+  saveQrSettings();
+  const data = AurestoStore.load();
+  const rows = await Promise.all(data.tables.map(async table => {
     const canvas = await generateQrCanvas(AurestoStore.getTableUrl(table.id), 200);
-    return `<section style="margin:20px;padding:16px;border:1px solid #ddd"><h2>${data.qrConfig.headerTemplate.replace('{name}', table.name)}</h2><img src="${canvas.toDataURL('image/png')}" width="200" height="200"><p>${data.qrConfig.footerText}</p></section>`;
+    const imgData = canvas.toDataURL('image/png');
+    return `
+      <div style="margin-bottom:30px;padding:16px;border:1px solid #ddd;border-radius:14px;max-width:480px;">
+        <div style="font-size:18px;font-weight:700;margin-bottom:8px;">${(data.qrConfig.headerTemplate || 'Table {name}').replace('{name}', table.name)}</div>
+        <div style="font-size:13px;color:#555;margin-bottom:10px;">${data.restaurant.name}</div>
+        <img src="${imgData}" style="width:200px;height:200px;object-fit:contain;margin-bottom:10px;" />
+        <div style="font-size:12px;color:#444;">${data.qrConfig.footerText || 'Scannez pour commander'}</div>
+      </div>
+    `;
   }));
-  const blob = new Blob([`<!doctype html><html><meta charset="utf-8"><body>${cards.join('')}</body></html>`], { type: 'application/msword' });
+  const html = `<!DOCTYPE html><html><head><meta charset="utf-8"/><title>QR Codes Auresto</title></head><body>${rows.join('')}</body></html>`;
+  const blob = new Blob([html], { type: 'application/msword' });
   const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = `auresto-qr-${data.restaurant.name || 'restaurant'}.doc`;
-  link.click();
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `auresto-qr-${data.restaurant.name || 'restaurant'}.doc`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
   URL.revokeObjectURL(url);
 }
 
-function bindActions() {
-  $('#saveBtn').addEventListener('click', () => saveSettings());
-  document.querySelectorAll('[data-scroll-target="saveBtn"]').forEach(button => button.addEventListener('click', () => $('#saveBtn').focus()));
-  $('#settingsLogoInput').addEventListener('change', event => readImage(event.target, image => {
-    logoSelection = image;
-    renderAssetPreviews(AurestoStore.load());
-    syncMobilePreview();
-  }));
-  $('#removeLogoBtn').addEventListener('click', () => {
-    logoSelection = '';
-    $('#settingsLogoInput').value = '';
-    renderAssetPreviews(AurestoStore.load());
-    syncMobilePreview();
-  });
-  $('#downloadQrPdfBtn').addEventListener('click', downloadSettingsPdf);
-  $('#downloadQrWordBtn').addEventListener('click', downloadSettingsWord);
-  $('#settingsRenewBtn').addEventListener('click', () => showToast('Le renouvellement Wave sera disponible dès sa configuration.'));
-  $('#resetBtn').addEventListener('click', () => {
-    if (!confirm('Réinitialiser toutes les données ? Cette action est irréversible.')) return;
+document.getElementById('saveBtn').addEventListener('click', () => {
+  const data = AurestoStore.load();
+  const hoursData = HoursPicker.getData();
+  data.restaurant.name = document.getElementById('sName').value.trim();
+  data.restaurant.address = document.getElementById('sAddress').value.trim();
+  data.restaurant.description = document.getElementById('sDesc').value.trim();
+  data.restaurant.hours = hoursData.summary;
+  data.restaurant.hoursSchedule = hoursData.schedule;
+  data.branding.colors.primary = document.getElementById('sColorPrimary').value;
+  data.branding.colors.accent = document.getElementById('sColorAccent').value;
+  saveQrSettings();
+  AurestoStore.save(data);
+  const t = document.getElementById('toast');
+  t.textContent = 'Paramètres enregistrés !';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+});
+
+document.getElementById('downloadQrPdfBtn').addEventListener('click', downloadSettingsPdf);
+document.getElementById('downloadQrWordBtn').addEventListener('click', downloadSettingsWord);
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  if (confirm('Réinitialiser toutes les données ? Cette action est irréversible.')) {
     AurestoStore.reset();
     location.href = 'onboarding.html';
-  });
-}
+  }
+});
 
-bindPreviewControls();
-bindActions();
-AurestoStore.init().then(load).catch(() => load());
+AurestoStore.init().then(load);

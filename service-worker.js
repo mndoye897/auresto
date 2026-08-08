@@ -1,4 +1,4 @@
-const CACHE = 'auresto-v20';
+const CACHE = 'auresto-v21';
 const ASSETS = [
   './',
   './index.html',
@@ -9,6 +9,7 @@ const ASSETS = [
   './kitchen.html',
   './settings.html',
   './suspended.html',
+  './qr-codes.html',
   './styles.css',
   './app.js',
   './css/app-shared.css',
@@ -18,6 +19,7 @@ const ASSETS = [
   './css/client.css',
   './css/kitchen.css',
   './css/settings.css',
+  './css/qr-codes.css',
   './js/store.js',
   './js/icons.js',
   './js/dish-images.js',
@@ -29,6 +31,7 @@ const ASSETS = [
   './js/client.js',
   './js/kitchen.js',
   './js/settings.js',
+  './js/qr-codes.js',
   './manifest.webmanifest',
   './favicon.svg',
   './assets/hero-poster.jpg',

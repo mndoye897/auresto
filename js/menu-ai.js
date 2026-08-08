@@ -401,43 +401,119 @@ const MenuAI = {
 
 
   async attachPhotos(canvas, items, ocrLines) {
+
     return Promise.all(items.map(async item => {
+
       let photo = await this.generateGeminiImage(item.name);
+
+      if (!photo) {
+
+        const pricedLines = ocrLines.filter(l => l.text && this.extractPrice(l.text));
+
+        const line = pricedLines.find(l => {
+
+          const t = l.text.toLowerCase();
+
+          const n = item.name.toLowerCase().slice(0, 5);
+
+          return n.length >= 3 && t.includes(n);
+
+        });
+
+        if (line?.bbox && canvas.width > 0) {
+
+          try {
+
+            const pad = 8;
+
+            const x = Math.max(0, line.bbox.x0 - pad);
+
+            const y = Math.max(0, line.bbox.y0 - pad);
+
+            const w = Math.min(canvas.width - x, (line.bbox.x1 - line.bbox.x0) + pad * 2);
+
+            const h = Math.min(canvas.height - y, (line.bbox.y1 - line.bbox.y0) + pad * 2);
+
+            if (w > 20 && h > 20) {
+
+              const crop = document.createElement('canvas');
+
+              crop.width = 200;
+
+              crop.height = 200;
+
+              crop.getContext('2d').drawImage(canvas, x, y, w, h, 0, 0, 200, 200);
+
+              photo = crop.toDataURL('image/jpeg', 0.85);
+
+            }
+
+          } catch { /* ignore crop errors */ }
+
+        }
+
+      }
+
       if (!photo) photo = this.generateFoodPlaceholder(item.name);
+
       return { ...item, photo };
+
     }));
+
   },
+
+
 
   async generateGeminiImage(name) {
+
     const apiKey = window.AurestoStore?.load()?.integration?.geminiApiKey;
+
     if (!apiKey) return '';
+
     const prompt = `Photo stylée et appétissante d'un plat nommé ${name}, présentation gourmande, fond neutre, couleur chaude.`;
+
     try {
+
       const response = await fetch(`https://gemini.googleapis.com/v1/images:generate?key=${encodeURIComponent(apiKey)}`, {
+
         method: 'POST',
+
         headers: { 'Content-Type': 'application/json' },
+
         body: JSON.stringify({ model: 'gemini-imagen-1', prompt, size: '512x512' })
+
       });
+
       if (!response.ok) return '';
+
       const result = await response.json();
+
       const imageData = result?.data?.[0]?.imageUri || result?.data?.[0]?.b64_json;
+
       if (!imageData) return '';
+
       if (imageData.startsWith('data:')) return imageData;
+
       if (result.data[0].b64_json) return `data:image/png;base64,${result.data[0].b64_json}`;
+
       return imageData;
+
     } catch (err) {
+
       return '';
+
     }
+
   },
 
+
+
   generateFoodPlaceholder(name) {
-    if (typeof generateNanoBananaImage === 'function') {
-      return generateNanoBananaImage(name);
-    }
-    const cleanName = (name || '').trim();
-    if (!cleanName) return 'images/placeholder-plat.png';
-    const prompt = `delicious gourmet food photo of ${cleanName}, top restaurant presentation`;
-    return `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=800&height=600&nologo=true`;
+
+    const query = name.toLowerCase().replace(/[\W_]+/g, '+') || 'plat';
+
+    return `https://source.unsplash.com/400x400/?${encodeURIComponent(query)},food,restaurant`;
+
   },
 
 

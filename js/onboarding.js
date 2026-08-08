@@ -78,17 +78,7 @@ function loadState() {
 
     populateForms(data);
 
-    HoursPicker.init('hoursGrid', 'hoursSummary', () => {
-      const hoursData = HoursPicker.getData();
-      const existing = AurestoStore.load().restaurant;
-      AurestoStore.update({
-        restaurant: {
-          ...existing,
-          hours: hoursData.summary,
-          hoursSchedule: hoursData.schedule
-        }
-      });
-    });
+    HoursPicker.init('hoursGrid', 'hoursSummary');
 
     if (data.restaurant?.hoursSchedule && Object.keys(data.restaurant.hoursSchedule).length) {
 
@@ -211,10 +201,6 @@ function goToStep(step) {
   $('nextBtn').textContent = step === 8 ? 'Accéder au dashboard →' : 'Continuer →';
 
   $('mainActions').style.display = step === 8 ? 'none' : 'flex';
-
-  if (step === 8 && $('finishBtn')) {
-    $('finishBtn').style.display = 'inline-flex';
-  }
 
   buildProgress();
 
@@ -842,7 +828,23 @@ async function processMenuScan(file) {
 
     showToast(`${result.items.length} plats ajoutés — vous pouvez continuer !`);
 
-    // Removed automatic redirect to allow user to complete remaining onboarding steps
+    // If items were detected, mark onboarding complete and go to dashboard
+
+    if (result.items && result.items.length > 0) {
+
+      const state = AurestoStore.load();
+
+      state.onboardingComplete = true;
+
+      AurestoStore.save(state);
+
+      showToast('Onboarding terminé — redirection vers le dashboard...');
+
+      setTimeout(() => { location.href = 'dashboard.html'; }, 900);
+
+      return;
+
+    }
 
   } catch (err) {
 
@@ -1056,25 +1058,11 @@ function renderTables() {
 
     if (el) {
 
-      if (typeof QRCode === 'undefined') {
-        console.error('QRCode library not loaded in renderTables');
-        el.textContent = 'QR non disponible';
-        return;
-      }
+      QRCode.toCanvas(document.createElement('canvas'), AurestoStore.getTableUrl(t.id), { width: 72, margin: 1 }, (err, canvas) => {
 
-      try {
-        new QRCode(el, {
-          text: AurestoStore.getTableUrl(t.id),
-          width: 72,
-          height: 72,
-          colorDark: "#000000",
-          colorLight: "#ffffff",
-          correctLevel: QRCode.CorrectLevel.H
-        });
-      } catch (err) {
-        console.error('Erreur génération QR in renderTables:', err);
-        el.textContent = 'QR non disponible';
-      }
+        if (!err) { el.innerHTML = ''; el.appendChild(canvas); }
+
+      });
 
     }
 
@@ -1180,14 +1168,6 @@ function renderQrPrint() {
 
   grid.innerHTML = '';
 
-  console.log('renderQrPrint - tables:', data.tables);
-  console.log('renderQrPrint - QRCode available:', typeof QRCode !== 'undefined');
-
-  if (!data.tables || data.tables.length === 0) {
-    grid.innerHTML = '<p style="color:#7a9298;font-size:12px">Aucune table. Créez des tables d\'abord.</p>';
-    return;
-  }
-
   data.tables.forEach(t => {
 
     const card = document.createElement('div');
@@ -1200,30 +1180,10 @@ function renderQrPrint() {
 
     grid.appendChild(card);
 
-    const tableUrl = AurestoStore.getTableUrl(t.id);
-    console.log('Generating QR for table:', t.id, 'URL:', tableUrl);
+    QRCode.toCanvas(canvasWrap, AurestoStore.getTableUrl(t.id), { width: 100, margin: 1 });
 
-    if (typeof QRCode === 'undefined') {
-      console.error('QRCode library not loaded');
-      canvasWrap.textContent = 'QR indisponible (librairie non chargée)';
-      return;
-    }
-
-    try {
-      new QRCode(canvasWrap, {
-        text: tableUrl,
-        width: 100,
-        height: 100,
-        colorDark: "#000000",
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.H
-      });
-      console.log('QR generated successfully for table:', t.id);
-    } catch (err) {
-      console.error('Erreur génération QR:', err);
-      canvasWrap.textContent = 'QR indisponible';
-    }
   });
+
 }
 
 
@@ -1252,28 +1212,15 @@ async function downloadPdf() {
 
   for (const table of data.tables) {
 
-    const tempDiv = document.createElement('div');
-    tempDiv.style.position = 'absolute';
-    tempDiv.style.left = '-9999px';
-    document.body.appendChild(tempDiv);
+    const canvas = document.createElement('canvas');
 
     await new Promise(resolve => {
-      const qr = new QRCode(tempDiv, {
-        text: AurestoStore.getTableUrl(table.id),
-        width: 120,
-        height: 120,
-        colorDark: "#000000",
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.H
-      });
-      setTimeout(resolve, 100);
+
+      QRCode.toCanvas(canvas, AurestoStore.getTableUrl(table.id), { width: 120, margin: 1 }, resolve);
+
     });
 
-    const canvas = tempDiv.querySelector('canvas');
-    const imgData = canvas ? canvas.toDataURL('image/png') : null;
-    document.body.removeChild(tempDiv);
-
-    if (!imgData) continue;
+    const imgData = canvas.toDataURL('image/png');
 
     if (y > 250) { doc.addPage(); y = 20; }
 
@@ -1307,28 +1254,15 @@ async function downloadWord() {
 
   const rows = await Promise.all(data.tables.map(async table => {
 
-    const tempDiv = document.createElement('div');
-    tempDiv.style.position = 'absolute';
-    tempDiv.style.left = '-9999px';
-    document.body.appendChild(tempDiv);
+    const canvas = document.createElement('canvas');
 
     await new Promise(resolve => {
-      const qr = new QRCode(tempDiv, {
-        text: AurestoStore.getTableUrl(table.id),
-        width: 200,
-        height: 200,
-        colorDark: "#000000",
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.H
-      });
-      setTimeout(resolve, 100);
+
+      QRCode.toCanvas(canvas, AurestoStore.getTableUrl(table.id), { width: 200, margin: 1 }, resolve);
+
     });
 
-    const canvas = tempDiv.querySelector('canvas');
-    const imgData = canvas ? canvas.toDataURL('image/png') : null;
-    document.body.removeChild(tempDiv);
-
-    if (!imgData) return '';
+    const imgData = canvas.toDataURL('image/png');
 
     return `
 
@@ -1376,9 +1310,7 @@ async function downloadWord() {
 
 
 
-async function finishOnboarding() {
-
-  console.log('finishOnboarding called');
+function finishOnboarding() {
 
   AurestoStore.update({
 
@@ -1390,45 +1322,9 @@ async function finishOnboarding() {
 
   });
 
-  showToast('Synchronisation en cours...');
+  showToast('Bienvenue sur Auresto !');
 
-  console.log('Starting syncToServer...');
-
-  try {
-
-    const syncResult = await AurestoStore.syncToServer();
-
-    console.log('syncToServer result:', syncResult);
-
-    if (syncResult.success && syncResult.restaurantId) {
-
-      console.log('Sync successful, restaurantId:', syncResult.restaurantId);
-
-      showToast('Bienvenue sur Auresto !');
-
-      console.log('Redirecting to dashboard in 800ms...');
-
-      setTimeout(() => { location.href = 'dashboard.html'; }, 800);
-
-    } else {
-
-      console.error('Sync failed or no restaurantId:', syncResult);
-
-      showToast('Erreur de synchronisation. Veuillez réessayer.');
-
-      AurestoStore.update({ onboardingComplete: false });
-
-    }
-
-  } catch (err) {
-
-    console.error('Sync error:', err);
-
-    showToast('Erreur de synchronisation. Veuillez réessayer.');
-
-    AurestoStore.update({ onboardingComplete: false });
-
-  }
+  setTimeout(() => { location.href = 'dashboard.html'; }, 800);
 
 }
 
