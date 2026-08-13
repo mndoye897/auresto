@@ -90,18 +90,34 @@ async function createCheckoutSession({ reference, itemName, amount, successUrl, 
   }
 }
 
-function verifyWebhookSignature(rawBody, signature) {
+// Vérifie la signature HMAC-SHA256 d'un webhook DexPay (docs : header
+// X-Webhook-Signature, signature calculée sur JSON.stringify(payload),
+// clé HMAC = sk_test_xxx / sk_live_xxx). Deux candidats sont acceptés :
+// le JSON ré-sérialisé du corps parsé (méthode documentée) et le corps
+// brut reçu, pour rester tolérant selon l'émetteur.
+function verifyWebhookSignature(rawBody, parsedBody, signature) {
   const { webhookSecret } = getConfig();
   if (!webhookSecret || !signature || !rawBody) return false;
 
-  const received = String(signature).replace(/^sha256=/i, '').trim();
-  const expected = crypto.createHmac('sha256', webhookSecret).update(rawBody).digest('hex');
+  const received = String(signature).replace(/^sha256=/i, '').trim().toLowerCase();
+  if (!received) return false;
 
-  try {
-    return crypto.timingSafeEqual(Buffer.from(expected, 'utf8'), Buffer.from(received, 'utf8'));
-  } catch {
-    return false;
+  const candidates = [];
+  if (parsedBody !== undefined) candidates.push(Buffer.from(JSON.stringify(parsedBody), 'utf8'));
+  if (Buffer.isBuffer(rawBody) && rawBody.length) candidates.push(rawBody);
+  else if (typeof rawBody === 'string' && rawBody.length) candidates.push(Buffer.from(rawBody, 'utf8'));
+
+  for (const candidate of candidates) {
+    const expected = crypto.createHmac('sha256', webhookSecret).update(candidate).digest('hex');
+    try {
+      if (crypto.timingSafeEqual(Buffer.from(expected, 'utf8'), Buffer.from(received, 'utf8'))) {
+        return true;
+      }
+    } catch {
+      // Tailles différentes → candidat suivant.
+    }
   }
+  return false;
 }
 
 module.exports = {

@@ -1096,19 +1096,22 @@ app.get('/api/public/restaurants/resolve', async (req, res) => {
 // commande est créée uniquement sur checkout.completed, jamais sur le retour
 // navigateur (success_url).
 app.post('/api/payments/dexpay/webhook', async (req, res) => {
-  const signature = req.headers['x-dexchange-signature'] || req.headers['x-dexpay-signature'];
-  if (!verifyWebhookSignature(req.rawBody, signature)) {
+  const signature = req.headers['x-webhook-signature'] || req.headers['x-dexchange-signature'] || req.headers['x-dexpay-signature'];
+  if (!verifyWebhookSignature(req.rawBody, req.body, signature)) {
     return res.status(401).json({ error: 'INVALID_SIGNATURE' });
   }
 
   const event = String(req.body?.event || '');
-  const data = req.body?.data || {};
-  const reference = String(data.reference || '').trim();
+  // DexPay documente reference/metadata au niveau racine ; on tolère aussi
+  // l'enveloppe { data: {...} } utilisée par d'autres intégrations.
+  const body = req.body || {};
+  const data = body.data || {};
+  const reference = String(data.reference || body.reference || '').trim();
   if (!reference) return res.status(400).json({ error: 'MISSING_REFERENCE' });
 
   try {
     if (event === 'checkout.completed') {
-      const result = await completeDexPayOrder(reference, data);
+      const result = await completeDexPayOrder(reference, { ...data, ...body });
       if (!result.ok) return res.status(400).json({ error: result.code });
       return res.json({ received: true, created: !result.alreadyCompleted });
     }
