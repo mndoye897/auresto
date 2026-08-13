@@ -119,16 +119,19 @@ function alignCardOnPhotoStand() {
   scene.style.transform = `translate(-50%, -100%) translate(${dx}px, ${dy}px)`;
 }
 
-// Construit l'URL réelle du menu client (scan QR) pour une table donnée
-function buildTableUrl(tableName) {
+// Construit l'URL réelle du menu client (scan QR) pour une table donnée.
+// Chaque QR contient l'identifiant du restaurant : tous les QR pointent donc
+// vers le même menu synchronisé, seule la table change.
+function buildTableUrl(table) {
   const base = `${location.origin}${location.pathname.replace(/[^/]+$/, '')}client.html`;
-  const restaurant = (typeof current !== 'undefined' && current.restaurantName) || 'restaurant';
-  const params = new URLSearchParams({ restaurant, table: tableName });
-  // Identifiant du restaurant : permet au client scannant le QR code de
-  // déposer un avis sans disposer de données locales.
-  const rid = (() => {
-    try { return localStorage.getItem('auresto_restaurant_id'); } catch { return null; }
-  })();
+  const dashboardRestaurant = typeof AurestoStore !== 'undefined' ? AurestoStore.load()?.restaurant : null;
+  const restaurant = dashboardRestaurant?.name || (typeof current !== 'undefined' && current.restaurantName) || 'restaurant';
+  const tableId = typeof table === 'object' ? table.id : table;
+  const tableName = typeof table === 'object' ? table.name : table;
+  const params = new URLSearchParams({ restaurant, table: tableId || tableName, tableName: tableName || 'Table' });
+  const rid = typeof AurestoStore !== 'undefined'
+    ? AurestoStore.getRestaurantId?.()
+    : null;
   if (rid) params.set('r', rid);
   return `${base}?${params.toString()}`;
 }
@@ -196,9 +199,10 @@ const $$ = sel => [...document.querySelectorAll(sel)];
 // ============================================================
 // Initialisation
 // ============================================================
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   loadState();
   renderSidebarAccount();
+  await ensureRestaurantIdForQr();
   initTables();
   initQRCode();
   bindEvents();
@@ -388,9 +392,20 @@ function applyStateToUI() {
 // Tables
 // ============================================================
 function initTables() {
+  // Les tables du tableau de bord sont la source de vérité. On conserve la
+  // clé historique de l'éditeur seulement pour migrer les anciennes données.
+  try {
+    const dashboardTables = AurestoStore.load()?.tables;
+    if (Array.isArray(dashboardTables) && dashboardTables.length) {
+      tables = dashboardTables.map(normalizeTable);
+    }
+  } catch (e) {
+    console.warn('Impossible de charger les tables du dashboard', e);
+  }
+
   try {
     const saved = localStorage.getItem(TE_TABLES_KEY);
-    if (saved) {
+    if (!tables.length && saved) {
       tables = JSON.parse(saved);
     }
   } catch (e) {
@@ -399,7 +414,36 @@ function initTables() {
 
   if (tables.length === 0) {
     // Générer 50 tables par défaut
-    generateTables(50, 'Table');
+    generateTables(50, current.prefix || 'Table');
+  } else {
+    saveTables();
+  }
+}
+
+function normalizeTable(table, index = 0) {
+  return {
+    id: String(table?.id || `table_${Date.now()}_${index}`),
+    name: String(table?.name || `Table ${index + 1}`).trim() || `Table ${index + 1}`,
+    status: table?.status || 'ready',
+    createdAt: table?.createdAt || Date.now()
+  };
+}
+
+async function ensureRestaurantIdForQr() {
+  if (typeof AurestoStore === 'undefined') return null;
+
+  const existingId = AurestoStore.getRestaurantId?.();
+  if (existingId) return existingId;
+
+  const state = AurestoStore.load();
+  if (!state.restaurant?.name) return null;
+
+  try {
+    const result = await AurestoStore.syncToServer();
+    return result.restaurantId || AurestoStore.getRestaurantId?.() || null;
+  } catch (error) {
+    console.warn('Synchronisation du restaurant impossible pour les QR codes', error);
+    return null;
   }
 }
 
@@ -407,7 +451,7 @@ function generateTables(count, prefix) {
   tables = [];
   for (let i = 1; i <= count; i++) {
     tables.push({
-      id: 'table_' + i,
+      id: `table_${Date.now()}_${i}`,
       name: prefix + ' ' + i,
       status: 'ready',
       createdAt: Date.now()
@@ -422,15 +466,25 @@ function generateTables(count, prefix) {
 function saveTables() {
   try {
     localStorage.setItem(TE_TABLES_KEY, JSON.stringify(tables));
+    if (typeof AurestoStore !== 'undefined') {
+      const data = AurestoStore.load();
+      data.tables = tables.map(normalizeTable);
+      // Les tables ne sont pas nécessaires à l'API du menu : on partage cet
+      // état avec le dashboard sans relancer une synchronisation de tout menu.
+      AurestoStore.save(data, { sync: false });
+    }
   } catch (e) {
     console.warn('Impossible de sauvegarder les tables', e);
   }
 }
 
 function addTable() {
-  const nextNum = tables.length + 1;
+  const numbers = tables
+    .map(table => Number.parseInt(String(table.name).match(/(\d+)\s*$/)?.[1], 10))
+    .filter(Number.isFinite);
+  const nextNum = (numbers.length ? Math.max(...numbers) : 0) + 1;
   tables.push({
-    id: 'table_' + nextNum,
+    id: `table_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
     name: current.prefix + ' ' + nextNum,
     status: 'ready',
     createdAt: Date.now()
@@ -439,6 +493,17 @@ function addTable() {
   renderTables();
   updateTableCount();
   showToast('Table ajoutée');
+}
+
+function removeTable(id) {
+  const table = tables.find(item => item.id === id);
+  if (!table) return;
+
+  tables = tables.filter(item => item.id !== id);
+  saveTables();
+  renderTables();
+  updateTableCount();
+  showToast(`${table.name} supprimée`);
 }
 
 function updateTableCount() {
@@ -453,28 +518,8 @@ function renderTables() {
   if (!grid) return;
   grid.innerHTML = '';
 
-  // Afficher les 3 premières, puis "..." si plus de 5, puis la dernière
-  const visibleTables = [];
-  if (tables.length > 0) {
-    visibleTables.push(tables[0]);
-    if (tables.length > 1) visibleTables.push(tables[1]);
-    if (tables.length > 2) visibleTables.push(tables[2]);
-    if (tables.length > 5) {
-      visibleTables.push({ id: 'more', name: '...', status: 'more' });
-    }
-    if (tables.length > 3) {
-      visibleTables.push(tables[tables.length - 1]);
-    }
-  }
-
-  visibleTables.forEach(table => {
-    if (table.more) {
-      const moreCard = document.createElement('div');
-      moreCard.className = 'te-table-card-more';
-      moreCard.textContent = '…';
-      grid.appendChild(moreCard);
-      return;
-    }
+  // Chaque table est affichée, y compris les 50 tables générées en lot.
+  tables.forEach(table => {
 
     const card = document.createElement('div');
     card.className = 'te-table-card';
@@ -495,13 +540,24 @@ function renderTables() {
     card.appendChild(status);
     card.appendChild(qrWrap);
 
+    const deleteButton = document.createElement('button');
+    deleteButton.type = 'button';
+    deleteButton.className = 'te-table-card-delete';
+    deleteButton.textContent = 'Supprimer';
+    deleteButton.setAttribute('aria-label', `Supprimer ${table.name}`);
+    deleteButton.addEventListener('click', event => {
+      event.stopPropagation();
+      removeTable(table.id);
+    });
+    card.appendChild(deleteButton);
+
     // Générer le mini QR
     try {
       const miniCanvas = document.createElement('canvas');
       miniCanvas.width = 60;
       miniCanvas.height = 60;
       qrWrap.appendChild(miniCanvas);
-      const miniMatrix = computeQrMatrix(buildTableUrl(table.name));
+      const miniMatrix = computeQrMatrix(buildTableUrl(table));
       drawQrModules(miniCanvas, miniMatrix, current.cornerShape, current.moduleId, current.bgColor);
     } catch (e) {
       console.warn('Erreur génération QR', e);

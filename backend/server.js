@@ -344,6 +344,7 @@ app.get('/api/restaurants/:id/full-state', async (req, res) => {
     
     res.json({
       restaurant: restaurant ? {
+        id: restaurant.id,
         name: restaurant.name,
         address: restaurant.address,
         city: restaurant.city,
@@ -1051,6 +1052,37 @@ app.post('/api/restaurants/:id/payments/dexpay/checkout', async (req, res) => {
   } catch (error) {
     console.error('[DEXPAY] Checkout creation failed:', error.message);
     res.status(500).json({ error: 'DEXPAY_CHECKOUT_FAILED', message: 'Impossible de préparer le paiement.' });
+  }
+});
+
+// Compatibilité des anciens QR codes : ils contenaient le nom du restaurant
+// sans son identifiant. Les nouveaux QR embarquent toujours ?r=<id>.
+// Paramètre optionnel ?email= : utilisé par le frontend pour ré-adopter un
+// restaurant existant (même nom) au lieu d'en créer un doublon. Le restaurant
+// n'est renvoyé que si l'e-mail correspond au propriétaire enregistré, et
+// jamais si le restaurant n'a pas de propriétaire (pas de revendication).
+app.get('/api/public/restaurants/resolve', async (req, res) => {
+  const name = String(req.query.name || '').trim().slice(0, 120);
+  if (!name) return res.status(400).json({ error: 'MISSING_RESTAURANT_NAME' });
+
+  const email = String(req.query.email || '').trim().toLowerCase().slice(0, 200);
+
+  try {
+    const { rows } = await pool.query(
+      'SELECT id, owner_email FROM restaurants WHERE lower(name) = lower($1) ORDER BY id DESC LIMIT 1',
+      [name]
+    );
+    if (!rows.length) return res.status(404).json({ error: 'RESTAURANT_NOT_FOUND' });
+    const restaurant = rows[0];
+    if (email) {
+      const ownerEmail = (restaurant.owner_email || '').toLowerCase();
+      if (!ownerEmail || ownerEmail !== email) {
+        return res.status(404).json({ error: 'RESTAURANT_NOT_FOUND' });
+      }
+    }
+    return res.json({ id: restaurant.id });
+  } catch (err) {
+    return res.status(500).json({ error: 'RESTAURANT_RESOLUTION_FAILED' });
   }
 });
 

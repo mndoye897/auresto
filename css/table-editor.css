@@ -1744,6 +1744,24 @@ body.te-page .app-main-wrapper {
   max-height: 100%;
 }
 
+.te-table-card-delete {
+  width: 100%;
+  margin-top: 7px;
+  padding: 5px 6px;
+  border: 1px solid rgba(248, 113, 113, 0.45);
+  border-radius: 6px;
+  background: rgba(127, 29, 29, 0.13);
+  color: #fca5a5;
+  font: 600 10px var(--te-font);
+  cursor: pointer;
+}
+
+.te-table-card-delete:hover {
+  background: rgba(127, 29, 29, 0.28);
+  border-color: #f87171;
+  color: #fee2e2;
+}
+
 .te-table-card-more {
   background: var(--te-surface-2);
   border: 1px dashed var(--te-border-strong);

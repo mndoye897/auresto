@@ -169,11 +169,21 @@ function categoryIconSvg(catName) {
 async function init() {
   const params = new URLSearchParams(location.search);
   tableId = params.get('table') || '';
+  const tableNameFromUrl = params.get('tableName') || tableId;
   const restaurantName = params.get('restaurant') || '';
 
   let data = getData();
 
-  const rParam = params.get('r') || params.get('restaurantId');
+  let rParam = params.get('r') || params.get('restaurantId');
+  // Compatibilité avec les anciens QR codes, qui ne contenaient que le nom du
+  // restaurant. Les nouveaux QR embarquent toujours ?r=<id>.
+  if (!rParam && restaurantName && restaurantName !== 'restaurant') {
+    try {
+      rParam = await AurestoStore.resolveRestaurantIdByName?.(restaurantName) || '';
+    } catch (err) {
+      console.warn('Résolution du restaurant du QR impossible:', err);
+    }
+  }
   if (rParam || !data.menu?.items?.length) {
     try {
       const apiData = await AurestoStore.init();
@@ -204,7 +214,7 @@ async function init() {
 
   data = withLivePreviewContent(data);
   const table = data.tables.find(t => t.id === tableId);
-  tableName = table?.name || params.get('table') || 'Table';
+  tableName = table?.name || tableNameFromUrl || 'Table';
   const customization = applyMenuCustomization(data);
 
   renderRestaurantIdentity(data, restaurantName);

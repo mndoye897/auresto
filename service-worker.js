@@ -1,4 +1,4 @@
-const CACHE = 'auresto-v26';
+const CACHE = 'auresto-v27';
 const ASSETS = [
   './',
   './index.html',

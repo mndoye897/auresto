@@ -90,23 +90,30 @@ async function syncWithApi(data) {
     const accountEmail = data.account?.email || null;
     let rid = getRestaurantId();
     if (!rid) {
-      // Create restaurant in DB
-      const res = await fetch(window.AURESTO_API_BASE + '/api/restaurants', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: data.restaurant.name, ownerEmail: accountEmail })
-      });
-      if (!res.ok) {
-        console.warn('Failed to create restaurant:', res.status, res.statusText);
-        return { success: false, restaurantId: null };
+      // Au lieu de créer un doublon : on adopte le restaurant existant du
+      // même nom (vérifié par e-mail du propriétaire côté serveur).
+      const existingId = await resolveRestaurantIdByName(data.restaurant.name, accountEmail);
+      if (existingId) {
+        rid = existingId;
+      } else {
+        // Create restaurant in DB
+        const res = await fetch(window.AURESTO_API_BASE + '/api/restaurants', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: data.restaurant.name, ownerEmail: accountEmail })
+        });
+        if (!res.ok) {
+          console.warn('Failed to create restaurant:', res.status, res.statusText);
+          return { success: false, restaurantId: null };
+        }
+        const created = await res.json();
+        if (created.id) {
+          setRestaurantId(created.id);
+          rid = created.id;
+        }
+        // Le serveur ne renvoie ce jeton qu'à la création : on le conserve.
+        if (created.access_token) setRestaurantToken(created.access_token);
       }
-      const created = await res.json();
-      if (created.id) {
-        setRestaurantId(created.id);
-        rid = created.id;
-      }
-      // Le serveur ne renvoie ce jeton qu'à la création : on le conserve.
-      if (created.access_token) setRestaurantToken(created.access_token);
     }
 
     // Restaurant déjà créé mais jeton absent localement : on le récupère.
@@ -124,6 +131,13 @@ async function syncWithApi(data) {
           account: data.account ? { email: accountEmail } : undefined
         })
       });
+      if (syncRes.status === 404) {
+        // Restaurant supprimé/fusionné en base : on oublie l'identifiant
+        // local et on recommence (adoption ou création propre).
+        localStorage.removeItem(RESTAURANT_ID_KEY);
+        localStorage.removeItem(RESTAURANT_TOKEN_KEY);
+        return syncWithApi(data);
+      }
       if (!syncRes.ok) {
         console.warn('Full-sync failed:', syncRes.status, syncRes.statusText);
         return { success: false, restaurantId: rid };
@@ -153,6 +167,21 @@ async function loadFromApi() {
     console.warn('API load failed (falling back to localStorage)', err);
     return null;
   }
+}
+
+async function resolveRestaurantIdByName(name, email) {
+  const normalizedName = String(name || '').trim().slice(0, 120);
+  if (!normalizedName) return null;
+
+  const params = new URLSearchParams({ name: normalizedName });
+  if (email) params.set('email', email);
+  const res = await fetch(window.AURESTO_API_BASE + `/api/public/restaurants/resolve?${params.toString()}`);
+  if (!res.ok) return null;
+
+  const data = await res.json();
+  const id = parseInt(data.id, 10) || null;
+  if (id) setRestaurantId(id);
+  return id;
 }
 
 function loadCache() {
@@ -359,6 +388,10 @@ const AurestoStore = {
   // pages publiques comme le menu client, qui n'ont pas de jeton.
   getRestaurantId() {
     return getRestaurantId();
+  },
+
+  resolveRestaurantIdByName(name) {
+    return resolveRestaurantIdByName(name);
   },
 
   isLoggedIn() {
