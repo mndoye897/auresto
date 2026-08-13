@@ -306,7 +306,18 @@ function render() {
 
 
   const firstTable = (data.tables && data.tables[0]) ? data.tables[0] : null;
-  const menuUrl = firstTable ? AurestoStore.getTableUrl(firstTable.id) : 'client.html?preview=1';
+  const restaurantId = data.restaurant?.id || AurestoStore.getRestaurantId?.();
+  const baseMenuUrl = firstTable
+    ? AurestoStore.getTableUrl(firstTable.id)
+    : 'client.html';
+  // L'iframe du tableau de bord est toujours un aperçu : on transmet aussi
+  // l'identifiant du restaurant afin d'afficher le menu réellement synchronisé.
+  const previewUrl = new URL(baseMenuUrl, window.location.href);
+  previewUrl.searchParams.set('preview', '1');
+  if (restaurantId && !previewUrl.searchParams.get('r')) {
+    previewUrl.searchParams.set('r', restaurantId);
+  }
+  const menuUrl = previewUrl.toString();
   ['previewMenu', 'previewMenuFooter'].forEach(id => {
     const link = document.getElementById(id);
     if (!link) return;

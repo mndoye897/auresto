@@ -785,6 +785,14 @@ function closeCart() {
 async function confirmOrder() {
   if (!cart.length || paymentCheckoutInProgress) return;
 
+  // L'aperçu intégré au dashboard sert à vérifier le rendu du menu. Il ne
+  // représente pas une table réelle et ne doit donc jamais créer un paiement.
+  // Pour tester Wave ou Orange Money, il faut ouvrir le lien QR public du menu.
+  if (isPreviewMode) {
+    showToast('Paiement désactivé dans l’aperçu. Ouvrez le lien QR du menu pour tester Wave ou Orange Money.');
+    return;
+  }
+
   const restaurantId = AurestoStore.getRestaurantId?.();
   if (!restaurantId) {
     showToast('Le paiement en ligne est indisponible : restaurant non identifié.');

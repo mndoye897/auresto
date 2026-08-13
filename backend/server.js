@@ -958,7 +958,10 @@ app.post('/api/restaurants/:id/payments/dexpay/checkout', async (req, res) => {
 
   const ids = requestedItems.map(item => menuItemIdFromClientId(item.id));
   if (ids.some(id => !id)) {
-    return res.status(400).json({ error: 'INVALID_MENU_ITEM', message: 'Un article du panier n’est plus disponible.' });
+    return res.status(409).json({
+      error: 'MENU_NOT_SYNCED',
+      message: 'Le menu affiché n’est pas encore synchronisé. Actualisez le menu depuis son lien QR, puis réessayez.'
+    });
   }
 
   try {
