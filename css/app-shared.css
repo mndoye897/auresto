@@ -8,7 +8,7 @@
   --display: "Instrument Serif", Georgia, serif;
   --accent: #e8a878;
   --bg: #071820;
-  --card: rgba(255, 255, 255, 0.08);
+  --card: rgba(255, 255, 255, 0.04);
   --card-border: rgba(255, 255, 255, 0.18);
   --success: #3ecf8e;
   --warning: #f4a778;
@@ -40,6 +40,12 @@ body {
   gap: 9px;
   color: white;
   text-decoration: none;
+}
+.app-header .logo-img {
+  height: 48px;
+  width: auto;
+  max-width: 160px;
+  object-fit: contain;
 }
 .app-header .logo strong { font-size: 17px; font-weight: 700; }
 .logo-mark {
@@ -220,7 +226,8 @@ body {
   border: 1px solid var(--card-border);
   border-radius: 16px;
   background: var(--card);
-  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(48px);
+  backdrop-filter: blur(48px);
 }
 
 .toast {
@@ -292,8 +299,8 @@ body {
   color: #103b4b;
 }
 .settings-page .hours-preset-btn.active {
-  border-color: #124d58;
-  background: #edf7f2;
+  border-color: rgba(94, 234, 212, 0.45);
+  background: rgba(94, 234, 212, 0.14); color: #5eead4;
 }
 .hours-grid { display: grid; gap: 8px; }
 .hours-row {
@@ -349,8 +356,8 @@ body {
   font: 500 11px "DM Mono", monospace;
 }
 .settings-page .hours-summary {
-  background: #edf7f2;
-  color: #124d58;
+  background: rgba(94, 234, 212, 0.12);
+  color: #9ef0dc;
 }
 @media (max-width: 600px) {
   .hours-row { grid-template-columns: 1fr; gap: 6px; }

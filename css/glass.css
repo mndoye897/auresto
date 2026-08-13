@@ -1,0 +1,822 @@
+/* ============================================================
+   AURESTO — OBSIDIAN LIQUID GLASS
+   Système de design visuel. Chargé en dernier sur chaque page :
+   il rhabille les surfaces existantes sans exiger la moindre
+   modification du HTML ni du JavaScript.
+
+   Toute l'apparence se pilote depuis les jetons ci-dessous.
+   ============================================================ */
+
+:root {
+  /* ---- Obsidienne : les fonds ---- */
+  --obsidian-900: #05070a;
+  --obsidian-800: #080b11;
+  --obsidian-700: #0d1117;
+  --graphite: #141922;
+  --smoke: #1b212c;
+
+  /* ---- Encres ---- */
+  --ink-high: #f4f6fa;   /* titres, chiffres */
+  --ink-mid: #c3cbd8;    /* corps de texte */
+  --ink-low: #8a93a3;    /* légendes */
+
+  /* ---- Champagne : l'accent Auresto, employé avec parcimonie ---- */
+  --auresto-gold: #d6b36a;
+  --auresto-gold-soft: #e4c98a;
+  --auresto-gold-bright: #f0d9a5;
+  --auresto-gold-wash: rgba(214, 179, 106, 0.10);
+
+  /* ---- Reflets froids : présents mais à la limite du perceptible ---- */
+  --sheen-silver: rgba(226, 232, 240, 0.55);
+  --sheen-blue: rgba(148, 176, 226, 0.30);
+  --sheen-violet: rgba(168, 148, 226, 0.22);
+
+  /* ---- Le verre ---- */
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-bg-strong: rgba(255, 255, 255, 0.055);
+  --glass-bg-deep: rgba(10, 14, 20, 0.72);
+  --glass-border: rgba(255, 255, 255, 0.10);
+  --glass-border-strong: rgba(255, 255, 255, 0.16);
+  --glass-highlight: rgba(255, 255, 255, 0.14);
+  --glass-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+  --glass-shadow-deep: 0 30px 70px rgba(0, 0, 0, 0.6);
+  --glass-blur: 64px;
+  --glass-blur-soft: 28px;
+  --glass-radius: 16px;
+
+  /* ---- Mouvement : lent, jamais rebondissant ---- */
+  --ease-glass: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --dur-fast: 200ms;
+  --dur-base: 280ms;
+  --dur-slow: 420ms;
+}
+
+/* ============================================================
+   1. FOND — profondeur par couches, jamais plat
+   ============================================================ */
+body.dashboard-page,
+body.settings-page,
+body.te-page,
+body.mc-page {
+  background-color: var(--obsidian-900);
+  position: relative;
+}
+
+/* Halos très diffus : quelques sources lumineuses dans un espace sombre.
+   En position fixe, sans blur, donc sans coût de composition notable. */
+body.dashboard-page::before,
+body.settings-page::before,
+body.te-page::before,
+body.mc-page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(58vw 46vh at 12% -6%, rgba(214, 179, 106, 0.11), transparent 62%),
+    radial-gradient(52vw 44vh at 88% 4%, rgba(120, 156, 214, 0.09), transparent 60%),
+    radial-gradient(44vw 40vh at 74% 92%, rgba(150, 128, 208, 0.07), transparent 62%),
+    radial-gradient(70vw 60vh at 50% 50%, rgba(14, 20, 28, 0.55), transparent 70%);
+}
+
+/* Le contenu reste au-dessus des halos. */
+body.dashboard-page > *,
+body.settings-page > *,
+body.te-page > *,
+body.mc-page > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================================
+   2. LE VERRE — socle réutilisable
+
+   .glass            surface de base
+   .glass--l1        cartes secondaires
+   .glass--l2        cartes importantes
+   .glass--l3        héros / éléments premium
+   ============================================================ */
+.glass,
+.glass--l1,
+.glass--l2,
+.glass--l3 {
+  position: relative;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--glass-radius);
+  /* Le relief du cristal : une lumière rasante en haut, une ombre en bas,
+     puis l'ombre portée. C'est ce triptyque qui donne l'épaisseur. */
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.28),
+    var(--glass-shadow);
+}
+
+.glass--l2 {
+  background: var(--glass-bg-strong);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.32),
+    var(--glass-shadow);
+}
+
+.glass--l3 {
+  background:
+    linear-gradient(160deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.03)),
+    var(--glass-bg-strong);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.34),
+    var(--glass-shadow-deep);
+}
+
+/* ---- Arête irisée -------------------------------------------------
+   Vraie bordure en dégradé, obtenue par masque : un liseré de 1px qui
+   parcourt argent → champagne → bleu → violet. Les opacités sont
+   volontairement minuscules — on doit le deviner, pas le voir. */
+.glass-edge {
+  position: relative;
+}
+
+.glass-edge::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  background: linear-gradient(
+    135deg,
+    var(--sheen-silver) 0%,
+    rgba(214, 179, 106, 0.34) 22%,
+    rgba(255, 255, 255, 0.06) 42%,
+    var(--sheen-blue) 62%,
+    var(--sheen-violet) 78%,
+    rgba(255, 255, 255, 0.24) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: 0.5;
+  transition: opacity var(--dur-base) var(--ease-glass);
+}
+
+/* ---- Balayage de lumière -------------------------------------------
+   Une réflexion diagonale traverse la surface au survol, comme une
+   source lumineuse qui glisse sur du verre poli. */
+.glass-sweep::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0.10) 0%,
+    transparent 30%,
+    transparent 68%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  opacity: 0.85;
+  transition: opacity var(--dur-base) var(--ease-glass);
+}
+
+/* ============================================================
+   3. SURVOL — élévation lente, jamais d'effet arcade
+   ============================================================ */
+.glass-hover {
+  transition:
+    transform var(--dur-base) var(--ease-glass),
+    box-shadow var(--dur-base) var(--ease-glass),
+    border-color var(--dur-base) var(--ease-glass),
+    background-color var(--dur-base) var(--ease-glass);
+  will-change: transform;
+}
+
+.glass-hover:hover {
+  transform: translateY(-2px);
+  border-color: var(--glass-border-strong);
+  background-color: var(--glass-bg-strong);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.20),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.30),
+    var(--glass-shadow-deep);
+}
+
+.glass-hover:hover .glass-edge::after,
+.glass-edge.glass-hover:hover::after { opacity: 0.9; }
+
+/* ============================================================
+   4. APPLICATION AUX SURFACES EXISTANTES
+   Aucune classe à ajouter dans le HTML : on habille les
+   sélecteurs déjà en place.
+   ============================================================ */
+
+/* ---- Barre latérale ---- */
+.app-sidebar {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.022)),
+    rgba(8, 11, 17, 0.72);
+  backdrop-filter: blur(26px) saturate(160%);
+  -webkit-backdrop-filter: blur(26px) saturate(160%);
+  border-right: 1px solid var(--glass-border);
+  box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.05), 12px 0 40px rgba(0, 0, 0, 0.35);
+}
+
+/* Séparation lumineuse verticale, très ténue. */
+.app-sidebar::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 1px;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(214, 179, 106, 0.24) 18%,
+    rgba(255, 255, 255, 0.10) 50%,
+    rgba(148, 176, 226, 0.16) 82%,
+    transparent
+  );
+}
+
+.sidebar-header { border-bottom: 1px solid rgba(255, 255, 255, 0.07); }
+.sidebar-header strong { color: var(--auresto-gold-soft); }
+.sidebar-header .logo-mark {
+  border-color: var(--auresto-gold);
+  color: var(--auresto-gold-soft);
+  box-shadow:
+    0 0 18px rgba(214, 179, 106, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+/* ---- Navigation : capsule de verre pour l'élément actif ---- */
+.sidebar-nav .nav-item {
+  position: relative;
+  color: var(--ink-mid);
+  border-radius: 12px;
+  transition:
+    color var(--dur-fast) var(--ease-glass),
+    background-color var(--dur-fast) var(--ease-glass);
+}
+
+.sidebar-nav .nav-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--ink-high);
+}
+
+.sidebar-nav .nav-item.active {
+  background:
+    linear-gradient(135deg, rgba(214, 179, 106, 0.16), rgba(94, 234, 212, 0.09)),
+    rgba(255, 255, 255, 0.06);
+  color: var(--ink-high);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.22),
+    0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+/* Liseré champagne à gauche de la capsule active. */
+.sidebar-nav .nav-item.active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 20%;
+  bottom: 20%;
+  width: 2px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--auresto-gold-soft), rgba(94, 234, 212, 0.7));
+  box-shadow: 0 0 10px rgba(214, 179, 106, 0.6);
+}
+
+.sidebar-nav .nav-item.active svg {
+  filter: drop-shadow(0 0 6px rgba(214, 179, 106, 0.55));
+}
+
+/* ---- Cartes du bas de barre latérale ---- */
+.sidebar-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.05));
+  backdrop-filter: blur(var(--glass-blur-soft));
+  -webkit-backdrop-filter: blur(var(--glass-blur-soft));
+}
+
+.sidebar-plan-card,
+.sidebar-user-widget {
+  position: relative;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.24);
+}
+
+.sidebar-user-widget {
+  transition: background-color var(--dur-fast) var(--ease-glass);
+}
+.sidebar-user-widget:hover { background: var(--glass-bg-strong); }
+
+.gold-badge { color: var(--auresto-gold-soft); }
+
+/* ---- Bandeau supérieur ---- */
+.app-topbar {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.025)),
+    rgba(8, 11, 17, 0.66);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border-bottom: 1px solid var(--glass-border);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04), 0 12px 30px rgba(0, 0, 0, 0.28);
+}
+
+/* ---- Champ de recherche ---- */
+.topbar-search {
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid var(--glass-border);
+  border-radius: 999px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  transition: border-color var(--dur-base) var(--ease-glass), box-shadow var(--dur-base) var(--ease-glass);
+}
+
+.topbar-search:focus-within {
+  border-color: rgba(214, 179, 106, 0.45);
+  box-shadow:
+    inset 0 1px 2px rgba(0, 0, 0, 0.3),
+    0 0 0 3px rgba(214, 179, 106, 0.10);
+}
+
+.topbar-search input { color: var(--ink-high); }
+.topbar-search input::placeholder { color: var(--ink-low); }
+
+/* ---- Capsules et boutons ronds du bandeau ---- */
+.topbar-date-picker {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 999px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.10);
+}
+
+.topbar-icon-btn {
+  position: relative;
+  overflow: hidden;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  transition:
+    background-color var(--dur-fast) var(--ease-glass),
+    border-color var(--dur-fast) var(--ease-glass),
+    transform var(--dur-fast) var(--ease-glass);
+}
+
+/* La lumière traverse le verre au survol. */
+.topbar-icon-btn::after {
+  content: "";
+  position: absolute;
+  top: -60%;
+  left: -120%;
+  width: 60%;
+  height: 220%;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.22), transparent);
+  transform: rotate(18deg);
+  transition: left var(--dur-slow) var(--ease-glass);
+}
+
+.topbar-icon-btn:hover {
+  background: var(--glass-bg-strong);
+  border-color: var(--glass-border-strong);
+  transform: translateY(-1px);
+}
+.topbar-icon-btn:hover::after { left: 140%; }
+
+/* ============================================================
+   5. CARTES
+   ============================================================ */
+
+/* Niveau 2 — indicateurs clés. */
+.kpi-card,
+.setting-card,
+.order-card,
+.av-card,
+.mk-card,
+.quick-action-card,
+.sidebar-plan-card,
+.sidebar-user-widget {
+  position: relative;
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--glass-radius);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.30),
+    var(--glass-shadow);
+  transition:
+    transform var(--dur-base) var(--ease-glass),
+    box-shadow var(--dur-base) var(--ease-glass),
+    border-color var(--dur-base) var(--ease-glass);
+}
+
+/* Arête irisée sur les cartes de premier plan. */
+.kpi-card::after,
+.setting-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  background: linear-gradient(
+    135deg,
+    var(--sheen-silver) 0%,
+    rgba(214, 179, 106, 0.30) 24%,
+    rgba(255, 255, 255, 0.05) 46%,
+    var(--sheen-blue) 66%,
+    var(--sheen-violet) 82%,
+    rgba(255, 255, 255, 0.20) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: 0.45;
+  transition: opacity var(--dur-base) var(--ease-glass);
+}
+
+.kpi-card:hover,
+.setting-card:hover,
+.order-card:hover,
+.av-card:hover,
+.mk-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--glass-border-strong);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.30),
+    var(--glass-shadow-deep);
+}
+
+.kpi-card:hover::after,
+.setting-card:hover::after { opacity: 0.85; }
+
+.kpi-value { color: var(--ink-high); }
+.kpi-label { color: var(--ink-low); letter-spacing: 0.05em; }
+
+/* Niveau 3 — panneaux principaux. */
+.panel {
+  position: relative;
+  background:
+    linear-gradient(160deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.028)),
+    rgba(10, 14, 20, 0.18);
+  backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  border: 1px solid var(--glass-border);
+  border-radius: 18px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.32),
+    var(--glass-shadow);
+}
+
+/* Même traitement que les .glass-card de la page Avis : transparence,
+   flou léger, liseré clair et deux reflets, sans ajouter de décor. */
+body.dashboard-page .panel {
+  background: linear-gradient(155deg, rgba(255, 255, 255, 0.10) 0%, rgba(255, 255, 255, 0.035) 40%, rgba(255, 255, 255, 0.05) 100%);
+  backdrop-filter: blur(4px) saturate(150%);
+  -webkit-backdrop-filter: blur(4px) saturate(150%);
+  border-color: rgba(255, 255, 255, 0.14);
+  border-radius: 20px;
+  box-shadow:
+    0 1px 0 0 rgba(255, 255, 255, 0.18) inset,
+    0 -1px 0 0 rgba(0, 0, 0, 0.15) inset,
+    0 18px 40px -14px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(255, 255, 255, 0.02);
+  overflow: hidden;
+}
+
+body.dashboard-page .panel::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 45%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.10) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+body.dashboard-page .panel::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -20%;
+  width: 60%;
+  height: 200%;
+  background: linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, 0.05) 48%, transparent 56%);
+  pointer-events: none;
+}
+
+body.dashboard-page .kpi-card,
+body.dashboard-page .quick-action-card,
+body.dashboard-page .sidebar-plan-card,
+body.dashboard-page .sidebar-user-widget {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.02)),
+    rgba(7, 24, 32, 0.15);
+  backdrop-filter: blur(24px) saturate(150%);
+  -webkit-backdrop-filter: blur(24px) saturate(150%);
+  border-color: rgba(255, 255, 255, 0.24);
+}
+
+/* Le conseil du jour et la recommandation restent volontairement clairs :
+   ce sont les deux seules surfaces lumineuses, elles doivent trancher. */
+.tip-panel,
+.reco-panel { box-shadow: var(--glass-shadow); }
+
+/* ============================================================
+   6. BOUTONS
+   ============================================================ */
+.primary-action,
+.btn-primary,
+.settings-save,
+.cart-order-btn {
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform var(--dur-fast) var(--ease-glass),
+    box-shadow var(--dur-base) var(--ease-glass),
+    filter var(--dur-fast) var(--ease-glass);
+}
+
+/* Micro-retour : la lumière balaie le bouton. */
+.primary-action::after,
+.btn-primary::after,
+.settings-save::after {
+  content: "";
+  position: absolute;
+  top: -60%;
+  left: -130%;
+  width: 55%;
+  height: 220%;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.30), transparent);
+  transform: rotate(18deg);
+  transition: left var(--dur-slow) var(--ease-glass);
+}
+
+.primary-action:hover::after,
+.btn-primary:hover::after,
+.settings-save:hover::after { left: 150%; }
+
+.primary-action:active,
+.btn-primary:active,
+.settings-save:active { transform: translateY(1px); }
+
+.btn-dark-sidebar {
+  background: linear-gradient(135deg, rgba(214, 179, 106, 0.20), rgba(255, 255, 255, 0.06));
+  border: 1px solid rgba(214, 179, 106, 0.30);
+  color: var(--auresto-gold-bright);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  transition: background var(--dur-base) var(--ease-glass), border-color var(--dur-base) var(--ease-glass);
+}
+.btn-dark-sidebar:hover {
+  background: linear-gradient(135deg, rgba(214, 179, 106, 0.30), rgba(255, 255, 255, 0.10));
+  border-color: rgba(214, 179, 106, 0.5);
+}
+
+.btn-ghost,
+.secondary-action {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--ink-mid);
+  transition: background-color var(--dur-fast) var(--ease-glass), border-color var(--dur-fast) var(--ease-glass);
+}
+.btn-ghost:hover,
+.secondary-action:hover {
+  background: var(--glass-bg-strong);
+  border-color: var(--glass-border-strong);
+  color: var(--ink-high);
+}
+
+/* Destructif : rouge sourd, intégré au verre. */
+.btn-danger,
+.reset-action {
+  background: rgba(239, 68, 68, 0.10);
+  border: 1px solid rgba(239, 68, 68, 0.28);
+  color: #f3a3a3;
+}
+.btn-danger:hover { background: rgba(239, 68, 68, 0.18); color: #ffc9c9; }
+
+/* ============================================================
+   7. CHAMPS DE SAISIE
+   ============================================================ */
+.settings-form-grid input,
+.settings-form-grid textarea,
+.settings-form-grid select,
+.form-control,
+.review-input,
+.te-field input,
+.te-field select {
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid var(--glass-border);
+  color: var(--ink-high);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.32);
+  transition: border-color var(--dur-base) var(--ease-glass), box-shadow var(--dur-base) var(--ease-glass);
+}
+
+.settings-form-grid input:focus,
+.settings-form-grid textarea:focus,
+.settings-form-grid select:focus,
+.form-control:focus,
+.review-input:focus {
+  outline: none;
+  border-color: rgba(214, 179, 106, 0.45);
+  box-shadow:
+    inset 0 1px 3px rgba(0, 0, 0, 0.32),
+    0 0 0 3px rgba(214, 179, 106, 0.10);
+}
+
+::placeholder { color: var(--ink-low); }
+
+/* ============================================================
+   8. BADGES — pastilles de verre
+   ============================================================ */
+.badge,
+.nav-badge,
+.status-active-tag,
+.order-status-badge,
+.order-type-tag,
+.order-info-chip {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.nav-badge.gold {
+  background: var(--auresto-gold-wash);
+  border-color: rgba(214, 179, 106, 0.34);
+  color: var(--auresto-gold-bright);
+}
+
+.nav-badge.new {
+  background: rgba(94, 234, 212, 0.10);
+  border-color: rgba(94, 234, 212, 0.28);
+  color: #8ff0dd;
+}
+
+.status-active-tag {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.30);
+  color: #6ee7b7;
+}
+
+/* ============================================================
+   9. MODALES ET FENÊTRES FLOTTANTES
+   ============================================================ */
+.item-modal-backdrop,
+.modal-backdrop,
+.cart-panel {
+  background: rgba(4, 6, 10, 0.68);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.item-modal-dialog,
+.modal-sheet,
+.cart-sheet {
+  background:
+    linear-gradient(160deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03)),
+    rgba(10, 14, 20, 0.86);
+  backdrop-filter: blur(30px) saturate(160%);
+  -webkit-backdrop-filter: blur(30px) saturate(160%);
+  border: 1px solid var(--glass-border-strong);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.20),
+    var(--glass-shadow-deep);
+}
+
+/* ============================================================
+   10. TABLEAUX — des lignes qui flottent dans le verre
+   ============================================================ */
+table { border-collapse: separate; border-spacing: 0; }
+
+thead th {
+  background: rgba(255, 255, 255, 0.035);
+  color: var(--ink-low);
+  border-bottom: 1px solid var(--glass-border);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+tbody tr { transition: background-color var(--dur-fast) var(--ease-glass); }
+tbody tr:hover { background: rgba(255, 255, 255, 0.04); }
+tbody td { border-bottom: 1px solid rgba(255, 255, 255, 0.06); }
+
+/* ============================================================
+   11. NOTIFICATIONS
+   ============================================================ */
+.order-notification-toast {
+  background:
+    linear-gradient(160deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.03)),
+    rgba(10, 14, 20, 0.88);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid var(--glass-border-strong);
+  border-left: 3px solid var(--auresto-gold);
+  box-shadow: var(--glass-shadow-deep);
+}
+
+/* ============================================================
+   12. APPARITION PROGRESSIVE
+   ============================================================ */
+@keyframes glassRise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.dashboard-main-content > * {
+  animation: glassRise var(--dur-slow) var(--ease-glass) both;
+}
+.dashboard-main-content > *:nth-child(1) { animation-delay: 0ms; }
+.dashboard-main-content > *:nth-child(2) { animation-delay: 60ms; }
+.dashboard-main-content > *:nth-child(3) { animation-delay: 120ms; }
+.dashboard-main-content > *:nth-child(4) { animation-delay: 180ms; }
+.dashboard-main-content > *:nth-child(5) { animation-delay: 240ms; }
+
+/* ============================================================
+   13. ACCESSIBILITÉ ET PERFORMANCE
+   ============================================================ */
+
+/* Respect strict de la préférence système : plus aucune animation,
+   plus aucun balayage lumineux. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .dashboard-main-content > * { animation: none; opacity: 1; transform: none; }
+}
+
+/* Sur mobile, le backdrop-filter est le poste le plus coûteux : on
+   allège le flou et on retire les arêtes irisées, invisibles à cette
+   taille mais payées au prix fort. */
+@media (max-width: 768px) {
+  :root {
+    --glass-blur: 40px;
+    --glass-blur-soft: 18px;
+  }
+
+  .kpi-card::after,
+  .setting-card::after,
+  .glass-edge::after { display: none; }
+
+  .app-sidebar,
+  .app-topbar {
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+  }
+
+  /* Un survol n'a pas de sens au doigt : on supprime l'élévation, on
+     garde un retour à l'appui. */
+  .kpi-card:hover,
+  .setting-card:hover,
+  .order-card:hover,
+  .panel:hover { transform: none; }
+
+  .kpi-card:active,
+  .order-card:active { transform: scale(0.99); }
+}
+
+/* Repli pour les navigateurs sans backdrop-filter : on compense par un
+   fond plus opaque, sinon le texte devient illisible. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .app-sidebar,
+  .app-topbar,
+  .kpi-card,
+  .panel,
+  .setting-card,
+  .order-card,
+  .item-modal-dialog,
+  .cart-sheet {
+    background: rgba(13, 17, 23, 0.94);
+  }
+}

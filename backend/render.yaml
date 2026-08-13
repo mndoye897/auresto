@@ -7,6 +7,7 @@ services:
     name: auresto-backend
     runtime: node
     plan: free
+    rootDir: backend
     buildCommand: npm install
     startCommand: npm start
     healthCheckPath: /health
@@ -20,4 +21,15 @@ services:
       - key: OWNER_SECRET
         sync: false
       - key: GOOGLE_CLIENT_ID
+        sync: false
+      # DexPay : renseigner les valeurs dans le dashboard Render, jamais dans Git.
+      - key: DEXPAY_MODE
+        value: sandbox
+      - key: DEXPAY_API_KEY
+        sync: false
+      - key: DEXPAY_WEBHOOK_SECRET
+        sync: false
+      - key: AURESTO_APP_URL
+        sync: false
+      - key: DEXPAY_WEBHOOK_URL
         sync: false

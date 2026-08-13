@@ -63,13 +63,21 @@ function extractRestaurantToken(req) {
 function createRestaurantAuth(pool, googleClient) {
   async function verifyGoogleEmail(token) {
     if (!token) return null;
+    // Sans GOOGLE_CLIENT_ID, verifyIdToken reçoit audience:undefined et rejette
+    // systématiquement : toute authentification Google échouait alors sans
+    // qu'aucun message n'explique pourquoi. On le signale explicitement.
+    if (!process.env.GOOGLE_CLIENT_ID) {
+      console.warn('GOOGLE_CLIENT_ID absent de l\'environnement : vérification des jetons Google impossible.');
+      return null;
+    }
     try {
       const ticket = await googleClient.verifyIdToken({
         idToken: token,
         audience: process.env.GOOGLE_CLIENT_ID
       });
       return ticket.getPayload()?.email?.toLowerCase() || null;
-    } catch {
+    } catch (err) {
+      console.warn('Jeton Google refusé:', err.message);
       return null;
     }
   }

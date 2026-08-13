@@ -7,7 +7,8 @@
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="css/app-shared.css" />
-    <link rel="stylesheet" href="css/dashboard.css" />
+    <link rel="stylesheet" href="css/dashboard.css?v=5" />
+    <link rel="stylesheet" href="css/glass.css?v=7" />
   </head>
   <body class="dashboard-page">
     <div class="app-layout">
@@ -15,8 +16,7 @@
       <aside class="app-sidebar">
         <div class="sidebar-header">
           <a class="logo" href="index.html">
-            <span class="logo-mark">a<span>•</span></span>
-            <strong>Auresto</strong>
+            <img src="assets/logo-auresto.png" alt="Auresto" class="logo-img" />
           </a>
         </div>
 
@@ -25,41 +25,28 @@
             <svg class="lucide lucide-layout-dashboard" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
             <span>Centre de contrôle</span>
           </a>
-          <a href="kitchen.html" class="nav-item">
+          <a href="orders.html" class="nav-item">
             <svg class="lucide lucide-shopping-bag" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" x2="21" y1="6" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
             <span>Commandes</span>
-          </a>
-          <a href="#menuEditor" class="nav-item">
-            <svg class="lucide lucide-utensils" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2v6a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V2"/><path d="M12 2v20"/><path d="M12 14H8a2 2 0 0 0-2 2v6"/><path d="M12 14h4a2 2 0 0 1 2 2v6"/></svg>
-            <span>Menus & Plats</span>
           </a>
           <a href="menu-customization.html" class="nav-item" id="customizeMenuNav" hidden>
             <svg class="lucide lucide-palette" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 22a10 10 0 1 0 0-20 10 9 0 0 0-10 9c0 1.1.9 2 2 2h2.4a1.6 1.6 0 0 1 1.4 2.4l-.4.8A1.6 1.6 0 0 0 8.8 22Z"/></svg>
             <span>Design du menu</span>
             <span class="nav-badge gold">Gold</span>
           </a>
-          <a href="#categoryManagerSection" class="nav-item">
-            <svg class="lucide lucide-folder" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>
-            <span>Catégories</span>
-          </a>
-          <a href="settings.html" class="nav-item">
+          <a href="table-editor.html" class="nav-item">
             <svg class="lucide lucide-qr-code" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1a2 2 0 0 1 2 2v1"/></svg>
             <span>Tables & QR Codes</span>
-          </a>
-          <a href="client.html" class="nav-item">
-            <svg class="lucide lucide-users" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-            <span>Clients</span>
           </a>
           <a href="settings.html" class="nav-item">
             <svg class="lucide lucide-credit-card" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
             <span>Paiements</span>
           </a>
-          <a href="#goldPanel" class="nav-item">
-            <svg class="lucide lucide-bar-chart-2" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>
-            <span>Analyses</span>
-            <span class="nav-badge gold">Gold</span>
+          <a href="avis.html" class="nav-item">
+            <svg class="lucide" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <span>Avis clients</span>
           </a>
-          <a href="settings.html" class="nav-item">
+          <a href="marketing.html" class="nav-item">
             <svg class="lucide lucide-megaphone" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 13v-2z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
             <span>Marketing</span>
             <span class="nav-badge new">Nouveau</span>
@@ -91,7 +78,7 @@
 
           <!-- Widget Profil Utilisateur -->
           <div class="sidebar-user-widget">
-            <div class="user-avatar">m</div>
+            <div class="user-avatar" id="userAvatar">A</div>
             <div class="user-info">
               <strong id="restaurantName">Mon restaurant</strong>
               <span id="planBadge">Le Gourmet</span>
@@ -117,11 +104,6 @@
               <svg class="lucide lucide-chevron-down" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
             </div>
 
-            <button class="topbar-icon-btn notif-btn" aria-label="Notifications">
-              <svg class="lucide lucide-bell" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
-              <span class="notif-badge">3</span>
-            </button>
-
             <button class="topbar-icon-btn" aria-label="Plein écran">
               <svg class="lucide lucide-maximize-2" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/></svg>
             </button>
@@ -134,10 +116,47 @@
 
         <!-- DASHBOARD MAIN CONTENT -->
         <main class="dashboard-main-content">
+          <div class="dashboard-home-content" id="dashboardHomeContent">
           <!-- Salutation Header -->
           <div class="greeting-banner">
             <h1>Bonjour Moustapha 👋</h1>
             <p>Voici un aperçu de votre restaurant <span class="rest-tag">Le Gourmet</span></p>
+          </div>
+
+          <!-- Conseil du jour + recommandation : remontés en tête, c'est
+               l'info la plus utile au coup d'œil du matin. -->
+          <div class="top-insights-grid">
+            <div class="panel tip-panel">
+              <div class="tip-content">
+                <div class="tip-text">
+                  <div class="tip-title">💡 Conseil du jour</div>
+                  <p>Le samedi, vos ventes augmentent de 26% en moyenne. Pensez à préparer plus de <strong>Carpe ou Dorade</strong> !</p>
+                </div>
+                <div class="tip-illustration">
+                  <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+                    <path d="M12 48 L28 32 L40 40 L52 16" stroke="#10b981" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="52" cy="16" r="4" fill="#10b981"/>
+                    <path d="M46 52 C52 50 56 42 52 36" stroke="#f59e0b" stroke-width="3" stroke-linecap="round"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel reco-panel">
+              <div class="tip-content">
+                <div class="tip-text">
+                  <div class="reco-title">🎯 Recommandation</div>
+                  <p id="dailyRecommendation">Analyse de vos commandes en cours…</p>
+                </div>
+                <div class="tip-illustration">
+                  <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+                    <circle cx="32" cy="32" r="20" stroke="#0284c7" stroke-width="4"/>
+                    <circle cx="32" cy="32" r="10" stroke="#0284c7" stroke-width="4"/>
+                    <circle cx="32" cy="32" r="3" fill="#f59e0b"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
           </div>
 
           <!-- 4 KPI CARDS -->
@@ -233,7 +252,7 @@
                 <div id="activeOrders"></div>
               </div>
               <div class="panel-footer">
-                <a href="kitchen.html" class="panel-link">Voir toutes les commandes →</a>
+                <a href="orders.html" class="panel-link">Voir toutes les commandes →</a>
               </div>
             </div>
 
@@ -265,95 +284,18 @@
               </div>
 
               <div class="panel-footer">
-                <a href="onboarding.html" class="panel-link">Voir tous les plats →</a>
+                <a href="client.html" class="panel-link" id="previewMenuFooter">Voir le menu client →</a>
               </div>
             </div>
           </div>
 
           <!-- ROW 3 GRID -->
           <div class="secondary-sections-grid">
-            <!-- Analyses Gold Panel -->
-            <div class="panel gold-panel-card" id="goldPanel">
-              <div class="gold-header">
-                <div>
-                  <h2>✨ Analyses Gold</h2>
-                  <p class="gold-subtitle">Recommandations IA basées sur vos données.</p>
-                </div>
-                <a href="dashboard.html" class="gold-link">Voir toutes les analyses →</a>
-              </div>
-
-              <div class="gold-ai-grid" id="aiTips">
-                <div class="ai-widget-card">
-                  <div class="ai-widget-badge">⭐ Plat le plus commandé</div>
-                  <div class="ai-widget-content">
-                    <div class="ai-widget-info">
-                      <strong>Carpe ou Dorade</strong>
-                      <p>42 commandes cette semaine</p>
-                    </div>
-                    <img src="images/plat-1.jpg" alt="Carpe ou Dorade" class="ai-thumb" onerror="this.src='https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=120&q=80'" />
-                  </div>
-                </div>
-
-                <div class="ai-widget-card">
-                  <div class="ai-widget-badge">📌 Plat le moins commandé</div>
-                  <div class="ai-widget-content">
-                    <div class="ai-widget-info">
-                      <strong>TON (ON</strong>
-                      <p>3 commandes cette semaine</p>
-                    </div>
-                    <img src="images/plat-2.jpg" alt="TON (ON" class="ai-thumb" onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=120&q=80'" />
-                  </div>
-                </div>
-
-                <div class="ai-widget-card">
-                  <div class="ai-widget-badge">⏰ Heure de pointe</div>
-                  <div class="ai-widget-content flex-col">
-                    <div class="ai-widget-info">
-                      <strong>19:00 - 21:00</strong>
-                      <p>Pics de commandes aujourd'hui</p>
-                    </div>
-                    <svg class="sparkline-chart" viewBox="0 0 100 25">
-                      <path d="M0,20 Q15,18 30,12 T60,3 T80,14 T100,20" fill="none" stroke="#0ea5e9" stroke-width="2.5" />
-                    </svg>
-                  </div>
-                </div>
-
-                <div class="ai-widget-card">
-                  <div class="ai-widget-badge">📈 CA prévisionnel</div>
-                  <div class="ai-widget-content flex-col">
-                    <div class="ai-widget-info">
-                      <strong>189 000 FCFA</strong>
-                      <p><span class="trend-up">↑ 16%</span> vs aujourd'hui</p>
-                    </div>
-                    <div class="mini-bar-chart">
-                      <span style="height:40%"></span>
-                      <span style="height:60%"></span>
-                      <span style="height:35%"></span>
-                      <span style="height:80%"></span>
-                      <span style="height:100%"></span>
-                      <span style="height:70%"></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Actions Rapides Panel -->
             <div class="panel quick-actions-panel">
               <div class="panel-header">
                 <h2>Actions rapides</h2>
               </div>
               <div class="quick-actions-grid">
-                <a href="kitchen.html" class="quick-action-card">
-                  <div class="qa-icon icon-green">
-                    <svg class="lucide lucide-chef-hat" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 9.18 0A4 4 0 0 1 18 13.87V21H6z"/><line x1="6" x2="18" y1="17" y2="17"/></svg>
-                  </div>
-                  <div class="qa-text">
-                    <strong>Ouvrir la cuisine</strong>
-                    <small>Voir les commandes</small>
-                  </div>
-                </a>
-
                 <a href="client.html" class="quick-action-card" id="previewMenu">
                   <div class="qa-icon icon-blue">
                     <svg class="lucide lucide-eye" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -361,16 +303,6 @@
                   <div class="qa-text">
                     <strong>Aperçu menu client</strong>
                     <small>Voir comme un client</small>
-                  </div>
-                </a>
-
-                <a href="settings.html" class="quick-action-card" id="manageQrBtn">
-                  <div class="qa-icon icon-purple">
-                    <svg class="lucide lucide-qr-code" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1a2 2 0 0 1 2 2v1"/></svg>
-                  </div>
-                  <div class="qa-text">
-                    <strong>Gérer les QR Codes</strong>
-                    <small>Tables & Codes</small>
                   </div>
                 </a>
 
@@ -387,38 +319,30 @@
               </div>
             </div>
           </div>
-
-          <!-- ROW 4 GRID -->
-          <div class="bottom-sections-grid">
-            <div class="panel notif-panel">
-              <div class="panel-header">
-                <h2>Notifications</h2>
-              </div>
-              <div id="notifList">
-                <div class="notif-item-quiet">
-                  <svg class="lucide lucide-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>Tout est calme pour le moment</span>
-                </div>
-              </div>
-              <ul id="popularList" style="display:none"></ul>
-            </div>
-
-            <div class="panel tip-panel">
-              <div class="tip-content">
-                <div class="tip-text">
-                  <div class="tip-title">💡 Conseil du jour</div>
-                  <p>Le samedi, vos ventes augmentent de 26% en moyenne. Pensez à préparer plus de <strong>Carpe ou Dorade</strong> !</p>
-                </div>
-                <div class="tip-illustration">
-                  <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
-                    <path d="M12 48 L28 32 L40 40 L52 16" stroke="#10b981" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-                    <circle cx="52" cy="16" r="4" fill="#10b981"/>
-                    <path d="M46 52 C52 50 56 42 52 36" stroke="#f59e0b" stroke-width="3" stroke-linecap="round"/>
-                  </svg>
-                </div>
-              </div>
-            </div>
           </div>
+
+          <!-- Vue menu client : elle remplace le dashboard sans changer de page. -->
+          <section class="client-menu-preview-view" id="clientMenuPreviewModal" hidden aria-labelledby="clientMenuPreviewTitle">
+            <header class="client-menu-preview-header">
+              <div>
+                <p class="client-menu-preview-kicker">APERÇU EN DIRECT</p>
+                <h2 id="clientMenuPreviewTitle">Menu client</h2>
+              </div>
+              <div class="client-menu-preview-actions">
+                <button type="button" class="client-menu-preview-reload" id="clientMenuPreviewReloadBtn" aria-label="Actualiser l’aperçu">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 21v-5h5"/><path d="M3 12A9 9 0 0 1 18.5 5.8L21 8"/><path d="M21 3v5h-5"/></svg>
+                  Actualiser
+                </button>
+                <button type="button" class="client-menu-preview-back" id="closeClientMenuPreviewBtn">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m15 18-6-6 6-6"/></svg>
+                  Retour au dashboard
+                </button>
+              </div>
+            </header>
+            <div class="client-menu-preview-body">
+              <iframe id="clientMenuPreviewFrame" title="Aperçu du menu client" loading="lazy"></iframe>
+            </div>
+          </section>
         </main>
       </div>
     </div>
@@ -618,7 +542,7 @@
             <h3 style="display:flex;align-items:center;gap:8px">
               <svg class="lucide lucide-scan" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/></svg> Scanner mon menu
             </h3>
-            <p>Uploadez une photo de votre menu papier pour l'importer automatiquement.</p>
+            <p>Uploadez une ou plusieurs photos de votre menu papier pour l'importer automatiquement.</p>
           </div>
           <button type="button" class="item-modal-close" id="closeScanModalBtn" aria-label="Fermer">
             <svg class="lucide lucide-x" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
@@ -626,20 +550,21 @@
         </div>
         <div class="item-modal-body" style="padding: 20px;">
           <div class="form-group">
-            <input type="file" id="scanMenuFileInput" accept="image/*" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;" />
+            <input type="file" id="scanMenuFileInput" accept="image/*" multiple aria-describedby="scanMenuHelp" style="width:100%;padding:10px;border:1px solid rgba(255,255,255,0.2);border-radius:8px;" />
+            <small id="scanMenuHelp" style="display:block;margin-top:7px;color:#94a3b8;">Vous pouvez sélectionner plusieurs pages à la fois (JPG, PNG ou WEBP, 12 Mo maximum par image).</small>
           </div>
           <div id="scanPreview" style="margin-top:15px;text-align:center;display:none;">
-            <img id="scanPreviewImg" style="max-width:100%;max-height:300px;border-radius:8px;" />
+            <div id="scanPreviewList" class="scan-preview-list" aria-live="polite"></div>
           </div>
           <div id="scanProgress" style="margin-top:15px;display:none;">
-            <p style="font-size:12px;color:#666;">Analyse en cours... <span id="scanProgressText">0%</span></p>
-            <div style="width:100%;height:8px;background:#eee;border-radius:4px;margin-top:5px;">
+            <p style="font-size:12px;color:#c3ccd8;">Analyse en cours... <span id="scanProgressText">0%</span></p>
+            <div style="width:100%;height:8px;background:rgba(255,255,255,0.12);border-radius:4px;margin-top:5px;">
               <div id="scanProgressBar" style="width:0%;height:100%;background:#103b4b;border-radius:4px;transition:width 0.3s;"></div>
             </div>
           </div>
           <div id="scanResults" style="margin-top:15px;display:none;">
-            <p style="font-size:12px;color:#666;margin-bottom:8px;">Plats détectés :</p>
-            <div id="scanResultsList" style="max-height:200px;overflow-y:auto;border:1px solid #ddd;border-radius:8px;padding:10px;"></div>
+            <p style="font-size:12px;color:#c3ccd8;margin-bottom:8px;">Plats détectés :</p>
+            <div id="scanResultsList" style="max-height:200px;overflow-y:auto;border:1px solid rgba(255,255,255,0.2);border-radius:8px;padding:10px;"></div>
           </div>
         </div>
         <div class="item-modal-footer">
@@ -666,7 +591,7 @@
         </div>
         <div class="item-modal-body" style="padding: 20px;">
           <div class="form-group">
-            <input type="file" id="scanLogoFileInput" accept="image/*" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;" />
+            <input type="file" id="scanLogoFileInput" accept="image/*" style="width:100%;padding:10px;border:1px solid rgba(255,255,255,0.2);border-radius:8px;" />
           </div>
           <div id="logoPreview" style="margin-top:15px;text-align:center;display:none;">
             <img id="logoPreviewImg" style="max-width:100%;max-height:300px;border-radius:8px;" />
@@ -689,6 +614,7 @@
     <script src="js/api-config.js"></script>
     <script src="js/store.js"></script>
     <script src="js/dish-images.js"></script>
-    <script src="js/dashboard.js?v=2.1"></script>
+    <script src="js/menu-ai.js?v=2"></script>
+    <script src="js/dashboard.js?v=2.4"></script>
   </body>
 </html>

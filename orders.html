@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Commandes — Auresto</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/app-shared.css" />
+    <link rel="stylesheet" href="css/dashboard.css?v=3" />
+    <link rel="stylesheet" href="css/orders.css?v=3" />
+    <link rel="stylesheet" href="css/glass.css?v=1" />
+  </head>
+  <body class="dashboard-page orders-page">
+    <div class="app-layout">
+      <!-- SIDEBAR LEFT -->
+      <aside class="app-sidebar">
+        <div class="sidebar-header">
+          <a class="logo" href="index.html">
+            <img src="assets/logo-auresto.png" alt="Auresto" class="logo-img" />
+          </a>
+        </div>
+
+        <nav class="sidebar-nav">
+          <a href="dashboard.html" class="nav-item">
+            <svg class="lucide lucide-layout-dashboard" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+            <span>Centre de contrôle</span>
+          </a>
+          <a href="orders.html" class="nav-item active">
+            <svg class="lucide lucide-shopping-bag" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" x2="21" y1="6" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            <span>Commandes</span>
+          </a>
+          <a href="menu-customization.html" class="nav-item" id="customizeMenuNav" hidden>
+            <svg class="lucide lucide-palette" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 22a10 10 0 1 0 0-20 10 9 0 0 0-10 9c0 1.1.9 2 2 2h2.4a1.6 1.6 0 0 1 1.4 2.4l-.4.8A1.6 1.6 0 0 0 8.8 22Z"/></svg>
+            <span>Design du menu</span>
+            <span class="nav-badge gold">Gold</span>
+          </a>
+          <a href="table-editor.html" class="nav-item">
+            <svg class="lucide lucide-qr-code" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1a2 2 0 0 1 2 2v1"/></svg>
+            <span>Tables & QR Codes</span>
+          </a>
+          <a href="settings.html" class="nav-item">
+            <svg class="lucide lucide-credit-card" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+            <span>Paiements</span>
+          </a>
+          <a href="avis.html" class="nav-item">
+            <svg class="lucide" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <span>Avis clients</span>
+          </a>
+          <a href="marketing.html" class="nav-item">
+            <svg class="lucide lucide-megaphone" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 13v-2z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
+            <span>Marketing</span>
+            <span class="nav-badge new">Nouveau</span>
+          </a>
+          <a href="settings.html" class="nav-item">
+            <svg class="lucide lucide-settings" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.09a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+            <span>Paramètres</span>
+          </a>
+          <a href="dashboard.html#subscriptionPanel" class="nav-item">
+            <svg class="lucide lucide-award" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
+            <span>Abonnement</span>
+          </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+          <div class="sidebar-plan-card">
+            <span class="plan-card-title">Plan actuel</span>
+            <div class="plan-card-badge-wrap">
+              <span class="gold-badge" id="subPlanTitle">👑 Gold</span>
+              <span class="status-active-tag">Actif</span>
+            </div>
+            <a href="dashboard.html#subscriptionPanel" class="btn-dark-sidebar" style="display:block;text-align:center;text-decoration:none;box-sizing:border-box;">Gérer mon abonnement</a>
+          </div>
+
+          <div class="sidebar-user-widget">
+            <div class="user-avatar" id="userAvatar">A</div>
+            <div class="user-info">
+              <strong id="restaurantName">Mon restaurant</strong>
+              <span id="planBadge">Restaurant</span>
+            </div>
+            <svg class="lucide lucide-chevron-down" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </div>
+        </div>
+      </aside>
+
+      <!-- MAIN BODY WRAPPER -->
+      <div class="app-main-wrapper">
+        <!-- HEADER TOPBAR -->
+        <header class="app-topbar">
+          <div class="topbar-search">
+            <svg class="lucide lucide-search" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input type="text" id="orderSearchInput" placeholder="Rechercher un n°, un client, un produit..." />
+          </div>
+
+          <div class="topbar-actions">
+            <button class="topbar-icon-btn" id="refreshOrdersBtn" aria-label="Actualiser">
+              <svg class="lucide lucide-refresh-cw" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+            </button>
+            <a href="kitchen.html" class="topbar-icon-btn" aria-label="Vue cuisine">
+              <svg class="lucide lucide-chef-hat" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 9.18 0A4 4 0 0 1 18 13.87V21H6z"/><line x1="6" x2="18" y1="17" y2="17"/></svg>
+            </a>
+            <a href="settings.html" class="topbar-icon-btn" aria-label="Paramètres">
+              <svg class="lucide lucide-settings" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.09a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+            </a>
+          </div>
+        </header>
+
+        <!-- ORDERS MAIN CONTENT -->
+        <main class="dashboard-main-content orders-main">
+          <div class="greeting-banner">
+            <h1>Commandes</h1>
+            <p>Historique complet des commandes de <span class="rest-tag" id="restTagName">votre restaurant</span></p>
+          </div>
+
+          <!-- STATS -->
+          <div class="stats-kpi-grid orders-stats-grid">
+            <div class="kpi-card glass-card">
+              <div class="kpi-card-header">
+                <div class="kpi-icon icon-amber">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                </div>
+                <div class="kpi-label-wrap">
+                  <span class="kpi-label">COMMANDES AUJOURD'HUI</span>
+                </div>
+              </div>
+              <div class="kpi-card-body">
+                <div class="kpi-value-row">
+                  <span class="kpi-value" id="statTodayCount">0</span>
+                </div>
+                <div class="kpi-subtext">Toutes commandes du jour</div>
+              </div>
+            </div>
+
+            <div class="kpi-card glass-card">
+              <div class="kpi-card-header">
+                <div class="kpi-icon icon-green">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                </div>
+                <div class="kpi-label-wrap">
+                  <span class="kpi-label">TERMINÉES</span>
+                </div>
+              </div>
+              <div class="kpi-card-body">
+                <div class="kpi-value-row">
+                  <span class="kpi-value" id="statCompletedCount">0</span>
+                </div>
+                <div class="kpi-subtext">Servies aujourd'hui</div>
+              </div>
+            </div>
+
+            <div class="kpi-card glass-card">
+              <div class="kpi-card-header">
+                <div class="kpi-icon icon-blue">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </div>
+                <div class="kpi-label-wrap">
+                  <span class="kpi-label">EN COURS</span>
+                </div>
+              </div>
+              <div class="kpi-card-body">
+                <div class="kpi-value-row">
+                  <span class="kpi-value" id="statActiveCount">0</span>
+                </div>
+                <div class="kpi-subtext">En attente / préparation / prêtes</div>
+              </div>
+            </div>
+
+            <div class="kpi-card glass-card">
+              <div class="kpi-card-header">
+                <div class="kpi-icon icon-purple">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                </div>
+                <div class="kpi-label-wrap">
+                  <span class="kpi-label">CHIFFRE D'AFFAIRES</span>
+                </div>
+              </div>
+              <div class="kpi-card-body">
+                <div class="kpi-value-row">
+                  <span class="kpi-value" id="statRevenueToday">0 FCFA</span>
+                </div>
+                <div class="kpi-subtext">Aujourd'hui</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- FILTERS -->
+          <div class="orders-toolbar glass-card">
+            <div class="orders-filter-tabs" id="orderFilterTabs">
+              <button type="button" class="filter-tab active" data-filter="all">Toutes</button>
+              <button type="button" class="filter-tab" data-filter="today">Aujourd'hui</button>
+              <button type="button" class="filter-tab" data-filter="week">Cette semaine</button>
+              <button type="button" class="filter-tab" data-filter="month">Ce mois</button>
+              <button type="button" class="filter-tab" data-filter="active">En cours</button>
+              <button type="button" class="filter-tab" data-filter="completed">Terminées</button>
+              <button type="button" class="filter-tab" data-filter="cancelled">Annulées</button>
+            </div>
+          </div>
+
+          <!-- ORDERS LIST -->
+          <section class="orders-list-section">
+            <div class="orders-list-header">
+              <h2>Historique des commandes</h2>
+              <span class="orders-count-pill" id="ordersResultCount">0 commande</span>
+            </div>
+            <div class="orders-list-glow"></div>
+            <div class="orders-list" id="ordersList"></div>
+            <div class="orders-empty" id="ordersEmptyState" hidden>
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" x2="21" y1="6" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+              <p>Aucune commande ne correspond à ces critères</p>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <!-- ORDER DETAIL MODAL -->
+    <div class="order-modal-backdrop" id="orderModalBackdrop" hidden>
+      <div class="order-modal-dialog glass-card" role="dialog" aria-modal="true">
+        <div class="order-modal-header">
+          <div>
+            <h3 id="orderModalTitle">Commande #0000</h3>
+            <p id="orderModalMeta">—</p>
+          </div>
+          <button type="button" class="order-modal-close" id="orderModalCloseBtn" aria-label="Fermer">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </div>
+
+        <div class="order-modal-status-row">
+          <span class="order-status-badge" id="orderModalStatusBadge">—</span>
+          <div class="order-modal-info-chips" id="orderModalChips"></div>
+        </div>
+
+        <div class="order-modal-body">
+          <table class="order-items-table">
+            <thead>
+              <tr><th>Produit</th><th>Qté</th><th>Prix</th></tr>
+            </thead>
+            <tbody id="orderModalItems"></tbody>
+          </table>
+
+          <div class="order-modal-totals">
+            <div class="order-total-row"><span>Sous-total</span><span id="orderModalSubtotal">0 FCFA</span></div>
+            <div class="order-total-row" id="orderModalDiscountRow" hidden><span>Réduction</span><span id="orderModalDiscount">0 FCFA</span></div>
+            <div class="order-total-row order-total-final"><span>Total</span><span id="orderModalTotal">0 FCFA</span></div>
+          </div>
+        </div>
+
+        <div class="order-modal-footer" id="orderModalActions"></div>
+      </div>
+    </div>
+
+    <div class="orders-toast" id="ordersToast"></div>
+
+    <script src="js/icons.js"></script>
+    <script src="js/api-config.js"></script>
+    <script src="js/store.js"></script>
+    <script src="js/orders.js"></script>
+  </body>
+</html>

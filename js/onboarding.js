@@ -66,12 +66,11 @@ function loadState() {
 
     currentStep = data.onboardingStep || 1;
 
+    const redirectTarget = params.get('redirect');
+
     if (data.onboardingComplete) {
-
-      location.href = 'dashboard.html';
-
+      location.href = redirectTarget || 'dashboard.html';
       return;
-
     }
 
     menuScanned = data.menu?.items?.length > 0;
@@ -1392,43 +1391,39 @@ async function finishOnboarding() {
 
   showToast('Synchronisation en cours...');
 
-  console.log('Starting syncToServer...');
+  // Une panne reseau ne doit jamais enfermer le restaurateur dans
+  // l'inscription : tout ce qu'il a saisi est deja dans localStorage, et
+  // le reste de l'application sait fonctionner hors ligne. On le laisse
+  // donc entrer et on repasse la synchronisation en attente.
+  let syncResult = { success: false, restaurantId: null };
 
   try {
 
-    const syncResult = await AurestoStore.syncToServer();
-
-    console.log('syncToServer result:', syncResult);
-
-    if (syncResult.success && syncResult.restaurantId) {
-
-      console.log('Sync successful, restaurantId:', syncResult.restaurantId);
-
-      showToast('Bienvenue sur Auresto !');
-
-      console.log('Redirecting to dashboard in 800ms...');
-
-      setTimeout(() => { location.href = 'dashboard.html'; }, 800);
-
-    } else {
-
-      console.error('Sync failed or no restaurantId:', syncResult);
-
-      showToast('Erreur de synchronisation. Veuillez réessayer.');
-
-      AurestoStore.update({ onboardingComplete: false });
-
-    }
+    syncResult = await AurestoStore.syncToServer();
 
   } catch (err) {
 
-    console.error('Sync error:', err);
-
-    showToast('Erreur de synchronisation. Veuillez réessayer.');
-
-    AurestoStore.update({ onboardingComplete: false });
+    console.warn('Sync error pendant la finalisation:', err);
 
   }
+
+  if (syncResult.success && syncResult.restaurantId) {
+
+    AurestoStore.update({ pendingSync: false });
+
+    showToast('Bienvenue sur Auresto !');
+
+  } else {
+
+    // Le restaurant a pu etre cree sans que le full-sync aboutisse :
+    // on retente au prochain demarrage plutot que de tout rejouer.
+    AurestoStore.update({ pendingSync: true });
+
+    showToast('Configuration enregistrée sur cet appareil. La synchronisation reprendra automatiquement.');
+
+  }
+
+  setTimeout(() => { location.href = 'dashboard.html'; }, 1200);
 
 }
 

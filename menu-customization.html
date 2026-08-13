@@ -3,187 +3,326 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Personnaliser le menu client — Auresto</title>
+    <title>Design du menu — Auresto</title>
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="css/menu-customization.css" />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Instrument+Serif:ital@0;1&family=Playfair+Display:wght@400;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/app-shared.css" />
+    <link rel="stylesheet" href="css/dashboard.css?v=3" />
+    <link rel="stylesheet" href="css/menu-customization.css?v=6" />
+    <link rel="stylesheet" href="css/glass.css?v=1" />
   </head>
-  <body class="menu-customization-page">
-    <aside class="customizer-sidebar">
-      <a class="customizer-logo" href="dashboard.html" aria-label="Retour au centre de contrôle">
-        <span class="brand-wordmark">AURESTO</span>
-        <span>edit</span>
-      </a>
+  <body class="dashboard-page mc-page">
+    <div class="app-layout">
 
-      <nav class="customizer-nav" aria-label="Navigation principale">
-        <a href="dashboard.html"><span class="nav-mark">⊞</span>Centre de contrôle</a>
-        <a href="kitchen.html"><span class="nav-mark">□</span>Commandes</a>
-        <a href="dashboard.html#menuEditor" class="active"><span class="nav-mark">♨</span>Menus &amp; Plats</a>
-        <a href="dashboard.html#categories"><span class="nav-mark">▱</span>Catégories</a>
-        <a href="settings.html#tables"><span class="nav-mark">⌘</span>Tables &amp; QR Codes</a>
-        <a href="client.html" target="_blank" rel="noopener"><span class="nav-mark">♙</span>Menu client</a>
-        <a href="settings.html"><span class="nav-mark">⚙</span>Paramètres</a>
-      </nav>
+      <!-- ============ BARRE LATÉRALE GAUCHE ============ -->
+      <aside class="app-sidebar">
+        <div class="sidebar-header mc-sidebar-header">
+          <a class="logo" href="dashboard.html">
+            <img src="assets/logo-auresto.png" alt="Auresto" class="logo-img" />
+            <span class="mc-gold-badge">Gold</span>
+          </a>
+        </div>
 
-      <div class="gold-plan-card">
-        <span>Plan actuel <b>Actif</b></span>
-        <strong>♛ Gold</strong>
-        <small>Design du menu client inclus</small>
-        <a href="onboarding.html?plan=Gold">Gérer mon abonnement</a>
-      </div>
+        <nav class="sidebar-nav">
+          <a href="dashboard.html" class="nav-item">
+            <svg class="lucide lucide-layout-dashboard" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+            <span>Centre de contrôle</span>
+          </a>
+          <a href="orders.html" class="nav-item">
+            <svg class="lucide lucide-shopping-bag" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" x2="21" y1="6" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            <span>Commandes</span>
+          </a>
+          <a href="menu-customization.html" class="nav-item active">
+            <svg class="lucide lucide-palette" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 22a10 10 0 1 0 0-20 10 9 0 0 0-10 9c0 1.1.9 2 2 2h2.4a1.6 1.6 0 0 1 1.4 2.4l-.4.8A1.6 1.6 0 0 0 8.8 22Z"/></svg>
+            <span>Design du menu</span>
+            <span class="nav-badge gold">Gold</span>
+          </a>
+          <a href="table-editor.html" class="nav-item">
+            <svg class="lucide lucide-qr-code" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1a2 2 0 0 1 2 2v1"/></svg>
+            <span>Tables & QR Codes</span>
+          </a>
+          <a href="settings.html" class="nav-item">
+            <svg class="lucide lucide-credit-card" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+            <span>Paiements</span>
+          </a>
+          <a href="avis.html" class="nav-item">
+            <svg class="lucide" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <span>Avis clients</span>
+          </a>
+          <a href="marketing.html" class="nav-item">
+            <svg class="lucide lucide-megaphone" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 13v-2z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
+            <span>Marketing</span>
+            <span class="nav-badge new">Nouveau</span>
+          </a>
+          <a href="settings.html" class="nav-item">
+            <svg class="lucide lucide-settings" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.09a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+            <span>Paramètres</span>
+          </a>
+          <a href="dashboard.html#subscriptionPanel" class="nav-item">
+            <svg class="lucide lucide-award" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
+            <span>Abonnement</span>
+          </a>
+        </nav>
 
-      <a class="sidebar-user" href="settings.html" aria-label="Ouvrir les paramètres du compte">
-        <span class="sidebar-avatar">a</span>
-        <span><strong>Mon restaurant</strong><small>Compte Gold</small></span>
-        <i>⌄</i>
-      </a>
-    </aside>
-
-    <main class="customizer-main">
-      <section id="goldGate" class="gold-gate" hidden>
-        <span class="gate-icon">✦</span>
-        <p class="eyebrow">Fonctionnalité Gold</p>
-        <h1>Personnalisez l’expérience de vos clients.</h1>
-        <p>Le design du menu client est disponible exclusivement avec le plan Gold.</p>
-        <a href="onboarding.html?plan=Gold" class="primary-action">Passer au plan Gold</a>
-        <a href="dashboard.html" class="secondary-action">Retour au dashboard</a>
-      </section>
-
-      <section id="customizer" hidden>
-        <header class="customizer-header">
-          <div>
-            <p class="eyebrow">Auresto Studio</p>
-            <h1>Personnaliser le design du menu client</h1>
-            <p>Modifiez l’apparence, les couleurs, les dispositions et les animations sans coder.</p>
+        <div class="sidebar-bottom">
+          <div class="sidebar-plan-card">
+            <span class="plan-card-title">Plan actuel</span>
+            <div class="plan-card-badge-wrap">
+              <span class="mc-gold-badge-lg" id="mcSidebarPlanBadge">👑 Gold</span>
+              <span class="mc-status-active" id="mcSidebarPlanStatus">Actif</span>
+            </div>
+            <p class="mc-plan-sub" id="mcSidebarPlanSub">Design du menu client inclus</p>
+            <a href="dashboard.html#subscriptionPanel" class="btn-dark-sidebar" id="mcSidebarPlanBtn" style="display:block;text-align:center;text-decoration:none;box-sizing:border-box;">Gérer mon abonnement</a>
           </div>
-          <div class="header-actions">
-            <button type="button" class="secondary-action" id="openPreviewBtn">⌗&nbsp; Aperçu plein écran</button>
-            <button type="button" class="primary-action" id="saveCustomizationBtn">✓&nbsp; Enregistrer le design</button>
-            <small class="save-hint" id="liveSaveStatus">Enregistrement automatique activé</small>
+
+          <a class="sidebar-user-widget" href="settings.html" style="text-decoration:none;">
+            <div class="user-avatar" id="mcAvatar">a</div>
+            <div class="user-info">
+              <strong id="mcRestaurantName">Mon restaurant</strong>
+              <span id="mcSidebarAccountPlan">Compte Gold</span>
+            </div>
+            <svg class="lucide lucide-chevron-down" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </a>
+        </div>
+      </aside>
+
+      <!-- ============ ZONE PRINCIPALE ============ -->
+      <div class="app-main-wrapper">
+        <!-- En-tête -->
+        <header class="app-topbar">
+          <div class="mc-breadcrumb">
+            <span>Design</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+            <span class="mc-breadcrumb-current">Menu client</span>
+          </div>
+
+          <div class="topbar-actions">
+            <span class="mc-auto-save" id="liveSaveStatus">
+              <span class="mc-auto-save-dot"></span>
+              Enregistrement automatique activé
+            </span>
+            <button type="button" class="secondary-action" id="openPreviewBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+              Aperçu
+            </button>
+            <button type="button" class="primary-action" id="saveCustomizationBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+              Enregistrer
+            </button>
           </div>
         </header>
 
-        <nav class="designer-tabs" aria-label="Sections de personnalisation">
-          <a href="#templatesPanel" class="active"><span>♨</span> Design</a>
-          <a href="#colorsPanel"><span>◉</span> Couleurs</a>
-          <a href="#layoutPanel"><span>⊞</span> Disposition</a>
-          <a href="#contentPanel"><span>✧</span> Contenu</a>
-          <a href="#interactionPanel"><span>⌁</span> Animations</a>
-          <a href="#logoPanel"><span>⚙</span> Options avancées</a>
-        </nav>
+        <main class="dashboard-main-content mc-main">
 
-        <div class="designer-layout">
-          <div class="designer-controls">
-            <section class="design-panel templates-panel" id="templatesPanel">
-              <div class="panel-heading panel-heading-inline">
-                <div><h2><em>1.</em> Choisissez un modèle</h2><p>Un point de départ prêt à personnaliser.</p></div>
-                <span class="panel-caption">Vos réglages restent modifiables</span>
-              </div>
-              <div class="template-carousel" role="list" aria-label="Modèles de menu">
-                <button type="button" class="template-choice template-midnight" data-template="midnight"><span class="template-screen"><i></i><b></b><b></b><b></b></span><strong>Signature</strong><small>Modèle actuel</small></button>
-                <button type="button" class="template-choice template-classic" data-template="classic"><span class="template-screen"><i></i><b></b><b></b><b></b></span><strong>Classique</strong></button>
-                <button type="button" class="template-choice template-elegant" data-template="elegant"><span class="template-screen"><i></i><b></b><b></b><b></b></span><strong>Élégant</strong></button>
-                <button type="button" class="template-choice template-minimal" data-template="minimal"><span class="template-screen"><i></i><b></b><b></b><b></b></span><strong>Minimaliste</strong></button>
-                <button type="button" class="template-choice template-vibrant" data-template="vibrant"><span class="template-screen"><i></i><b></b><b></b><b></b></span><strong>Vibrant</strong></button>
-                <button type="button" class="template-choice template-premium" data-template="premium"><span class="template-screen"><i></i><b></b><b></b><b></b></span><strong>Premium</strong></button>
-              </div>
-            </section>
+        <!-- Accès refusé (plan non Gold) -->
+        <section id="goldGate" class="gold-gate" hidden>
+          <span class="gate-icon">✦</span>
+          <p class="eyebrow">Fonctionnalité Gold</p>
+          <h1>Personnalisez l'expérience de vos clients.</h1>
+          <p>Le design du menu client est disponible exclusivement avec le plan Gold.</p>
+          <a href="onboarding.html?plan=Gold&redirect=menu-customization.html" class="primary-action" id="activateGoldPlanBtn">Passer au plan Gold</a>
+          <a href="dashboard.html" class="secondary-action">Retour au dashboard</a>
+        </section>
 
-            <section class="design-panel" id="colorsPanel">
-              <div class="panel-heading"><h2><em>2.</em> Personnalisez les couleurs</h2><p>Les couleurs de votre identité visuelle.</p></div>
-              <div class="color-fields">
-                <label><span>Couleur principale<small>Boutons, prix et éléments actifs</small></span><input type="color" data-color="primary" /><output data-color-value="primary"></output></label>
-                <label><span>Couleur secondaire<small>Éléments secondaires et icônes</small></span><input type="color" data-color="secondary" /><output data-color-value="secondary"></output></label>
-                <label><span>Couleur d’accent<small>Badges et détails importants</small></span><input type="color" data-color="accent" /><output data-color-value="accent"></output></label>
-                <label><span>Surface / cartes<small>Cartes de plats et catégories</small></span><input type="color" data-color="surface" /><output data-color-value="surface"></output></label>
-                <label><span>Texte principal<small>Titres et informations clés</small></span><input type="color" data-color="text" /><output data-color-value="text"></output></label>
-                <label><span>Texte secondaire<small>Descriptions et détails</small></span><input type="color" data-color="muted" /><output data-color-value="muted"></output></label>
-              </div>
-            </section>
-
-            <section class="design-panel" id="layoutPanel">
-              <div class="panel-heading"><h2><em>3.</em> Personnalisez la mise en page</h2><p>Optimisez la lecture sur mobile.</p></div>
-              <span class="control-label">Disposition des plats</span>
-              <div class="layout-choices" id="layoutChoices">
-                <button type="button" class="layout-choice" data-layout="cards"><span class="layout-sketch cards"></span><strong>Carte</strong></button>
-                <button type="button" class="layout-choice" data-layout="vertical"><span class="layout-sketch vertical"></span><strong>Images</strong></button>
-                <button type="button" class="layout-choice" data-layout="separated"><span class="layout-sketch separated"></span><strong>Liste</strong></button>
-              </div>
-              <label class="range-field">Rayon des coins <output id="radiusValue">18px</output><input type="range" id="radiusInput" min="4" max="28" step="2" /></label>
-              <label class="range-field">Espacement des éléments <output id="overlayValueMirror">16px</output><input type="range" id="menuSpacingInput" min="8" max="28" step="2" value="16" /></label>
-            </section>
-
-            <section class="design-panel" id="contentPanel">
-              <div class="panel-heading"><h2><em>4.</em> Personnalisez les éléments</h2><p>Choisissez ce qui est visible sur le menu.</p></div>
-              <div class="toggle-list">
-                <label><span>Afficher les images des plats</span><input type="checkbox" data-display="images" /></label>
-                <label><span>Afficher les descriptions</span><input type="checkbox" data-display="descriptions" /></label>
-                <label><span>Afficher les prix</span><input type="checkbox" data-display="prices" /></label>
-                <label><span>Afficher les badges</span><input type="checkbox" data-display="badges" /></label>
-                <label><span>Afficher les cœurs (favoris)</span><input type="checkbox" data-display="favorites" /></label>
-              </div>
-            </section>
-
-            <section class="design-panel background-panel" id="themePanel">
-              <div class="panel-heading"><h2><em>5.</em> Options d’arrière-plan</h2><p>Créez l’ambiance générale de votre menu.</p></div>
-              <div class="theme-grid" id="backgroundChoices">
-                <button type="button" class="theme-choice theme-gradient" data-background="gradient"><span></span>Dégradé</button>
-                <button type="button" class="theme-choice theme-solid" data-background="solid"><span></span>Couleur unie</button>
-                <button type="button" class="theme-choice theme-wood" data-background="wood"><span></span>Texture</button>
-                <button type="button" class="theme-choice theme-marble" data-background="marble"><span></span>Marbre</button>
-                <button type="button" class="theme-choice theme-dark" data-background="dark"><span></span>Sombre</button>
-                <button type="button" class="theme-choice theme-light" data-background="light"><span></span>Clair</button>
-                <button type="button" class="theme-choice theme-tropical" data-background="tropical"><span></span>Tropical</button>
-                <button type="button" class="theme-choice theme-ocean" data-background="ocean"><span></span>Océan</button>
-                <button type="button" class="theme-choice theme-sunset" data-background="sunset"><span></span>Coucher de soleil</button>
-                <button type="button" class="theme-choice theme-forest" data-background="forest"><span></span>Forêt</button>
-                <button type="button" class="theme-choice theme-royal" data-background="royal"><span></span>Royal</button>
-                <button type="button" class="theme-choice theme-rose" data-background="rose"><span></span>Rose</button>
-              </div>
-              <div class="gradient-controls" id="gradientControls">
-                <div class="gradient-colors-header">
-                  <span class="control-label">Couleurs du dégradé</span>
-                  <button type="button" class="add-color-btn" id="addGradientColorBtn">+ Ajouter une couleur</button>
-                </div>
-                <div class="gradient-colors-list" id="gradientColorsList"></div>
-                <label class="gradient-angle">Angle <output id="gradientAngleValue">135°</output><input type="range" id="gradientAngleInput" min="0" max="360" step="5" /></label>
-              </div>
-              <label class="image-upload" for="backgroundImageInput"><input id="backgroundImageInput" type="file" accept="image/png,image/jpeg,image/webp" /><span class="upload-icon">↑</span><strong>Image d’arrière-plan personnalisée</strong><small>PNG, JPG ou WebP, jusqu’à 1 Mo</small></label>
-              <button type="button" class="text-button" id="removeBackgroundImageBtn" hidden>Retirer l’image de fond</button>
-              <label class="range-field">Intensité de la superposition <output id="overlayValue">60%</output><input type="range" id="overlayInput" min="0" max="90" step="5" /></label>
-            </section>
-
-            <section class="design-panel" id="logoPanel">
-              <div class="panel-heading"><h2><em>6.</em> Options d’en-tête</h2><p>Positionnez l’identité de votre restaurant.</p></div>
-              <div class="logo-settings">
-                <div><span>Forme du logo</span><div class="mini-choice-grid" id="logoShapeChoices"><button type="button" data-logo-shape="circle">Rond</button><button type="button" data-logo-shape="rounded">Arrondi</button><button type="button" data-logo-shape="square">Carré</button></div></div>
-                <div><span>Position dans l’en-tête</span><div class="mini-choice-grid" id="logoPositionChoices"><button type="button" data-logo-position="left">Gauche</button><button type="button" data-logo-position="center">Centre</button><button type="button" data-logo-position="right">Droite</button></div></div>
-              </div>
-              <label class="range-field">Taille du logo <output id="logoSizeValue">44px</output><input type="range" id="logoSizeInput" min="32" max="72" step="2" /></label>
-            </section>
-
-            <section class="design-panel interaction-panel" id="interactionPanel">
-              <div class="panel-heading"><h2><em>7.</em> Animations &amp; navigation</h2><p>Un menu réactif, sans distraire le client.</p></div>
-              <span class="control-label">Effet au toucher</span>
-              <div class="segmented-control" id="tapEffectChoices"><button type="button" data-effect="none">Aucun</button><button type="button" data-effect="elevate">Élévation</button><button type="button" data-effect="zoom">Zoom</button><button type="button" data-effect="glow">Lueur</button></div>
-              <div class="category-order-wrap">
-                <span class="control-label">Ordre des catégories</span>
-                <div class="category-order-list" id="categoryOrderList"></div>
-              </div>
-            </section>
+        <div id="customizer" class="mc-customizer">
+          <div class="greeting-banner">
+            <h1>Design du menu</h1>
+            <p>Personnalisez la carte que vos clients découvrent en scannant leur QR code.</p>
           </div>
 
-          <aside class="preview-panel" data-preview-device="mobile">
-            <div class="preview-heading"><div><h2>Aperçu en temps réel</h2><p>Vos réglages se reflètent immédiatement</p></div><div class="device-switch" aria-label="Format de l’aperçu"><button type="button" class="active" data-preview-device="mobile" aria-label="Format mobile" aria-pressed="true">▯</button><button type="button" data-preview-device="tablet" aria-label="Format tablette" aria-pressed="false">▭</button><button type="button" data-preview-device="desktop" aria-label="Format ordinateur" aria-pressed="false">▱</button></div></div>
-            <div class="phone-frame"><div class="phone-speaker"></div><iframe id="clientPreview" title="Aperçu du menu client"></iframe></div>
-            <p class="preview-note">L’aperçu affiche la carte telle que vos clients la verront.</p>
-          </aside>
+          <!-- Éditeur : panneau + aperçu -->
+          <div class="mc-editor">
+
+            <!-- Colonne de personnalisation -->
+            <aside class="mc-panel">
+              <div class="mc-accordions">
+
+                <!-- Modèle -->
+                <div class="mc-accordion open" data-accordion="templates">
+                  <button type="button" class="mc-accordion-trigger">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/></svg>
+                    <span>Modèle</span>
+                    <span class="mc-badge-new">Nouveau</span>
+                    <svg class="mc-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+                  </button>
+                  <div class="mc-accordion-body">
+                    <p class="mc-panel-hint">Un point de départ prêt à personnaliser. Vos réglages restent modifiables.</p>
+                    <div class="template-carousel" role="list" aria-label="Modèles de menu">
+                      <button type="button" class="template-choice template-midnight" data-template="midnight"><span class="template-screen"><i></i><b></b><b></b><b></b></span><strong>Signature</strong></button>
+                      <button type="button" class="template-choice template-classic" data-template="classic"><span class="template-screen"><i></i><b></b><b></b><b></b></span><strong>Classique</strong></button>
+                      <button type="button" class="template-choice template-elegant" data-template="elegant"><span class="template-screen"><i></i><b></b><b></b><b></b></span><strong>Élégant</strong></button>
+                      <button type="button" class="template-choice template-minimal" data-template="minimal"><span class="template-screen"><i></i><b></b><b></b><b></b></span><strong>Minimaliste</strong></button>
+                      <button type="button" class="template-choice template-vibrant" data-template="vibrant"><span class="template-screen"><i></i><b></b><b></b><b></b></span><strong>Vibrant</strong></button>
+                      <button type="button" class="template-choice template-premium" data-template="premium"><span class="template-screen"><i></i><b></b><b></b><b></b></span><strong>Premium</strong></button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Couleurs -->
+                <div class="mc-accordion open" data-accordion="colors">
+                  <button type="button" class="mc-accordion-trigger">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><path d="M12 22a10 10 0 1 0 0-20 10 9 0 0 0-10 9c0 1.1.9 2 2 2h2.4a1.6 1.6 0 0 1 1.4 2.4l-.4.8A1.6 1.6 0 0 0 8.8 22Z"/></svg>
+                    <span>Couleurs</span>
+                    <svg class="mc-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+                  </button>
+                  <div class="mc-accordion-body">
+                    <div class="color-fields">
+                      <label><span>Couleur principale<small>Boutons, prix, éléments actifs</small></span><input type="color" data-color="primary" /><output data-color-value="primary"></output></label>
+                      <label><span>Couleur secondaire<small>Éléments secondaires et icônes</small></span><input type="color" data-color="secondary" /><output data-color-value="secondary"></output></label>
+                      <label><span>Couleur d'accent<small>Badges et détails importants</small></span><input type="color" data-color="accent" /><output data-color-value="accent"></output></label>
+                      <label><span>Surface / cartes<small>Cartes de plats et catégories</small></span><input type="color" data-color="surface" /><output data-color-value="surface"></output></label>
+                      <label><span>Texte principal<small>Titres et informations clés</small></span><input type="color" data-color="text" /><output data-color-value="text"></output></label>
+                      <label><span>Texte secondaire<small>Descriptions et détails</small></span><input type="color" data-color="muted" /><output data-color-value="muted"></output></label>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Disposition -->
+                <div class="mc-accordion open" data-accordion="layout">
+                  <button type="button" class="mc-accordion-trigger">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+                    <span>Disposition</span>
+                    <svg class="mc-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+                  </button>
+                  <div class="mc-accordion-body">
+                    <span class="control-label">Disposition des plats</span>
+                    <div class="layout-choices" id="layoutChoices">
+                      <button type="button" class="layout-choice" data-layout="cards"><span class="layout-sketch cards"></span><strong>Carte</strong></button>
+                      <button type="button" class="layout-choice" data-layout="vertical"><span class="layout-sketch vertical"></span><strong>Images</strong></button>
+                      <button type="button" class="layout-choice" data-layout="separated"><span class="layout-sketch separated"></span><strong>Liste</strong></button>
+                    </div>
+                    <label class="range-field">Rayon des coins <output id="radiusValue">18px</output><input type="range" id="radiusInput" min="4" max="28" step="2" /></label>
+                    <label class="range-field">Espacement des éléments <output id="overlayValueMirror">16px</output><input type="range" id="menuSpacingInput" min="8" max="28" step="2" value="16" /></label>
+                  </div>
+                </div>
+
+                <!-- Contenu -->
+                <div class="mc-accordion open" data-accordion="content">
+                  <button type="button" class="mc-accordion-trigger">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></svg>
+                    <span>Contenu affiché</span>
+                    <svg class="mc-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+                  </button>
+                  <div class="mc-accordion-body">
+                    <div class="toggle-list">
+                      <label><span>Afficher les images des plats</span><input type="checkbox" data-display="images" /></label>
+                      <label><span>Afficher les descriptions</span><input type="checkbox" data-display="descriptions" /></label>
+                      <label><span>Afficher les prix</span><input type="checkbox" data-display="prices" /></label>
+                      <label><span>Afficher les badges</span><input type="checkbox" data-display="badges" /></label>
+                      <label><span>Afficher les cœurs (favoris)</span><input type="checkbox" data-display="favorites" /></label>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Arrière-plan -->
+                <div class="mc-accordion open" data-accordion="background">
+                  <button type="button" class="mc-accordion-trigger">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/></svg>
+                    <span>Arrière-plan</span>
+                    <svg class="mc-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+                  </button>
+                  <div class="mc-accordion-body">
+                    <div class="theme-grid" id="backgroundChoices">
+                      <button type="button" class="theme-choice theme-gradient" data-background="gradient"><span></span>Dégradé</button>
+                      <button type="button" class="theme-choice theme-solid" data-background="solid"><span></span>Uni</button>
+                      <button type="button" class="theme-choice theme-wood" data-background="wood"><span></span>Texture</button>
+                      <button type="button" class="theme-choice theme-marble" data-background="marble"><span></span>Marbre</button>
+                      <button type="button" class="theme-choice theme-dark" data-background="dark"><span></span>Sombre</button>
+                      <button type="button" class="theme-choice theme-light" data-background="light"><span></span>Clair</button>
+                      <button type="button" class="theme-choice theme-tropical" data-background="tropical"><span></span>Tropical</button>
+                      <button type="button" class="theme-choice theme-ocean" data-background="ocean"><span></span>Océan</button>
+                      <button type="button" class="theme-choice theme-sunset" data-background="sunset"><span></span>Sunset</button>
+                      <button type="button" class="theme-choice theme-forest" data-background="forest"><span></span>Forêt</button>
+                      <button type="button" class="theme-choice theme-royal" data-background="royal"><span></span>Royal</button>
+                      <button type="button" class="theme-choice theme-rose" data-background="rose"><span></span>Rose</button>
+                    </div>
+                    <div class="gradient-controls" id="gradientControls">
+                      <div class="gradient-colors-header">
+                        <span class="control-label">Couleurs du dégradé</span>
+                        <button type="button" class="add-color-btn" id="addGradientColorBtn">+ Ajouter</button>
+                      </div>
+                      <div class="gradient-colors-list" id="gradientColorsList"></div>
+                      <label class="range-field gradient-angle">Angle <output id="gradientAngleValue">135°</output><input type="range" id="gradientAngleInput" min="0" max="360" step="5" /></label>
+                    </div>
+                    <label class="image-upload" for="backgroundImageInput"><input id="backgroundImageInput" type="file" accept="image/*" /><span class="upload-icon">↑</span><strong>Image d'arrière-plan personnalisée</strong><small>PNG, JPG ou WebP (max 5 Mo)</small></label>
+                    <button type="button" class="text-button" id="removeBackgroundImageBtn" hidden>Retirer l'image de fond</button>
+                    <label class="range-field">Intensité de la superposition <output id="overlayValue">60%</output><input type="range" id="overlayInput" min="0" max="90" step="5" /></label>
+                  </div>
+                </div>
+
+                <!-- En-tête / logo -->
+                <div class="mc-accordion open" data-accordion="logo">
+                  <button type="button" class="mc-accordion-trigger">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>
+                    <span>En-tête & logo</span>
+                    <svg class="mc-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+                  </button>
+                  <div class="mc-accordion-body">
+                    <div class="logo-settings">
+                      <div><span>Forme du logo</span><div class="mini-choice-grid" id="logoShapeChoices"><button type="button" data-logo-shape="circle">Rond</button><button type="button" data-logo-shape="rounded">Arrondi</button><button type="button" data-logo-shape="square">Carré</button></div></div>
+                      <div><span>Position dans l'en-tête</span><div class="mini-choice-grid" id="logoPositionChoices"><button type="button" data-logo-position="left">Gauche</button><button type="button" data-logo-position="center">Centre</button><button type="button" data-logo-position="right">Droite</button></div></div>
+                    </div>
+                    <label class="range-field">Taille du logo <output id="logoSizeValue">44px</output><input type="range" id="logoSizeInput" min="32" max="72" step="2" /></label>
+                  </div>
+                </div>
+
+                <!-- Animations -->
+                <div class="mc-accordion open" data-accordion="interaction">
+                  <button type="button" class="mc-accordion-trigger">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m13 2-3 7h4l-3 7"/><circle cx="12" cy="12" r="10"/></svg>
+                    <span>Animations & navigation</span>
+                    <svg class="mc-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+                  </button>
+                  <div class="mc-accordion-body">
+                    <span class="control-label">Effet au toucher</span>
+                    <div class="segmented-control" id="tapEffectChoices"><button type="button" data-effect="none">Aucun</button><button type="button" data-effect="elevate">Élévation</button><button type="button" data-effect="zoom">Zoom</button><button type="button" data-effect="glow">Lueur</button></div>
+                    <div class="category-order-wrap">
+                      <span class="control-label">Ordre des catégories</span>
+                      <div class="category-order-list" id="categoryOrderList"></div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </aside>
+
+            <!-- Colonne aperçu -->
+            <div class="preview-panel" data-preview-device="mobile">
+              <div class="mc-preview-toolbar">
+                <span class="mc-preview-title">Aperçu en temps réel</span>
+                <div class="device-switch" aria-label="Format de l'aperçu">
+                  <button type="button" class="active" data-preview-device="mobile" aria-label="Format mobile" aria-pressed="true">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/></svg>
+                  </button>
+                  <button type="button" data-preview-device="tablet" aria-label="Format tablette" aria-pressed="false">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="20" x="3" y="2" rx="2"/><path d="M12 18h.01"/></svg>
+                  </button>
+                  <button type="button" data-preview-device="desktop" aria-label="Format ordinateur" aria-pressed="false">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="14" x="2" y="3" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>
+                  </button>
+                </div>
+              </div>
+
+              <div class="mc-preview-stage">
+                <div class="phone-frame">
+                  <div class="phone-speaker"></div>
+                  <iframe id="clientPreview" title="Aperçu du menu client" src="client.html?preview=1"></iframe>
+                </div>
+              </div>
+
+              <p class="preview-note">💡 L'aperçu affiche la carte telle que vos clients la verront.</p>
+            </div>
+
+          </div>
         </div>
-      </section>
-    </main>
+        </main>
+      </div>
+    </div>
+
     <div class="customizer-toast" id="customizerToast" role="status"></div>
+
     <script src="js/api-config.js"></script>
     <script src="js/store.js"></script>
-    <script src="js/menu-customization.js"></script>
+    <script src="js/menu-customization.js?v=2"></script>
   </body>
 </html>

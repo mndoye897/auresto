@@ -142,15 +142,16 @@ function guard() {
   // const restaurantId = AurestoStore.getRestaurantId();
   // console.log('Dashboard guard - restaurantId:', restaurantId);
 
-  // Allow access if menu has items, even if onboardingComplete is false
-  if (!data.onboardingComplete && (!data.menu || data.menu.items.length === 0)) {
-
-    console.log('Dashboard guard - redirecting to onboarding (no menu items)');
-
+  // Allow access if menu has items or restaurant exists, even if onboardingComplete is false
+  const hasData = Boolean(data.restaurant?.name || (data.menu?.items && data.menu.items.length > 0) || (data.orders && data.orders.length > 0));
+  if (!data.onboardingComplete && !hasData) {
+    console.log('Dashboard guard - redirecting to onboarding (no menu or restaurant data)');
     location.href = 'onboarding.html';
-
     return null;
-
+  }
+  if (!data.onboardingComplete && hasData) {
+    data.onboardingComplete = true;
+    AurestoStore.update({ onboardingComplete: true });
   }
 
   console.log('Dashboard guard - allowing access to dashboard');
@@ -161,10 +162,46 @@ function guard() {
 
 
 
+// Mode de service, affiché sur chaque commande : sans lui le restaurateur
+// ne sait pas s'il doit dresser une assiette ou préparer un emballage.
+function orderTypeLabel(order) {
+  return order?.orderType === 'takeaway' ? 'À emporter' : 'Sur place';
+}
+
 function formatMoney(n) {
 
   return Number(n).toLocaleString('fr-FR');
 
+}
+
+
+
+// Recommandation du tableau de bord : calculée sur les commandes réelles,
+// jamais un texte figé. On ne conseille que ce que les données soutiennent,
+// et on le dit quand elles manquent.
+function renderDailyRecommendation(data, stats) {
+  const target = document.getElementById('dailyRecommendation');
+  if (!target) return;
+
+  const items = data.menu?.items || [];
+  const popular = (stats.popular || []).map(([name]) => name);
+
+  let message;
+
+  if (!items.length) {
+    message = 'Ajoutez vos premiers plats au menu pour recevoir des recommandations basées sur vos ventes.';
+  } else if (!popular.length) {
+    message = 'Pas encore assez de commandes pour dégager une tendance. Partagez vos QR codes en salle pour lancer la collecte.';
+  } else {
+    const jamaisCommande = items.filter(item => !popular.includes(item.name));
+    if (jamaisCommande.length) {
+      message = `<strong>${jamaisCommande[0].name}</strong> n'a pas été commandé cette semaine. Mettez-le en avant en haut de sa catégorie, ou testez une promotion.`;
+    } else {
+      message = `<strong>${popular[0]}</strong> est votre plat le plus commandé. Assurez-vous d'avoir le stock nécessaire pour le service du soir.`;
+    }
+  }
+
+  target.innerHTML = message;
 }
 
 
@@ -186,11 +223,17 @@ function render() {
 
 
 
-  document.getElementById('restaurantName').textContent = data.restaurant.name || 'Mon restaurant';
+  // Widget profil : même rendu que sur les autres pages (initiale en
+  // majuscule, « Compte <plan> »), sinon l'identité semble changer à chaque
+  // navigation.
+  const displayName = data.restaurant.name || 'Mon restaurant';
+  document.getElementById('restaurantName').textContent = displayName;
 
-  document.getElementById('planBadge').textContent = data.plan;
+  const currentPlanName = data.plan || data.restaurant?.subscription_plan || data.restaurant?.plan || 'Free';
+  document.getElementById('planBadge').textContent = `Compte ${currentPlanName}`;
+  document.getElementById('userAvatar').textContent = displayName.trim().charAt(0).toUpperCase() || 'A';
 
-  const isGoldPlan = String(data.plan || '').toLowerCase() === 'gold';
+  const isGoldPlan = String(currentPlanName).toLowerCase() === 'gold';
   const customizeMenuLink = document.getElementById('customizeMenuLink');
   const customizeMenuNav = document.getElementById('customizeMenuNav');
   if (customizeMenuLink) customizeMenuLink.hidden = !isGoldPlan;
@@ -231,7 +274,7 @@ function render() {
       return `
       <div class="order-row">
 
-        <div><strong>${o.tableName || 'Table'}</strong><small>${itemsSummary}</small></div>
+        <div><strong>${o.tableName || 'Table'} <span class="order-type-tag${o.orderType === 'takeaway' ? ' takeaway' : ''}">${orderTypeLabel(o)}</span></strong><small>${itemsSummary}</small></div>
 
         <span class="badge ${STATUS_CLASS[o.status]}">${STATUS_LABELS[o.status]}</span>
 
@@ -254,118 +297,76 @@ function render() {
 
 
 
-  const popularEl = document.getElementById('popularList');
+  // Les panneaux « Notifications », « Plats populaires » et « Analyses Gold »
+  // ont été retirés du tableau de bord : ils occupaient de la place sans être
+  // consultés. Les analyses détaillées vivent désormais sur marketing.html.
 
-  popularEl.innerHTML = stats.popular.length
-
-    ? stats.popular.map(([name, count]) => `<li><span>${name}</span><strong>${count}×</strong></li>`).join('')
-
-    : '<li class="empty-state" style="list-style:none">Pas encore de données</li>';
+  renderDailyRecommendation(freshData, stats);
 
 
 
-  const notifs = [];
-
-  if (active.filter(o => o.status === 'new').length) notifs.push(`🔔 ${active.filter(o => o.status === 'new').length} nouvelle(s) commande(s)`);
-
-  if (stats.revenue > 0) notifs.push(`💰 ${formatMoney(stats.revenue)} FCFA encaissés aujourd'hui`);
-
-  if (!notifs.length) notifs.push('✓ Tout est calme pour le moment');
-
-  document.getElementById('notifList').innerHTML = notifs.map(n => `<div class="notif-item">${n}</div>`).join('');
-
-
-
-  if (data.plan === 'Gold') {
-
-    document.getElementById('goldPanel').hidden = false;
-
-    const tips = generateAiTips(data, stats);
-
-    document.getElementById('aiTips').innerHTML = tips.map(t => `<div class="ai-tip">${t}</div>`).join('');
-
-  }
-
-
-
-  const firstTable = data.tables[0];
-
-  console.log('Preview menu - tables:', data.tables, 'firstTable:', firstTable);
-
-  console.log('Preview menu - menu items:', data.menu?.items?.length);
-
-  if (firstTable) {
-
-    const menuUrl = AurestoStore.getTableUrl(firstTable.id);
-
-    console.log('Setting preview menu URL:', menuUrl);
-
-    document.getElementById('previewMenu').href = menuUrl;
-
-    // Also ensure data is synced before opening client
-    document.getElementById('previewMenu').addEventListener('click', async (e) => {
-      console.log('Preview menu clicked, syncing data...');
-      try {
-        await AurestoStore.syncToServer();
-        console.log('Data synced before opening client');
-      } catch (err) {
-        console.warn('Sync failed:', err);
-      }
-    });
-
-  } else {
-
-    console.log('No tables configured, preview menu disabled');
-
-    document.getElementById('previewMenu').style.pointerEvents = 'none';
-
-    document.getElementById('previewMenu').style.opacity = '0.5';
-
-  }
-
+  const firstTable = (data.tables && data.tables[0]) ? data.tables[0] : null;
+  const menuUrl = firstTable ? AurestoStore.getTableUrl(firstTable.id) : 'client.html?preview=1';
+  ['previewMenu', 'previewMenuFooter'].forEach(id => {
+    const link = document.getElementById(id);
+    if (!link) return;
+    link.href = menuUrl;
+    link.removeAttribute('target');
+    link.onclick = event => {
+      event.preventDefault();
+      openClientMenuPreview(menuUrl, link);
+    };
+  });
 }
 
+let clientMenuPreviewUrl = '';
+let clientMenuPreviewTrigger = null;
+let clientMenuPreviewScrollTop = 0;
 
+function openClientMenuPreview(menuUrl, trigger) {
+  const modal = document.getElementById('clientMenuPreviewModal');
+  const frame = document.getElementById('clientMenuPreviewFrame');
+  const dashboardHome = document.getElementById('dashboardHomeContent');
+  if (!modal || !frame || !dashboardHome) return;
 
-function generateAiTips(data, stats) {
-
-  const tips = [];
-
-  const items = data.menu.items;
-
-  const popular = stats.popular.map(p => p[0]);
-
-  const unpopular = items.filter(i => !popular.includes(i.name)).map(i => i.name);
-
-
-
-  if (popular.includes('Jus de bissap') || popular.some(p => p.toLowerCase().includes('bissap'))) {
-
-    tips.push('<strong>💡 Recommandation :</strong> Le jus de bissap est très populaire — mettez-le plus haut dans le menu.');
-
-  }
-
-  if (unpopular.length) {
-
-    tips.push(`<strong>💡 Recommandation :</strong> <em>${unpopular[0]}</em> est peu commandé cette semaine. Envisagez une promotion.`);
-
-  }
-
-  if (stats.todayOrders > 5) {
-
-    tips.push(`<strong>📈 Analyse :</strong> ${stats.todayOrders} commandes aujourd'hui. Votre heure de pointe semble être le service du midi.`);
-
-  }
-
-  if (!tips.length) {
-
-    tips.push('<strong>💡 Conseil :</strong> Ajoutez plus de plats et encouragez vos clients à commander pour recevoir des recommandations personnalisées.');
-
-  }
-
-  return tips;
-
+  clientMenuPreviewUrl = menuUrl;
+  clientMenuPreviewTrigger = trigger || document.activeElement;
+  clientMenuPreviewScrollTop = window.scrollY;
+  frame.src = menuUrl;
+  dashboardHome.hidden = true;
+  modal.hidden = false;
+  window.scrollTo({ top: 0, behavior: 'auto' });
+  document.getElementById('closeClientMenuPreviewBtn')?.focus();
 }
+
+function closeClientMenuPreview() {
+  const modal = document.getElementById('clientMenuPreviewModal');
+  const frame = document.getElementById('clientMenuPreviewFrame');
+  const dashboardHome = document.getElementById('dashboardHomeContent');
+  if (!modal || !dashboardHome || modal.hidden) return;
+
+  modal.hidden = true;
+  dashboardHome.hidden = false;
+  frame.src = 'about:blank';
+  window.scrollTo({ top: clientMenuPreviewScrollTop, behavior: 'auto' });
+  clientMenuPreviewTrigger?.focus?.();
+}
+
+function refreshClientMenuPreview() {
+  const frame = document.getElementById('clientMenuPreviewFrame');
+  if (!frame || !clientMenuPreviewUrl) return;
+  const separator = clientMenuPreviewUrl.includes('?') ? '&' : '?';
+  frame.src = `${clientMenuPreviewUrl}${separator}previewRefresh=${Date.now()}`;
+}
+
+document.getElementById('closeClientMenuPreviewBtn')?.addEventListener('click', closeClientMenuPreview);
+document.getElementById('clientMenuPreviewReloadBtn')?.addEventListener('click', refreshClientMenuPreview);
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape') closeClientMenuPreview();
+});
+
+
+
 
 
 
@@ -1209,7 +1210,7 @@ const scanMenuFileInput = document.getElementById('scanMenuFileInput');
 
 const scanPreview = document.getElementById('scanPreview');
 
-const scanPreviewImg = document.getElementById('scanPreviewImg');
+const scanPreviewList = document.getElementById('scanPreviewList');
 
 const scanProgress = document.getElementById('scanProgress');
 
@@ -1224,6 +1225,14 @@ const scanResultsList = document.getElementById('scanResultsList');
 
 
 let scannedItems = [];
+let scanFiles = [];
+
+function setScanProgress(message, percent = null) {
+  if (scanProgressText) scanProgressText.textContent = message;
+  if (scanProgressBar && percent !== null) {
+    scanProgressBar.style.width = `${Math.max(0, Math.min(100, percent))}%`;
+  }
+}
 
 
 
@@ -1234,8 +1243,11 @@ function openScanModal() {
   scanMenuFileInput.value = '';
 
   scanPreview.style.display = 'none';
+  if (scanPreviewList) scanPreviewList.replaceChildren();
 
   scanProgress.style.display = 'none';
+
+  setScanProgress('Prêt à analyser', 0);
 
   scanResults.style.display = 'none';
 
@@ -1246,6 +1258,9 @@ function openScanModal() {
   startScanBtn.disabled = true;
 
   scannedItems = [];
+  scanFiles = [];
+
+  window.setTimeout(() => scanMenuFileInput?.focus(), 50);
 
 }
 
@@ -1260,333 +1275,197 @@ function closeScanModal() {
 
 
 function handleScanFileSelect(e) {
+  const files = Array.from(e.target.files || []);
+  if (!files.length) return;
 
-  const file = e.target.files[0];
+  const validFiles = files.filter(file => file.type.startsWith('image/') && file.size <= 12 * 1024 * 1024);
+  const invalidCount = files.length - validFiles.length;
 
-  if (!file) return;
+  if (invalidCount) {
+    alert(`${invalidCount} image(s) ignorée(s) : choisissez des fichiers image de 12 Mo maximum.`);
+  }
+
+  scanFiles = validFiles;
+  e.target.value = '';
+  scannedItems = [];
+  scanResults.style.display = 'none';
+  importScanBtn.style.display = 'none';
+  startScanBtn.style.display = 'inline-flex';
+
+  renderScanPreviews();
+  startScanBtn.disabled = scanFiles.length === 0;
+  startScanBtn.textContent = scanFiles.length > 1
+    ? `Scanner les ${scanFiles.length} images`
+    : 'Scanner le menu';
+
+}
 
 
+function renderScanPreviews() {
+  if (!scanPreviewList) return;
+  scanPreviewList.replaceChildren();
 
-  const reader = new FileReader();
+  scanFiles.forEach((file, index) => {
+    const card = document.createElement('div');
+    card.className = 'scan-preview-card';
 
-  reader.onload = (event) => {
+    const image = document.createElement('img');
+    const previewUrl = URL.createObjectURL(file);
+    image.src = previewUrl;
+    image.alt = `Aperçu de la page ${index + 1} du menu`;
+    image.onload = () => URL.revokeObjectURL(previewUrl);
 
-    scanPreviewImg.src = event.target.result;
+    const label = document.createElement('span');
+    label.textContent = `${index + 1}. ${file.name}`;
 
-    scanPreview.style.display = 'block';
+    card.append(image, label);
+    scanPreviewList.append(card);
+  });
 
-    startScanBtn.disabled = false;
-
-  };
-
-  reader.readAsDataURL(file);
-
+  scanPreview.style.display = scanFiles.length ? 'block' : 'none';
 }
 
 
 
 async function startScan() {
-
-  const file = scanMenuFileInput.files[0];
-
-  if (!file) return;
-
-
+  if (!scanFiles.length) return;
 
   scanProgress.style.display = 'block';
-
   scanResults.style.display = 'none';
-
   startScanBtn.disabled = true;
-
-
+  startScanBtn.textContent = 'Analyse en cours…';
+  setScanProgress('Préparation des images…', 0);
 
   try {
+    if (!window.MenuAI?.scanMenuImage) {
+      throw new Error('Le scanner n’est pas prêt. Actualisez la page puis réessayez.');
+    }
+    const detectedItems = [];
+    const failedFiles = [];
 
-    const result = await Tesseract.recognize(file, 'fra', {
-
-      logger: (m) => {
-
-        if (m.status === 'recognizing text') {
-
-          const progress = Math.round(m.progress * 100);
-
-          scanProgressText.textContent = progress + '%';
-
-          scanProgressBar.style.width = progress + '%';
-
-        }
-
+    for (const [index, file] of scanFiles.entries()) {
+      const pageNumber = index + 1;
+      try {
+        const result = await MenuAI.scanMenuImage(file, (msg) => {
+          const localProgress = Number(msg.match(/(\d{1,3})%/)?.[1]);
+          const overallProgress = Number.isFinite(localProgress)
+            ? Math.round(((index + (localProgress / 100)) / scanFiles.length) * 100)
+            : Math.round((index / scanFiles.length) * 100);
+          setScanProgress(`Image ${pageNumber}/${scanFiles.length} — ${msg}`, overallProgress);
+        });
+        detectedItems.push(...(result.items || []));
+      } catch (error) {
+        console.error(`Scan failed for ${file.name}:`, error);
+        failedFiles.push(file.name);
       }
+    }
 
-    });
-
-
-
-    const text = result.data.text;
-
-    console.log('OCR Result:', text);
-
-
-
-    // Parse the text to extract menu items
-
-    scannedItems = parseMenuText(text);
-
-    console.log('Parsed items:', scannedItems);
-
-
+    scannedItems = mergeScannedItems(detectedItems);
+    console.log('AI Menu Scan items:', scannedItems);
 
     if (scannedItems.length > 0) {
-
       displayScanResults();
-
       startScanBtn.style.display = 'none';
-
       importScanBtn.style.display = 'inline-flex';
-
+      const failureNote = failedFiles.length ? ` · ${failedFiles.length} image(s) non lue(s)` : '';
+      setScanProgress(`${scannedItems.length} plat(s) détecté(s)${failureNote}`, 100);
     } else {
-
-      alert('Aucun plat détecté. Essayez avec une image plus claire.');
-
+      const failureNote = failedFiles.length ? ` (${failedFiles.join(', ')})` : '';
+      alert(`Aucun plat détecté. Essayez avec des images plus claires.${failureNote}`);
       scanProgress.style.display = 'none';
-
       startScanBtn.disabled = false;
-
+      startScanBtn.textContent = scanFiles.length > 1
+        ? `Scanner les ${scanFiles.length} images`
+        : 'Scanner le menu';
     }
-
   } catch (err) {
-
     console.error('Scan error:', err);
-
-    alert('Erreur lors du scan: ' + err.message);
-
+    alert('Erreur lors de l’analyse du menu: ' + (err.message || err));
     scanProgress.style.display = 'none';
-
     startScanBtn.disabled = false;
-
+    startScanBtn.textContent = 'Réessayer le scan';
   }
-
 }
 
-
-
-function parseMenuText(text) {
-
-  const items = [];
-
-  const lines = text.split('\n').filter(line => line.trim());
-
-
-
-  console.log('Parsing menu text, lines:', lines.length);
-
-
-
-  // Try multiple patterns
-
-  for (let i = 0; i < lines.length; i++) {
-
-    const line = lines[i].trim();
-
-    if (line.length < 3) continue;
-
-
-
-    // Pattern 1: Name followed by price (with various separators)
-
-    let priceMatch = line.match(/(\d[\d\s,.]+)\s*(?:FCFA|€|\$|F|CFA)?/i);
-
-    if (priceMatch) {
-
-      const price = parseInt(priceMatch[1].replace(/[\s,.]/g, ''));
-
-      let name = line.replace(priceMatch[0], '').trim();
-
-      // Clean up separators
-
-      name = name.replace(/[-–—:•*]/g, '').trim();
-
-
-
-      if (name && price > 0 && name.length > 2) {
-
-        items.push({
-
-          name: name,
-
-          price: price,
-
-          currency: 'FCFA',
-
-          category: 'Plats',
-
-          description: '',
-
-          photo: ''
-
-        });
-
-        continue;
-
-      }
-
-    }
-
-
-
-    // Pattern 2: Price first, then name
-
-    priceMatch = line.match(/^(\d[\d\s,.]+)\s*(?:FCFA|€|\$|F|CFA)?\s+(.+)$/i);
-
-    if (priceMatch) {
-
-      const price = parseInt(priceMatch[1].replace(/[\s,.]/g, ''));
-
-      const name = priceMatch[2].trim().replace(/[-–—:•*]/g, '').trim();
-
-
-
-      if (name && price > 0 && name.length > 2) {
-
-        items.push({
-
-          name: name,
-
-          price: price,
-
-          currency: 'FCFA',
-
-          category: 'Plats',
-
-          description: '',
-
-          photo: ''
-
-        });
-
-        continue;
-
-      }
-
-    }
-
-  }
-
-
-
-  console.log('Parsed items:', items);
-
-  return items;
-
+function mergeScannedItems(items) {
+  const seen = new Set();
+  return items.filter(item => {
+    const key = `${String(item.name || '').trim().toLocaleLowerCase('fr-FR')}|${Number(item.price) || 0}`;
+    if (!item.name || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }
-
-
 
 function displayScanResults() {
-
   scanResults.style.display = 'block';
-
   scanResultsList.innerHTML = scannedItems.map((item, idx) => `
-
-    <div style="padding:8px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;">
-
+    <div style="padding:8px 12px;border-bottom:1px solid rgba(255,255,255,0.1);display:flex;justify-content:space-between;align-items:center;">
       <div>
-
-        <strong>${item.name}</strong>
-
-        <div style="font-size:12px;color:#666;">${item.price} FCFA</div>
-
+        <strong style="color:#f8fafc;font-size:13px">${item.name}</strong>
+        <div style="font-size:11.5px;color:#94a3b8">${item.category || 'Plats'} • ${Number(item.price).toLocaleString('fr-FR')} FCFA</div>
       </div>
-
-      <button type="button" class="btn btn-sm" data-remove-scan="${idx}" style="padding:4px 8px;font-size:12px;">×</button>
-
+      <button type="button" class="btn btn-sm" data-remove-scan="${idx}" style="padding:3px 8px;font-size:12px;color:#ef4444;background:rgba(239,68,68,0.12);border:none;border-radius:4px;">×</button>
     </div>
-
   `).join('');
 
-
-
   scanResultsList.querySelectorAll('[data-remove-scan]').forEach(btn => {
-
     btn.addEventListener('click', () => {
-
       const idx = parseInt(btn.dataset.removeScan);
-
       scannedItems.splice(idx, 1);
-
       displayScanResults();
-
       if (scannedItems.length === 0) {
-
         scanResults.style.display = 'none';
-
         startScanBtn.style.display = 'inline-flex';
-
         importScanBtn.style.display = 'none';
-
       }
-
     });
-
   });
-
 }
 
-
-
 function importScannedItems() {
-
   if (scannedItems.length === 0) return;
 
-
-
   const data = AurestoStore.load();
+  data.menu = data.menu || { categories: [], items: [] };
+  data.menu.categories = data.menu.categories || [];
+  data.menu.items = data.menu.items || [];
 
-  const categories = data.menu.categories || [];
-
-  const defaultCategory = categories[0] || 'Plats';
-
-
+  const existingCategories = new Set(data.menu.categories);
+  let addedCount = 0;
 
   scannedItems.forEach(item => {
-
-    // Auto-generate image if none provided
-
+    if (!item.name) return;
+    const cat = item.category || 'Plats';
+    if (!existingCategories.has(cat)) {
+      data.menu.categories.push(cat);
+      existingCategories.add(cat);
+    }
     const photo = item.photo || generateNanoBananaImage(item.name);
-
     const newItem = {
-
-      ...item,
-
-      category: item.category || defaultCategory,
-
+      id: `item_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+      name: item.name,
+      category: cat,
+      price: Number(item.price) || 0,
+      description: item.description || '',
       photo: photo,
-
       image_url: photo,
-
-      id: `item_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`
-
+      available: true
     };
-
-    AurestoStore.addMenuItem(newItem);
-
+    data.menu.items.push(newItem);
+    addedCount++;
   });
 
-
-
+  // Save the state with all newly scanned items included
   AurestoStore.save(data);
 
   closeScanModal();
 
-  render();
+  if (typeof render === 'function') render();
+  if (typeof renderMenuEditor === 'function') renderMenuEditor();
+  if (typeof renderCategoryChips === 'function') renderCategoryChips();
 
-  renderMenuEditor();
-
-  showToast(`${scannedItems.length} plat(s) importé(s) !`);
-
-  renderCategoryChips();
-
+  showToast(`${addedCount} plat(s) importé(s) dans votre carte !`);
 }
 
 

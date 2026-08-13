@@ -142,7 +142,7 @@
   position: fixed;
   inset: 0;
   background: rgba(4, 14, 19, 0.92);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(3px);
   z-index: 9999;
   display: none;
   place-items: center;
@@ -583,7 +583,7 @@
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(2px);
   z-index: 10000;
   display: none;
   place-items: end;
@@ -684,7 +684,7 @@
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(2px);
   z-index: 10001;
   display: none;
   place-items: center;
@@ -1133,7 +1133,7 @@
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(2px);
   z-index: 10000;
   display: grid;
   place-items: center;

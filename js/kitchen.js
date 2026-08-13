@@ -3,7 +3,12 @@ const NEXT_LABEL = { new: 'Commencer', preparing: 'Prêt', ready: 'Servi' };
 
 function render() {
   const data = AurestoStore.load();
-  if (!data.onboardingComplete) { location.href = 'onboarding.html'; return; }
+  const hasData = Boolean(data.restaurant?.name || (data.menu?.items && data.menu.items.length > 0) || (data.orders && data.orders.length > 0));
+  if (!data.onboardingComplete && !hasData) { location.href = 'onboarding.html'; return; }
+  if (!data.onboardingComplete && hasData) {
+    data.onboardingComplete = true;
+    AurestoStore.update({ onboardingComplete: true });
+  }
 
   const cols = { new: [], preparing: [], ready: [], served: [] };
   data.orders.forEach(o => {

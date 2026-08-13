@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Avis clients — Auresto</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/app-shared.css" />
+    <link rel="stylesheet" href="css/dashboard.css?v=3" />
+    <link rel="stylesheet" href="css/orders.css?v=3" />
+    <link rel="stylesheet" href="css/avis.css?v=1" />
+    <link rel="stylesheet" href="css/glass.css?v=1" />
+  </head>
+  <body class="dashboard-page avis-page">
+    <div class="app-layout">
+      <!-- SIDEBAR LEFT -->
+      <aside class="app-sidebar">
+        <div class="sidebar-header">
+          <a class="logo" href="index.html">
+            <img src="assets/logo-auresto.png" alt="Auresto" class="logo-img" />
+          </a>
+        </div>
+
+        <nav class="sidebar-nav">
+          <a href="dashboard.html" class="nav-item">
+            <svg class="lucide" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+            <span>Centre de contrôle</span>
+          </a>
+          <a href="orders.html" class="nav-item">
+            <svg class="lucide" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" x2="21" y1="6" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            <span>Commandes</span>
+          </a>
+          <a href="menu-customization.html" class="nav-item" id="customizeMenuNav" hidden>
+            <svg class="lucide" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 22a10 10 0 1 0 0-20 10 9 0 0 0-10 9c0 1.1.9 2 2 2h2.4a1.6 1.6 0 0 1 1.4 2.4l-.4.8A1.6 1.6 0 0 0 8.8 22Z"/></svg>
+            <span>Design du menu</span>
+            <span class="nav-badge gold">Gold</span>
+          </a>
+          <a href="table-editor.html" class="nav-item">
+            <svg class="lucide" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1a2 2 0 0 1 2 2v1"/></svg>
+            <span>Tables & QR Codes</span>
+          </a>
+          <a href="settings.html" class="nav-item">
+            <svg class="lucide" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+            <span>Paiements</span>
+          </a>
+          <a href="avis.html" class="nav-item active">
+            <svg class="lucide" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <span>Avis clients</span>
+          </a>
+          <a href="marketing.html" class="nav-item">
+            <svg class="lucide" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 13v-2z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
+            <span>Marketing</span>
+            <span class="nav-badge new">Nouveau</span>
+          </a>
+          <a href="settings.html" class="nav-item">
+            <svg class="lucide" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.09a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+            <span>Paramètres</span>
+          </a>
+          <a href="dashboard.html#subscriptionPanel" class="nav-item">
+            <svg class="lucide" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
+            <span>Abonnement</span>
+          </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+          <div class="sidebar-plan-card">
+            <span class="plan-card-title">Plan actuel</span>
+            <div class="plan-card-badge-wrap">
+              <span class="gold-badge" id="avPlanBadge">👑 Gold</span>
+              <span class="status-active-tag">Actif</span>
+            </div>
+            <a href="dashboard.html#subscriptionPanel" class="btn-dark-sidebar" style="display:block;text-align:center;text-decoration:none;box-sizing:border-box;">Gérer mon abonnement</a>
+          </div>
+
+          <div class="sidebar-user-widget">
+            <div class="user-avatar" id="avAvatar">a</div>
+            <div class="user-info">
+              <strong id="avRestaurantName">Mon restaurant</strong>
+              <span id="avAccountPlan">Restaurant</span>
+            </div>
+            <svg class="lucide" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </div>
+        </div>
+      </aside>
+
+      <!-- MAIN BODY WRAPPER -->
+      <div class="app-main-wrapper">
+        <header class="app-topbar">
+          <div class="mk-topbar-title">
+            <svg class="lucide" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 13v-2z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
+            <span>Avis clients</span>
+          </div>
+          <div class="topbar-actions">
+            <button class="topbar-icon-btn" id="avRefreshBtn" aria-label="Actualiser les avis">
+              <svg class="lucide" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+            </button>
+            <a href="settings.html" class="topbar-icon-btn" aria-label="Paramètres">
+              <svg class="lucide" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.09a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/></svg>
+            </a>
+          </div>
+        </header>
+
+        <main class="dashboard-main-content av-main">
+          <div class="greeting-banner av-header">
+            <h1>Avis clients</h1>
+            <p class="av-desc">Les retours laissés par vos clients depuis le menu accessible par QR code.</p>
+          </div>
+
+          <!-- SYNTHÈSE -->
+          <section class="av-summary glass-card" id="avSummary">
+            <div class="av-score">
+              <span class="av-score-value" id="avAverage">—</span>
+              <div class="av-score-stars" id="avAverageStars"></div>
+              <span class="av-score-count" id="avTotal">Aucun avis</span>
+            </div>
+            <div class="av-distribution" id="avDistribution"></div>
+          </section>
+
+          <!-- FILTRES -->
+          <div class="av-toolbar glass-card">
+            <div class="av-filters" id="avFilters">
+              <button type="button" class="av-filter active" data-rating="all">Tous</button>
+              <button type="button" class="av-filter" data-rating="5">5 ★</button>
+              <button type="button" class="av-filter" data-rating="4">4 ★</button>
+              <button type="button" class="av-filter" data-rating="3">3 ★</button>
+              <button type="button" class="av-filter" data-rating="2">2 ★</button>
+              <button type="button" class="av-filter" data-rating="1">1 ★</button>
+            </div>
+          </div>
+
+          <!-- LISTE -->
+          <section class="av-list-section">
+            <div class="av-list-header">
+              <h2>Tous les avis</h2>
+              <span class="av-count-pill" id="avResultCount">0 avis</span>
+            </div>
+            <div class="av-list" id="avList"></div>
+            <div class="av-empty" id="avEmpty" hidden>
+              <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <p id="avEmptyText">Aucun avis pour le moment. Vos clients pourront en laisser depuis le menu.</p>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <div class="mk-toast" id="mkToast"></div>
+
+    <script src="js/api-config.js"></script>
+    <script src="js/store.js"></script>
+    <script src="js/avis.js?v=1"></script>
+  </body>
+</html>

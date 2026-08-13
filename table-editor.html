@@ -1,0 +1,656 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Éditeur de table — Auresto</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Instrument+Serif:ital@0;1&family=Playfair+Display:wght@400;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/app-shared.css" />
+    <link rel="stylesheet" href="css/dashboard.css?v=3" />
+    <link rel="stylesheet" href="css/table-editor.css?v=16" />
+    <link rel="stylesheet" href="css/glass.css?v=1" />
+  </head>
+  <body class="dashboard-page te-page">
+    <div class="app-layout">
+
+      <!-- ============ BARRE LATÉRALE GAUCHE ============ -->
+      <aside class="app-sidebar">
+        <div class="sidebar-header">
+          <a class="logo" href="index.html">
+            <img src="assets/logo-auresto.png" alt="Auresto" class="logo-img" />
+          </a>
+        </div>
+
+        <nav class="sidebar-nav">
+          <a href="dashboard.html" class="nav-item">
+            <svg class="lucide lucide-layout-dashboard" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+            <span>Centre de contrôle</span>
+          </a>
+          <a href="orders.html" class="nav-item">
+            <svg class="lucide lucide-shopping-bag" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" x2="21" y1="6" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            <span>Commandes</span>
+          </a>
+          <a href="menu-customization.html" class="nav-item">
+            <svg class="lucide lucide-palette" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 22a10 10 0 1 0 0-20 10 9 0 0 0-10 9c0 1.1.9 2 2 2h2.4a1.6 1.6 0 0 1 1.4 2.4l-.4.8A1.6 1.6 0 0 0 8.8 22Z"/></svg>
+            <span>Design du menu</span>
+            <span class="nav-badge gold">Gold</span>
+          </a>
+          <a href="table-editor.html" class="nav-item active">
+            <svg class="lucide lucide-qr-code" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1a2 2 0 0 1 2 2v1"/></svg>
+            <span>Tables & QR Codes</span>
+          </a>
+          <a href="settings.html" class="nav-item">
+            <svg class="lucide lucide-credit-card" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+            <span>Paiements</span>
+          </a>
+          <a href="avis.html" class="nav-item">
+            <svg class="lucide" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <span>Avis clients</span>
+          </a>
+          <a href="marketing.html" class="nav-item">
+            <svg class="lucide lucide-megaphone" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 13v-2z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
+            <span>Marketing</span>
+            <span class="nav-badge new">Nouveau</span>
+          </a>
+          <a href="settings.html" class="nav-item">
+            <svg class="lucide lucide-settings" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.09a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+            <span>Paramètres</span>
+          </a>
+          <a href="dashboard.html#subscriptionPanel" class="nav-item">
+            <svg class="lucide lucide-award" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
+            <span>Abonnement</span>
+          </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+          <div class="sidebar-plan-card">
+            <span class="plan-card-title">Plan actuel</span>
+            <div class="plan-card-badge-wrap">
+              <span class="gold-badge" id="tePlanBadge">Gold</span>
+              <span class="status-active-tag">Actif</span>
+            </div>
+            <p class="plan-card-sub" id="tePlanSub">Tables & QR codes inclus</p>
+            <a href="dashboard.html#subscriptionPanel" class="btn-dark-sidebar" style="display:block;text-align:center;text-decoration:none;box-sizing:border-box;">Gérer mon abonnement</a>
+          </div>
+
+          <div class="sidebar-user-widget">
+            <div class="user-avatar" id="teAvatar">A</div>
+            <div class="user-info">
+              <strong id="teRestaurantName">Mon restaurant</strong>
+              <span id="teAccountPlan">Compte Auresto</span>
+            </div>
+            <svg class="lucide lucide-chevron-down" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </div>
+        </div>
+      </aside>
+
+      <!-- ============ ZONE PRINCIPALE ============ -->
+      <div class="app-main-wrapper">
+
+        <!-- En-tête -->
+        <header class="app-topbar">
+          <div class="te-breadcrumb">
+            <span>Tables & QR Codes</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+            <span class="te-breadcrumb-current">Éditeur de table</span>
+          </div>
+
+          <div class="topbar-actions te-topbar-right">
+            <span class="te-auto-save" id="autoSaveBadge">
+              <span class="te-auto-save-dot"></span>
+              <span id="autoSaveText">Enregistré automatiquement</span>
+            </span>
+            <button type="button" class="te-btn-ghost" id="previewBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+              Aperçu
+            </button>
+            <button type="button" class="te-btn-primary" id="saveBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+              Enregistrer
+            </button>
+            <button type="button" class="te-btn-ghost" id="shareBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg>
+              Partager
+            </button>
+          </div>
+        </header>
+
+        <div class="te-editor">
+
+          <!-- ============ COLONNE PERSONNALISATION ============ -->
+          <aside class="te-panel">
+            <div class="te-panel-tabs">
+              <button type="button" class="te-panel-tab active" data-tab="customize">Personnaliser</button>
+              <button type="button" class="te-panel-tab" data-tab="configure">Configurer</button>
+            </div>
+
+            <div class="te-accordions" id="accordionsContainer">
+
+              <!-- Modèle -->
+              <div class="te-accordion open" data-accordion="template">
+                <button type="button" class="te-accordion-trigger">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/></svg>
+                  <span>Modèle</span>
+                  <span class="te-badge-new">Nouveau</span>
+                  <svg class="te-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+                <div class="te-accordion-body">
+                  <div class="te-template-grid" id="templateGrid">
+                    <button type="button" class="te-template-card active" data-template="minimal">
+                      <span class="te-template-check">✓</span>
+                      <span class="te-template-preview minimal">Aa</span>
+                      <span>Minimal</span>
+                    </button>
+                    <button type="button" class="te-template-card" data-template="elegant">
+                      <span class="te-template-check">✓</span>
+                      <span class="te-template-preview elegant">Aa</span>
+                      <span>Élégant</span>
+                    </button>
+                    <button type="button" class="te-template-card" data-template="bois">
+                      <span class="te-template-check">✓</span>
+                      <span class="te-template-preview bois">Aa</span>
+                      <span>Bois</span>
+                    </button>
+                    <button type="button" class="te-template-card" data-template="luxe">
+                      <span class="te-template-check">✓</span>
+                      <span class="te-template-preview luxe">Aa</span>
+                      <span>Luxe</span>
+                    </button>
+                    <button type="button" class="te-template-card" data-template="vibrant">
+                      <span class="te-template-check">✓</span>
+                      <span class="te-template-preview vibrant">Aa</span>
+                      <span>Vibrant</span>
+                    </button>
+                    <button type="button" class="te-template-card" data-template="tropical">
+                      <span class="te-template-check">✓</span>
+                      <span class="te-template-preview tropical">Aa</span>
+                      <span>Tropical</span>
+                    </button>
+                    <button type="button" class="te-template-card" data-template="aurora">
+                      <span class="te-template-check">✓</span>
+                      <span class="te-template-preview aurora">Aa</span>
+                      <span>Aurora</span>
+                    </button>
+                    <button type="button" class="te-template-card" data-template="sunset">
+                      <span class="te-template-check">✓</span>
+                      <span class="te-template-preview sunset">Aa</span>
+                      <span>Coucher de soleil</span>
+                    </button>
+                    <button type="button" class="te-template-card" id="uploadPaperImageCard" data-template="custom-image">
+                      <span class="te-template-check">✓</span>
+                      <span class="te-template-preview te-template-preview-upload" id="paperImagePreview">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/></svg>
+                      </span>
+                      <span>Votre image</span>
+                    </button>
+                    <input type="file" id="paperImageFileInput" accept="image/*" hidden />
+                  </div>
+                  <button type="button" class="te-btn-upload te-remove-paper-image" id="removePaperImageBtn" hidden>
+                    Retirer l'image et revenir aux couleurs
+                  </button>
+                </div>
+              </div>
+
+              <!-- QR Code -->
+              <div class="te-accordion open" data-accordion="qrcode">
+                <button type="button" class="te-accordion-trigger">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/></svg>
+                  <span>QR Code</span>
+                  <svg class="te-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+                <div class="te-accordion-body">
+                  <div class="te-color-field">
+                    <label>Couleur des modules</label>
+                    <div class="te-color-picker">
+                      <span class="te-color-swatch" id="moduleColorSwatch" style="background:#E60023"></span>
+                      <input type="text" class="te-color-hex" id="moduleColorHex" value="#E60023" />
+                      <input type="color" id="moduleColorInput" value="#E60023" />
+                    </div>
+                  </div>
+                  <div class="te-color-field">
+                    <label>Fond du QR</label>
+                    <div class="te-color-picker">
+                      <span class="te-color-swatch" id="bgColorSwatch" style="background:#FFFFFF"></span>
+                      <input type="text" class="te-color-hex" id="bgColorHex" value="#FFFFFF" />
+                      <input type="color" id="bgColorInput" value="#FFFFFF" />
+                    </div>
+                  </div>
+                  <label class="te-label">Forme des coins</label>
+                  <div class="te-segmented te-segmented-wrap" id="cornerShapeGroup">
+                    <button type="button" data-value="square" class="active">Carrés</button>
+                    <button type="button" data-value="rounded">Arrondis</button>
+                    <button type="button" data-value="dots">Points</button>
+                    <button type="button" data-value="diamond">Losanges</button>
+                    <button type="button" data-value="classy">Chic</button>
+                  </div>
+                  <div class="te-toggle-row">
+                    <div>
+                      <label class="te-label">Logo au centre</label>
+                      <p class="te-toggle-sub">Améliore la reconnaissance de votre marque</p>
+                    </div>
+                    <label class="te-switch">
+                      <input type="checkbox" id="logoEnabled" checked />
+                      <span class="te-switch-slider"></span>
+                    </label>
+                  </div>
+                  <div class="te-logo-controls" id="logoControls">
+                    <div class="te-logo-preview">
+                      <img src="favicon.svg" alt="Logo Auresto" id="logoPreviewImg" />
+                    </div>
+                    <div class="te-logo-actions">
+                      <label class="te-btn-upload" for="logoFileInput">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+                        Changer le logo
+                        <input type="file" id="logoFileInput" accept="image/*" hidden />
+                      </label>
+                      <button type="button" class="te-btn-link" id="removeLogoBtn">Retirer</button>
+                    </div>
+                  </div>
+                  <div class="te-range-field">
+                    <label>Taille du logo <strong id="logoSizeVal">20%</strong></label>
+                    <input type="range" id="logoSizeRange" min="10" max="35" value="20" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Couleurs & Arrière-plan -->
+              <div class="te-accordion" data-accordion="colors">
+                <button type="button" class="te-accordion-trigger">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="13.5" cy="6.5" r=".5"/><path d="M12 22a10 10 0 1 0 0-20 10 9 0 0 0-10 9c0 1.1.9 2 2 2h2.4a1.6 1.6 0 0 1 1.4 2.4l-.4.8A1.6 1.6 0 0 0 8.8 22Z"/></svg>
+                  <span>Couleurs & Arrière-plan</span>
+                  <svg class="te-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+                <div class="te-accordion-body">
+                  <div class="te-color-field">
+                    <label>Couleur du support</label>
+                    <div class="te-color-picker">
+                      <span class="te-color-swatch" id="paperColorSwatch" style="background:#FFFFFF"></span>
+                      <input type="text" class="te-color-hex" id="paperColorHex" value="#FFFFFF" />
+                      <input type="color" id="paperColorInput" value="#FFFFFF" />
+                    </div>
+                  </div>
+                  <div class="te-color-field">
+                    <label>Couleur de la bordure</label>
+                    <div class="te-color-picker">
+                      <span class="te-color-swatch" id="borderColorSwatch" style="background:#E8A878"></span>
+                      <input type="text" class="te-color-hex" id="borderColorHex" value="#E8A878" />
+                      <input type="color" id="borderColorInput" value="#E8A878" />
+                    </div>
+                  </div>
+                  <label class="te-label">Arrière-plan</label>
+                  <div class="te-bg-options" id="bgOptions">
+                    <button type="button" class="te-bg-option active" data-bg="restaurant" title="Restaurant"></button>
+                    <button type="button" class="te-bg-option" data-bg="terrasse" title="Terrasse"></button>
+                    <button type="button" class="te-bg-option" data-bg="comptoir" title="Comptoir"></button>
+                    <button type="button" class="te-bg-option" data-bg="wood" title="Bois"></button>
+                    <button type="button" class="te-bg-option" data-bg="marble" title="Marbre"></button>
+                    <button type="button" class="te-bg-option" data-bg="neutral" title="Neutre"></button>
+                    <button type="button" class="te-bg-option te-bg-option-custom" id="bgOptionCustom" data-bg="custom" title="Votre photo"></button>
+                    <button type="button" class="te-bg-option-add" id="bgOptionAdd" title="Ajouter votre propre photo">+</button>
+                    <input type="file" id="customBgFileInput" accept="image/*" hidden />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Textes & Polices -->
+              <div class="te-accordion" data-accordion="texts">
+                <button type="button" class="te-accordion-trigger">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" x2="15" y1="20" y2="20"/><line x1="12" x2="12" y1="4" y2="20"/></svg>
+                  <span>Textes & Polices</span>
+                  <svg class="te-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+                <div class="te-accordion-body">
+                  <div class="te-field">
+                    <label for="restaurantNameInput">Nom du restaurant</label>
+                    <input type="text" id="restaurantNameInput" value="LE TERAL" />
+                  </div>
+                  <div class="te-field">
+                    <label for="restaurantTaglineInput">Sous-titre</label>
+                    <input type="text" id="restaurantTaglineInput" value="GRILL & LOUNGE" />
+                  </div>
+                  <div class="te-field">
+                    <label for="tableLabelInput">Libellé de la table</label>
+                    <input type="text" id="tableLabelInput" value="TABLE {name}" />
+                  </div>
+                  <div class="te-field">
+                    <label for="instructionTextInput">Texte d'instruction</label>
+                    <input type="text" id="instructionTextInput" value="Scannez pour découvrir notre menu" />
+                  </div>
+                  <div class="te-field">
+                    <label for="footerTextInput">Texte du bas</label>
+                    <input type="text" id="footerTextInput" value="Merci et bon appétit !" />
+                  </div>
+                  <div class="te-field">
+                    <label for="fontFamilySelect">Police</label>
+                    <select id="fontFamilySelect">
+                      <option value="DM Sans">DM Sans</option>
+                      <option value="Poppins">Poppins</option>
+                      <option value="Playfair Display">Playfair Display</option>
+                      <option value="Instrument Serif">Instrument Serif</option>
+                      <option value="Georgia">Georgia</option>
+                    </select>
+                  </div>
+                  <div class="te-range-field">
+                    <label>Taille du titre <strong id="titleSizeVal">28px</strong></label>
+                    <input type="range" id="titleSizeRange" min="14" max="48" value="28" />
+                  </div>
+                  <div class="te-range-field">
+                    <label>Taille du texte <strong id="textSizeVal">12px</strong></label>
+                    <input type="range" id="textSizeRange" min="8" max="20" value="12" />
+                  </div>
+                  <label class="te-label">Alignement</label>
+                  <div class="te-segmented" id="textAlignGroup">
+                    <button type="button" data-value="left">Gauche</button>
+                    <button type="button" data-value="center" class="active">Centre</button>
+                    <button type="button" data-value="right">Droite</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Bordures & Effets -->
+              <div class="te-accordion" data-accordion="effects">
+                <button type="button" class="te-accordion-trigger">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+                  <span>Bordures & Effets</span>
+                  <svg class="te-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+                <div class="te-accordion-body">
+                  <div class="te-toggle-row">
+                    <div>
+                      <label class="te-label">Bordures de la carte</label>
+                      <p class="te-toggle-sub">Désactivez pour un rendu sans cadre ni filet décoratif</p>
+                    </div>
+                    <label class="te-switch">
+                      <input type="checkbox" id="borderEnabled" checked />
+                      <span class="te-switch-slider"></span>
+                    </label>
+                  </div>
+                  <div class="te-border-controls" id="borderControls">
+                    <div class="te-range-field">
+                      <label>Épaisseur de bordure <strong id="borderWidthVal">2px</strong></label>
+                      <input type="range" id="borderWidthRange" min="0" max="8" value="2" />
+                    </div>
+                  </div>
+                  <div class="te-range-field">
+                    <label>Coins arrondis <strong id="cornerRadiusVal">8px</strong></label>
+                    <input type="range" id="cornerRadiusRange" min="0" max="30" value="8" />
+                  </div>
+                  <div class="te-range-field">
+                    <label>Ombre <strong id="shadowVal">20px</strong></label>
+                    <input type="range" id="shadowRange" min="0" max="60" value="20" />
+                  </div>
+                  <div class="te-range-field">
+                    <label>Reflet <strong id="reflectionVal">0%</strong></label>
+                    <input type="range" id="reflectionRange" min="0" max="100" value="0" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Format & Impression -->
+              <div class="te-accordion" data-accordion="format">
+                <button type="button" class="te-accordion-trigger">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
+                  <span>Format & Impression</span>
+                  <svg class="te-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+                <div class="te-accordion-body">
+                  <div class="te-field">
+                    <label for="printFormatSelect">Format d'impression</label>
+                    <select id="printFormatSelect">
+                      <option value="chevalet" selected>Chevalet de table</option>
+                      <option value="porte-menu">Porte-menu</option>
+                      <option value="sticker">Sticker</option>
+                      <option value="a4">A4</option>
+                      <option value="carre">Carré</option>
+                    </select>
+                  </div>
+                  <div class="te-field">
+                    <label for="printQualitySelect">Qualité d'impression</label>
+                    <select id="printQualitySelect">
+                      <option value="draft">Brouillon</option>
+                      <option value="standard" selected>Standard</option>
+                      <option value="high">Haute</option>
+                    </select>
+                  </div>
+                  <div class="te-range-field">
+                    <label>Marges <strong id="marginVal">10mm</strong></label>
+                    <input type="range" id="marginRange" min="0" max="30" value="10" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Options du menu -->
+              <div class="te-accordion" data-accordion="menu-options">
+                <button type="button" class="te-accordion-trigger">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2v6a3 3 0 0 1-2 2H8a2 2 0 0 1-2-2V2"/><path d="M12 2v20"/></svg>
+                  <span>Options du menu</span>
+                  <svg class="te-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+                <div class="te-accordion-body">
+                  <label class="te-checkbox">
+                    <input type="checkbox" id="menuAutoOpen" checked />
+                    <span>Ouvrir le menu automatiquement</span>
+                  </label>
+                  <label class="te-checkbox">
+                    <input type="checkbox" id="menuShowPrices" checked />
+                    <span>Afficher les prix</span>
+                  </label>
+                  <label class="te-checkbox">
+                    <input type="checkbox" id="menuShowImages" checked />
+                    <span>Afficher les images des plats</span>
+                  </label>
+                  <div class="te-field">
+                    <label for="menuLanguageSelect">Langue du menu</label>
+                    <select id="menuLanguageSelect">
+                      <option value="fr" selected>Français</option>
+                      <option value="en">Anglais</option>
+                      <option value="es">Espagnol</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Export & Impression -->
+              <div class="te-accordion" data-accordion="export">
+                <button type="button" class="te-accordion-trigger">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                  <span>Export & Impression</span>
+                  <svg class="te-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+                <div class="te-accordion-body">
+                  <div class="te-export-grid">
+                    <button type="button" class="te-btn-export" id="exportPngBtn">PNG</button>
+                    <button type="button" class="te-btn-export" id="exportJpgBtn">JPG</button>
+                    <button type="button" class="te-btn-export" id="exportSvgBtn">SVG</button>
+                    <button type="button" class="te-btn-export" id="exportPdfBtn">PDF</button>
+                  </div>
+                  <button type="button" class="te-btn-primary te-btn-full" id="printBtn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
+                    Imprimer
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </aside>
+
+          <!-- ============ COLONNE APERÇU ============ -->
+          <main class="te-preview-column">
+
+            <!-- Barre d'outils aperçu -->
+            <div class="te-preview-toolbar">
+              <div class="te-support-tabs" id="supportTabs">
+                <button type="button" class="te-support-tab active" data-support="chevalet">Chevalet</button>
+                <button type="button" class="te-support-tab" data-support="porte-menu">Porte-menu</button>
+                <button type="button" class="te-support-tab" data-support="sticker">Sticker</button>
+                <button type="button" class="te-support-tab" data-support="a4">A4</button>
+                <button type="button" class="te-support-tab" data-support="carre">Carré</button>
+              </div>
+              <div class="te-preview-toolbar-right">
+                <span class="te-dark-mode-label">☀️ Mode sombre</span>
+                <label class="te-switch te-switch-sm">
+                  <input type="checkbox" id="darkModeToggle" />
+                  <span class="te-switch-slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Scène d'aperçu -->
+            <div class="te-preview-stage" id="previewStage" data-bg="restaurant">
+              <div class="te-preview-inner" id="previewInner">
+                <div class="te-scene" id="scene">
+                  <div class="te-chevalet" id="chevalet">
+                    <div class="te-chevalet-top">
+                      <svg class="te-leaf-corner te-leaf-tr" width="70" height="70" viewBox="0 0 70 70" fill="none" stroke="currentColor" stroke-width="1">
+                        <path d="M60 10 Q40 5 34 24 Q30 40 46 44 Q62 46 62 28 Q62 14 60 10Z" />
+                        <path d="M34 24 Q46 30 46 44" />
+                      </svg>
+                      <svg class="te-leaf-corner te-leaf-bl" width="70" height="70" viewBox="0 0 70 70" fill="none" stroke="currentColor" stroke-width="1">
+                        <path d="M10 60 Q5 40 24 34 Q40 30 44 46 Q46 62 28 62 Q14 62 10 60Z" />
+                        <path d="M24 34 Q30 46 44 46" />
+                      </svg>
+                      <div class="te-restaurant-icon" id="previewRestaurantIcon" title="Cliquer pour changer le logo">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2v6a3 3 0 0 1-2 2H8a2 2 0 0 1-2-2V2"/><path d="M12 2v20"/></svg>
+                      </div>
+                      <div class="te-restaurant-name" id="previewRestaurantName">LE TERAL</div>
+                      <div class="te-restaurant-tagline" id="previewTagline">GRILL & LOUNGE</div>
+                      <div class="te-table-label" id="previewTableLabel">TABLE 12</div>
+                      <div class="te-instruction" id="previewInstruction">Scannez pour découvrir notre menu</div>
+                      <div class="te-qr-wrap" id="qrWrap"></div>
+                      <div class="te-gold-ornament">
+                        <svg width="120" height="20" viewBox="0 0 120 20" fill="none" stroke="#E8A878" stroke-width="1">
+                          <path d="M10 10 Q 30 0 50 10 Q 70 20 90 10 Q 100 5 110 10" />
+                          <circle cx="10" cy="10" r="2" fill="#E8A878" />
+                          <circle cx="110" cy="10" r="2" fill="#E8A878" />
+                        </svg>
+                      </div>
+                      <div class="te-footer-text" id="previewFooter">Merci et bon appétit !</div>
+                    </div>
+                    <div class="te-chevalet-base"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Contrôles flottants -->
+              <div class="te-floating-controls">
+                <div class="te-float-group">
+                  <span class="te-float-title">Zoom</span>
+                  <div class="te-zoom-controls">
+                    <button type="button" class="te-zoom-btn" id="zoomOutBtn">−</button>
+                    <span class="te-zoom-val" id="zoomVal">90%</span>
+                    <button type="button" class="te-zoom-btn" id="zoomInBtn">+</button>
+                  </div>
+                </div>
+                <div class="te-float-group">
+                  <span class="te-float-title">Carte</span>
+                  <div class="te-zoom-controls">
+                    <button type="button" class="te-zoom-btn" id="cardSizeDownBtn" title="Réduire la carte">−</button>
+                    <span class="te-zoom-val" id="cardSizeVal">105%</span>
+                    <button type="button" class="te-zoom-btn" id="cardSizeUpBtn" title="Agrandir la carte">+</button>
+                  </div>
+                  <button type="button" class="te-card-reset" id="cardResetBtn" title="Recentrer la carte sur le socle">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+                    Réinitialiser
+                  </button>
+                </div>
+                <div class="te-float-group">
+                  <span class="te-float-title">Arrière-plan</span>
+                  <div class="te-float-bg-options">
+                    <button type="button" class="te-float-bg active" data-bg="restaurant" title="Restaurant"></button>
+                    <button type="button" class="te-float-bg" data-bg="terrasse" title="Terrasse"></button>
+                    <button type="button" class="te-float-bg-add" title="Ajouter">+</button>
+                  </div>
+                </div>
+                <div class="te-float-group">
+                  <span class="te-float-title">Éclairage</span>
+                  <div class="te-lighting-controls">
+                    <button type="button" class="te-lighting-btn active" data-lighting="day" title="Jour">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+                    </button>
+                    <button type="button" class="te-lighting-btn" data-lighting="night" title="Nuit">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+                    </button>
+                  </div>
+                </div>
+                <div class="te-float-group">
+                  <span class="te-float-title">Support</span>
+                  <div class="te-support-options">
+                    <button type="button" class="te-support-option active" data-support="chevalet" title="Chevalet">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="M2 17 12 22l10-5"/><path d="M2 12 12 17l10-5"/></svg>
+                    </button>
+                    <button type="button" class="te-support-option" data-support="porte-menu" title="Porte-menu">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/></svg>
+                    </button>
+                    <button type="button" class="te-support-option" data-support="sticker" title="Sticker">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Message informatif -->
+            <div class="te-tip-bar">
+              <span class="te-tip-icon">💡</span>
+              <span>Astuce : Le logo au centre améliore la reconnaissance de votre marque. Assurez-vous que le contraste est suffisant pour un scan facile.</span>
+            </div>
+
+            <!-- Créer plusieurs tables -->
+            <div class="te-mass-gen">
+              <div class="te-mass-gen-left">
+                <h3>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                  Créer plusieurs tables
+                </h3>
+                <p>Générez plusieurs QR codes en une fois</p>
+                <div class="te-mass-fields">
+                  <div class="te-field te-field-inline">
+                    <label for="tableCountInput">Nombre de tables</label>
+                    <div class="te-number-input">
+                      <input type="number" id="tableCountInput" value="50" min="1" max="500" />
+                      <div class="te-number-arrows">
+                        <button type="button" class="te-arrow-btn" id="countUpBtn">▲</button>
+                        <button type="button" class="te-arrow-btn" id="countDownBtn">▼</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="te-field te-field-inline">
+                    <label for="prefixInput">Préfixe (optionnel)</label>
+                    <input type="text" id="prefixInput" value="Table" />
+                  </div>
+                </div>
+                <button type="button" class="te-btn-primary te-btn-generate" id="generateBtn">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                  Générer
+                </button>
+              </div>
+
+              <div class="te-mass-gen-right">
+                <div class="te-tables-header">
+                  <h3>Vos tables <span id="tableCountBadge">(50)</span></h3>
+                  <button type="button" class="te-btn-ghost te-btn-sm" id="downloadAllBtn">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                    Tout télécharger
+                  </button>
+                </div>
+                <div class="te-tables-grid" id="tablesGrid"></div>
+              </div>
+            </div>
+
+          </main>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="te-toast" id="toast" role="status"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- store.js alimente le widget profil de la barre latérale (nom du
+         restaurant, plan) comme sur les autres pages. -->
+    <script src="js/api-config.js"></script>
+    <script src="js/store.js"></script>
+    <script src="js/table-editor.js?v=25"></script>
+  </body>
+</html>

@@ -1,10 +1,13 @@
-# PowerShell Test Script for Auresto Owner Dashboard & Subscriptions API
-# Requires OWNER_SECRET in backend/.env (never hardcode secrets in this file)
+# Auresto — Console owner : login, stats, listes, suspension, abonnements
+# Prérequis : backend démarré (cd backend; npm run dev) sur localhost:4000,
+# OWNER_SECRET défini dans backend/.env.
+# Usage : .\test_owner_system.ps1
 Set-StrictMode -Version Latest
-$baseUrl = "http://localhost:4000"
+$ErrorActionPreference = "Stop"
+$baseUrl = if ($env:AURESTO_API_BASE) { $env:AURESTO_API_BASE } else { "http://localhost:4000" }
 
 function Read-OwnerSecretFromEnvFile {
-  $envPath = Join-Path $PSScriptRoot ".env"
+  $envPath = Join-Path (Split-Path $PSScriptRoot -Parent) ".env"
   if (-not (Test-Path $envPath)) { return $null }
   foreach ($line in Get-Content $envPath) {
     if ($line -match '^\s*OWNER_SECRET\s*=\s*(.+)\s*$') {
@@ -17,104 +20,83 @@ function Read-OwnerSecretFromEnvFile {
 $ownerSecret = $env:OWNER_SECRET
 if (-not $ownerSecret) { $ownerSecret = Read-OwnerSecretFromEnvFile }
 if (-not $ownerSecret) {
-  Write-Host "ERROR: Set OWNER_SECRET in backend/.env before running tests." -ForegroundColor Red
-  exit 1
+  Write-Host "SKIP: OWNER_SECRET non défini (backend/.env). Tests owner ignorés." -ForegroundColor Yellow
+  exit 0
 }
 
-Write-Host "==========================================" -ForegroundColor Cyan
-Write-Host "1. Testing Owner Login" -ForegroundColor Cyan
-Write-Host "==========================================" -ForegroundColor Cyan
+$passed = 0
+$failed = 0
 
-$loginBody = @{ secretKey = $ownerSecret } | ConvertTo-Json
+function Assert($label, $condition) {
+  if ($condition) {
+    Write-Host "[PASS] $label" -ForegroundColor Green
+    $script:passed++
+  } else {
+    Write-Host "[FAIL] $label" -ForegroundColor Red
+    $script:failed++
+  }
+}
+
+# 1. Login owner -> session token
 try {
+  $loginBody = @{ secretKey = $ownerSecret } | ConvertTo-Json
   $loginRes = Invoke-RestMethod -Uri "$baseUrl/api/owner/login" -Method POST -Body $loginBody -ContentType "application/json"
+  Assert "Login owner : session token émis" ($null -ne $loginRes.token)
   $sessionToken = $loginRes.token
-  Write-Host "Owner Login Success! Session token issued (not raw secret)." -ForegroundColor Green
 } catch {
-  Write-Host "Owner Login Failed: $_" -ForegroundColor Red
+  Assert "Login owner" $false
+  Write-Host "Échec du login owner : $_" -ForegroundColor Red
   exit 1
 }
 
-Write-Host "`n==========================================" -ForegroundColor Cyan
-Write-Host "2. Testing Owner Stats API" -ForegroundColor Cyan
-Write-Host "==========================================" -ForegroundColor Cyan
+# 2. Stats
+$statsRes = Invoke-RestMethod -Uri "$baseUrl/api/owner/stats" -Method GET -Headers @{ "x-owner-token" = $sessionToken }
+Assert "Stats owner (totalRestaurants >= 0)" ($statsRes.stats.totalRestaurants -ge 0)
 
-try {
-  $statsRes = Invoke-RestMethod -Uri "$baseUrl/api/owner/stats" -Method GET -Headers @{ "x-owner-token" = $sessionToken }
-  Write-Host "Owner Stats Success! Total Restaurants: $($statsRes.stats.totalRestaurants)" -ForegroundColor Green
-} catch {
-  Write-Host "Owner Stats Failed: $_" -ForegroundColor Red
-}
-
-Write-Host "`n==========================================" -ForegroundColor Cyan
-Write-Host "3. Creating a Test Restaurant (Silver Plan)" -ForegroundColor Cyan
-Write-Host "==========================================" -ForegroundColor Cyan
-
+# 3. Création d'un restaurant de test (route publique)
+$suffix = Get-Random -Minimum 1000 -Maximum 99999
 $createBody = @{
-  name = "Le Ngor Terrou Test Senegal"
+  name = "Ngor Terrou Test $suffix"
   address = "Route de la Corniche Ouest"
   city = "Dakar"
   phone = "+221 77 123 45 67"
   description = "Specialites de poissons et fruits de mer"
-  owner_email = "owner@ngorterrou.sn"
-  owner_phone = "+221 77 123 45 67"
-  plan = "SILVER"
+  ownerEmail = "owner-$suffix@ngorterrou.sn"
 } | ConvertTo-Json
+$createRes = Invoke-RestMethod -Uri "$baseUrl/api/restaurants" -Method POST -Body $createBody -ContentType "application/json"
+Assert "Restaurant créé avec access_token" ($null -ne $createRes.access_token)
+$testRestId = $createRes.id
+$restToken = $createRes.access_token
 
-try {
-  $createRes = Invoke-RestMethod -Uri "$baseUrl/api/restaurants" -Method POST -Body $createBody -ContentType "application/json"
-  $testRestId = $createRes.id
-  $restToken = $createRes.access_token
-  Write-Host "Restaurant Created! ID: $testRestId, Plan: $($createRes.subscription_plan)" -ForegroundColor Green
+# 4. Liste des restaurants (owner)
+$listRes = Invoke-RestMethod -Uri "$baseUrl/api/owner/restaurants?filter=ALL&search=Ngor" -Method GET -Headers @{ "x-owner-token" = $sessionToken }
+Assert "Liste owner : restaurant trouvé" ($listRes.count -ge 1)
+Assert "Liste owner : le secret n'est pas exposé" (-not ($listRes.restaurants[0].PSObject.Properties.Name -contains "access_token"))
 
-  Write-Host "`n==========================================" -ForegroundColor Cyan
-  Write-Host "4. Testing Owner List Restaurants" -ForegroundColor Cyan
-  Write-Host "==========================================" -ForegroundColor Cyan
-  $listRes = Invoke-RestMethod -Uri "$baseUrl/api/owner/restaurants?filter=ALL" -Method GET -Headers @{ "x-owner-token" = $sessionToken }
-  Write-Host "Found $($listRes.count) restaurants in Owner Dashboard." -ForegroundColor Green
+# 5. Suspension puis réactivation
+$suspendBody = @{ suspend = $true; reason = "Test suspension" } | ConvertTo-Json
+$suspendRes = Invoke-RestMethod -Uri "$baseUrl/api/owner/restaurants/$testRestId/suspend" -Method POST -Headers @{ "x-owner-token" = $sessionToken } -Body $suspendBody -ContentType "application/json"
+Assert "Restaurant suspendu" ($suspendRes.restaurant.status -eq "SUSPENDED")
 
-  Write-Host "`n==========================================" -ForegroundColor Cyan
-  Write-Host "5. Testing Restaurant Subscription API" -ForegroundColor Cyan
-  Write-Host "==========================================" -ForegroundColor Cyan
-  $subRes = Invoke-RestMethod -Uri "$baseUrl/api/restaurants/$testRestId/subscription" -Method GET -Headers @{ "x-restaurant-token" = $restToken }
-  Write-Host "Sub Status: $($subRes.subscription.status), Plan: $($subRes.subscription.plan)" -ForegroundColor Green
+$reactivateBody = @{ suspend = $false } | ConvertTo-Json
+$reactivateRes = Invoke-RestMethod -Uri "$baseUrl/api/owner/restaurants/$testRestId/suspend" -Method POST -Headers @{ "x-owner-token" = $sessionToken } -Body $reactivateBody -ContentType "application/json"
+Assert "Restaurant réactivé" ($reactivateRes.restaurant.status -eq "ACTIVE")
 
-  Write-Host "`n==========================================" -ForegroundColor Cyan
-  Write-Host "6. Testing Wave Checkout API (expect not configured)" -ForegroundColor Cyan
-  Write-Host "==========================================" -ForegroundColor Cyan
-  $waveBody = @{
-    restaurantId = $testRestId
-    type = "SUBSCRIPTION"
-    plan = "SILVER"
-    amount = 25000
-    title = "Abonnement Silver Test"
-  } | ConvertTo-Json
-  try {
-    $waveRes = Invoke-RestMethod -Uri "$baseUrl/api/payments/wave/create-checkout" -Method POST -Body $waveBody -ContentType "application/json" -Headers @{ "x-restaurant-token" = $restToken }
-    if ($waveRes.checkoutUrl) {
-      Write-Host "Unexpected checkoutUrl without WAVE_API_KEY" -ForegroundColor Red
-    } else {
-      Write-Host "Wave correctly not configured: $($waveRes.message)" -ForegroundColor Green
-    }
-  } catch {
-    Write-Host "Wave endpoint protected / not configured (expected): $_" -ForegroundColor Yellow
-  }
+# 6. Abonnements, échéances, journal d'audit, paiements, revenus
+$subsRes = Invoke-RestMethod -Uri "$baseUrl/api/owner/subscriptions" -Method GET -Headers @{ "x-owner-token" = $sessionToken }
+Assert "Liste des abonnements" ($null -ne $subsRes.subscriptions)
 
-  Write-Host "`n==========================================" -ForegroundColor Cyan
-  Write-Host "7. Testing Owner Suspend Action" -ForegroundColor Cyan
-  Write-Host "==========================================" -ForegroundColor Cyan
-  $suspendBody = @{ suspend = $true; reason = "Test suspension" } | ConvertTo-Json
-  $suspendRes = Invoke-RestMethod -Uri "$baseUrl/api/owner/restaurants/$testRestId/suspend" -Method POST -Headers @{ "x-owner-token" = $sessionToken } -Body $suspendBody -ContentType "application/json"
-  Write-Host "Suspend Action Success! Message: $($suspendRes.message)" -ForegroundColor Green
+$deadRes = Invoke-RestMethod -Uri "$baseUrl/api/owner/deadlines" -Method GET -Headers @{ "x-owner-token" = $sessionToken }
+Assert "Échéances (deadlines)" ($null -ne $deadRes.deadlines)
 
-  $subRes2 = Invoke-RestMethod -Uri "$baseUrl/api/restaurants/$testRestId/subscription" -Method GET -Headers @{ "x-restaurant-token" = $restToken }
-  Write-Host "Verified Suspended Status: $($subRes2.subscription.status)" -ForegroundColor Green
+$auditRes = Invoke-RestMethod -Uri "$baseUrl/api/owner/audit-logs" -Method GET -Headers @{ "x-owner-token" = $sessionToken }
+Assert "Journal d'audit" ($null -ne $auditRes.logs)
 
-  $reactivateBody = @{ suspend = $false } | ConvertTo-Json
-  $reactivateRes = Invoke-RestMethod -Uri "$baseUrl/api/owner/restaurants/$testRestId/suspend" -Method POST -Headers @{ "x-owner-token" = $sessionToken } -Body $reactivateBody -ContentType "application/json"
-  Write-Host "Reactivated Success! Status: $($reactivateRes.restaurant.status)" -ForegroundColor Green
+$payRes = Invoke-RestMethod -Uri "$baseUrl/api/owner/payments" -Method GET -Headers @{ "x-owner-token" = $sessionToken }
+Assert "Paiements" ($null -ne $payRes.payments)
 
-  Write-Host "`nALL BACKEND API TESTS COMPLETED." -ForegroundColor Green
-} catch {
-  Write-Host "Test execution error: $_" -ForegroundColor Red
-}
+$revRes = Invoke-RestMethod -Uri "$baseUrl/api/owner/revenue" -Method GET -Headers @{ "x-owner-token" = $sessionToken }
+Assert "Revenus (total >= 0)" ($revRes.total -ge 0)
+
+Write-Host "`n=== Résumé : $passed réussi(s), $failed échec(s) ===" -ForegroundColor Cyan
+if ($failed -gt 0) { exit 1 }

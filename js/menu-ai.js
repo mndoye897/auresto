@@ -60,6 +60,10 @@ const MenuAI = {
 
     let ocrLines = [];
 
+    if (!window.Tesseract?.recognize) {
+      throw new Error('Le module de lecture du menu est indisponible. Vérifiez votre connexion puis réessayez.');
+    }
+
     try {
 
       if (window.Tesseract) {
@@ -106,6 +110,31 @@ const MenuAI = {
 
 
 
+    // Si le pack français n'est pas accessible, Tesseract peut encore lire
+    // correctement les noms et prix avec le modèle anglais.
+    if (!ocrLines.length && window.Tesseract?.recognize) {
+      try {
+        onProgress?.('Nouvel essai de lecture…');
+        const fallbackResult = await Tesseract.recognize(resizedUrl, 'eng', {
+          logger: message => {
+            if (message.status === 'recognizing text') {
+              onProgress?.(`Lecture du menu… ${Math.round((message.progress || 0) * 100)}%`);
+            }
+          }
+        });
+        ocrLines = (fallbackResult?.data?.lines || [])
+          .map(line => ({ text: (line.text || '').trim(), bbox: line.bbox }))
+          .filter(line => line.text);
+        if (!ocrLines.length && fallbackResult?.data?.text) {
+          ocrLines = fallbackResult.data.text.split('\n')
+            .map(text => ({ text: text.trim(), bbox: null }))
+            .filter(line => line.text);
+        }
+      } catch (fallbackError) {
+        console.warn('OCR de secours indisponible:', fallbackError);
+      }
+    }
+
     onProgress?.('Détection des catégories et prix…');
 
     let items = this.parseLines(ocrLines.map(l => l.text));
@@ -122,12 +151,11 @@ const MenuAI = {
 
 
 
-    if (items.length < 2) {
-
-      onProgress?.('Application du menu type…');
-
-      items = this.mergeWithFallback(items);
-
+    // Ne jamais compléter le résultat par des plats fictifs : un scan doit
+    // refléter uniquement le contenu de la photo choisie par le restaurant.
+    if (!items.length) {
+      onProgress?.('Aucun plat exploitable détecté.');
+      return { items: [], categories: [], sourceImage: dataUrl };
     }
 
 
@@ -401,33 +429,13 @@ const MenuAI = {
 
 
   async attachPhotos(canvas, items, ocrLines) {
-    return Promise.all(items.map(async item => {
-      let photo = await this.generateGeminiImage(item.name);
-      if (!photo) photo = this.generateFoodPlaceholder(item.name);
-      return { ...item, photo };
+    // Les photos sont générées localement : l'ancien appel direct à
+    // l'API Gemini exposait la clé dans le navigateur (clé volable +
+    // endpoint inexistant côté Google). La clé doit rester côté serveur.
+    return items.map(item => ({
+      ...item,
+      photo: this.generateFoodPlaceholder(item.name)
     }));
-  },
-
-  async generateGeminiImage(name) {
-    const apiKey = window.AurestoStore?.load()?.integration?.geminiApiKey;
-    if (!apiKey) return '';
-    const prompt = `Photo stylée et appétissante d'un plat nommé ${name}, présentation gourmande, fond neutre, couleur chaude.`;
-    try {
-      const response = await fetch(`https://gemini.googleapis.com/v1/images:generate?key=${encodeURIComponent(apiKey)}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: 'gemini-imagen-1', prompt, size: '512x512' })
-      });
-      if (!response.ok) return '';
-      const result = await response.json();
-      const imageData = result?.data?.[0]?.imageUri || result?.data?.[0]?.b64_json;
-      if (!imageData) return '';
-      if (imageData.startsWith('data:')) return imageData;
-      if (result.data[0].b64_json) return `data:image/png;base64,${result.data[0].b64_json}`;
-      return imageData;
-    } catch (err) {
-      return '';
-    }
   },
 
   generateFoodPlaceholder(name) {

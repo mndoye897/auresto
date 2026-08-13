@@ -109,4 +109,5 @@ document.querySelectorAll('[data-plan]').forEach(button => {
   });
 });
 
-if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('service-worker.js'));
+// Désactivé temporairement pour les tests locaux (conflits de cache sur localhost)
+// if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('service-worker.js'));
