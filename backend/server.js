@@ -982,7 +982,13 @@ app.post('/api/restaurants/:id/payments/dexpay/checkout', async (req, res) => {
     for (const requested of requestedItems) {
       const menuItem = menuById.get(menuItemIdFromClientId(requested.id));
       const qty = Math.floor(Number(requested.qty));
-      if (!menuItem || !Number.isInteger(qty) || qty < 1 || qty > 20) {
+      if (!menuItem) {
+        return res.status(409).json({
+          error: 'ITEM_UNAVAILABLE',
+          message: 'Un article de votre panier n’est plus disponible. Rechargez le menu puis réessayez.'
+        });
+      }
+      if (!Number.isInteger(qty) || qty < 1 || qty > 20) {
         return res.status(400).json({ error: 'INVALID_ORDER_ITEMS', message: 'Le panier contient un article ou une quantité invalide.' });
       }
       confirmedItems.push({
